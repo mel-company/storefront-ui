@@ -7,6 +7,7 @@ import { CodeBlock } from "./CodeBlock";
 import { Frame } from "./Frame";
 import { highlightJson } from "./Highlight";
 import { LivePreview } from "./LivePreview";
+import { Link } from "../router";
 import { translateDeep } from "../i18n";
 
 type Tab = "components" | "sections";
@@ -67,7 +68,10 @@ export function Gallery() {
       <div className="container">
       <header className="block-head">
         <h2 id="gallery-title">Components and sections</h2>
-        <p className="muted">Each example is rendered here and checked in light, dark, LTR and RTL. Theme, mode and direction follow the switches in the top bar.</p>
+        <p className="muted">
+          Each example is rendered here and checked in light, dark, LTR and RTL. Theme, mode and direction follow the switches in the top
+          bar. For code, props and source, open the <Link href="/components">docs</Link>.
+        </p>
       </header>
 
       <div className="tabs" role="tablist" aria-label="Library layer">

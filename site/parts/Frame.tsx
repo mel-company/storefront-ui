@@ -119,7 +119,7 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
         ref={iframeRef}
         title={title}
         srcDoc={SRC_DOC}
-        style={{ width, height, transform: `scale(${scale})` }}
+        style={{ width, height, transform: `scale(${scale})`, insetInlineStart: Math.max(0, (available - width) / 2) }}
       />
       {body && createPortal(children, body)}
     </div>
