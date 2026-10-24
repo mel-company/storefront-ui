@@ -1,0 +1,49 @@
+.tile {
+  position: relative;
+  display: grid;
+  gap: var(--msu-space-2);
+  text-decoration: none;
+  min-inline-size: 0;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.image .name {
+  position: absolute;
+  inset-inline-start: var(--msu-space-3);
+  inset-block-end: var(--msu-space-3);
+  padding-block: var(--msu-space-1);
+  padding-inline: var(--msu-space-3);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface);
+  color: var(--msu-text);
+}
+
+.circle {
+  justify-items: center;
+  text-align: center;
+}
+
+.circle .media {
+  inline-size: 100%;
+  border-radius: 50%;
+}
+
+.label {
+  padding: var(--msu-space-4);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface-muted);
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.tile:hover .media img {
+  transform: scale(1.04);
+}
+
+.media img {
+  transition: transform var(--msu-duration) ease;
+}

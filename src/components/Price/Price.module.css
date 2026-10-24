@@ -1,0 +1,29 @@
+.price {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--msu-space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.current {
+  font-weight: 700;
+}
+
+.sale {
+  color: var(--msu-danger);
+}
+
+.was {
+  color: var(--msu-text-muted);
+  text-decoration: line-through;
+  font-size: 0.85em;
+}
+
+.sm {
+  font-size: var(--msu-text-sm);
+}
+
+.lg {
+  font-size: var(--msu-text-xl);
+}

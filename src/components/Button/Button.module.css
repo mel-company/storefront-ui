@@ -1,0 +1,85 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--msu-space-2);
+  min-block-size: 44px;
+  padding-block: var(--msu-space-2);
+  padding-inline: var(--msu-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--msu-radius-full);
+  font-weight: 600;
+  font-size: var(--msu-text-md);
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--msu-duration) ease,
+    color var(--msu-duration) ease,
+    border-color var(--msu-duration) ease,
+    transform var(--msu-duration) ease;
+  white-space: nowrap;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.primary {
+  background: var(--msu-accent);
+  color: var(--msu-accent-text);
+}
+
+.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--msu-accent) 88%, var(--msu-text));
+}
+
+.secondary {
+  background: var(--msu-surface);
+  color: var(--msu-text);
+  border-color: var(--msu-border);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--msu-surface-muted);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--msu-text);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--msu-surface-muted);
+}
+
+.sm {
+  min-block-size: 36px;
+  padding-inline: var(--msu-space-4);
+  font-size: var(--msu-text-sm);
+}
+
+.lg {
+  min-block-size: 52px;
+  padding-inline: var(--msu-space-8);
+  font-size: var(--msu-text-lg);
+}
+
+.full {
+  inline-size: 100%;
+}
+
+.iconOnly {
+  padding-inline: 0;
+  inline-size: 44px;
+}
+
+.iconOnly.sm {
+  inline-size: 36px;
+}

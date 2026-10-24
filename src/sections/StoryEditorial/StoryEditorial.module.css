@@ -1,0 +1,52 @@
+.story {
+  display: grid;
+  gap: var(--msu-space-8);
+  align-items: center;
+}
+
+.copy {
+  display: grid;
+  gap: var(--msu-space-4);
+  justify-items: start;
+}
+
+.eyebrow {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--msu-text-2xl);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.body {
+  display: grid;
+  gap: var(--msu-space-3);
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-lg);
+}
+
+.quote {
+  font-family: var(--msu-font-heading);
+  font-size: var(--msu-text-3xl);
+  line-height: 1.2;
+  text-align: center;
+  max-inline-size: 28ch;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .story {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--msu-space-16);
+  }
+
+  .mediaEnd .media {
+    order: 2;
+  }
+}

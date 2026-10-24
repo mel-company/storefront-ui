@@ -1,0 +1,36 @@
+.media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface-muted);
+}
+
+.media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.contain img {
+  object-fit: contain;
+}
+
+.square {
+  aspect-ratio: 1;
+}
+
+.portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.wide {
+  aspect-ratio: 16 / 9;
+}
+
+.tall {
+  aspect-ratio: 2 / 3;
+}

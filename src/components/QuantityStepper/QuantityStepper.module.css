@@ -1,0 +1,34 @@
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface);
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border: 0;
+  border-radius: var(--msu-radius-full);
+  background: transparent;
+  cursor: pointer;
+}
+
+.step:hover:not(:disabled) {
+  background: var(--msu-surface-muted);
+}
+
+.step:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.value {
+  min-inline-size: 3ch;
+  text-align: center;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

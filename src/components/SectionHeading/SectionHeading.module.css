@@ -1,0 +1,37 @@
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--msu-space-4);
+  margin-block-end: var(--msu-space-6);
+}
+
+.center {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.text {
+  display: grid;
+  gap: var(--msu-space-2);
+  max-inline-size: 60ch;
+}
+
+.eyebrow {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--msu-text-2xl);
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--msu-text-muted);
+}

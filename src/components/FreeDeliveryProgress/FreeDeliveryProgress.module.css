@@ -1,0 +1,30 @@
+.progress {
+  display: grid;
+  gap: var(--msu-space-2);
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: var(--msu-space-2);
+  font-size: var(--msu-text-sm);
+}
+
+.track {
+  block-size: 8px;
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface-muted);
+  overflow: hidden;
+}
+
+.fill {
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--msu-accent);
+  transition: inline-size var(--msu-duration) ease;
+}
+
+.done .message {
+  color: var(--msu-success);
+  font-weight: 600;
+}

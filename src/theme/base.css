@@ -1,0 +1,71 @@
+/* The only global rules the library ships, all scoped to a provider. */
+.msu-root {
+  color-scheme: light;
+  background: var(--msu-background);
+  color: var(--msu-text);
+  font-family: var(--msu-font-body);
+  font-size: var(--msu-text-md);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.msu-root[data-msu-mode="dark"] {
+  color-scheme: dark;
+}
+
+.msu-root *,
+.msu-root *::before,
+.msu-root *::after {
+  box-sizing: border-box;
+}
+
+.msu-root :where(h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, dd) {
+  margin: 0;
+}
+
+.msu-root :where(h1, h2, h3, h4) {
+  font-family: var(--msu-font-heading);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.msu-root :where(img) {
+  display: block;
+  max-inline-size: 100%;
+}
+
+.msu-root :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+.msu-root :where(a) {
+  color: inherit;
+}
+
+.msu-root :focus-visible {
+  outline: 2px solid var(--msu-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msu-root *,
+  .msu-root *::before,
+  .msu-root *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.msu-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.msu-root[dir="rtl"] {
+  --msu-flip: -1;
+}

@@ -1,0 +1,40 @@
+.section {
+  padding-block: var(--msu-space-12);
+}
+
+.muted {
+  background: var(--msu-surface-muted);
+}
+
+.tight {
+  padding-block: var(--msu-space-6);
+}
+
+.flush {
+  padding-block: 0;
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--msu-space-4);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: var(--msu-space-16);
+  }
+
+  .tight {
+    padding-block: var(--msu-space-8);
+  }
+
+  .flush {
+    padding-block: 0;
+  }
+
+  .container {
+    padding-inline: var(--msu-space-8);
+  }
+}

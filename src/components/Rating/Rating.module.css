@@ -1,0 +1,16 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-1);
+  font-size: var(--msu-text-sm);
+  color: var(--msu-text-muted);
+}
+
+.stars {
+  display: inline-flex;
+  color: var(--msu-warning);
+}
+
+.empty {
+  color: var(--msu-border);
+}

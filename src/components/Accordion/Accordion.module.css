@@ -1,0 +1,38 @@
+.accordion {
+  display: grid;
+  border-block-start: 1px solid var(--msu-border);
+}
+
+.item {
+  border-block-end: 1px solid var(--msu-border);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msu-space-4);
+  padding-block: var(--msu-space-4);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  transition: transform var(--msu-duration) ease;
+  transform: rotate(90deg);
+  flex: none;
+}
+
+.item[open] .chevron {
+  transform: rotate(-90deg);
+}
+
+.answer {
+  padding-block-end: var(--msu-space-4);
+  color: var(--msu-text-muted);
+}
