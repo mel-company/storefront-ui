@@ -133,7 +133,7 @@ export function Gallery() {
           </div>
 
           <div className="preview">
-            <Frame key={`${tab}-${width}`} width={width} title={`${selected.name} preview`}>
+            <Frame width={width} title={`${selected.name} preview`}>
               {example && (
                 <LivePreview key={previewKey} seed={(store) => fillCart(store, example.cart)}>
                   <div style={{ padding: selected.kind === "component" ? 24 : 0 }}>

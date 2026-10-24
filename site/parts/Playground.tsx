@@ -128,7 +128,7 @@ export function Playground() {
           </div>
         </div>
         <div className="pg-preview">
-          <Frame key={width} scrollKey={`${activeId}-${context.productSlug ?? ""}-${context.categorySlug ?? ""}`} width={width} title={`${activeId} preview`} fill>
+          <Frame scrollKey={`${activeId}-${context.productSlug ?? ""}-${context.categorySlug ?? ""}`} width={width} title={`${activeId} preview`} fill>
             {composition && (
               <LivePreview key={`${themeId}-${mode}-${dir}`} onNavigate={navigate}>
                 <PageRenderer composition={composition} context={context} />

@@ -50,21 +50,46 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
     const setup = () => {
       const doc = iframe.contentDocument;
       if (!doc?.body) return;
+      let pending: Promise<unknown>[] = [];
       const syncStyles = () => {
-        doc.head.querySelectorAll("[data-copied]").forEach((node) => node.remove());
-        document.head.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => {
-          const copy = node.cloneNode(true) as Element;
+        const copies: Element[] = [];
+        pending = [];
+        for (const sheet of Array.from(document.styleSheets)) {
+          const owner = sheet.ownerNode as Element | null;
+          if (!owner) continue;
+          let css: string | null = null;
+          try {
+            // Same-origin sheets go in as inline CSS: they apply at once, with no second request.
+            css = Array.from(sheet.cssRules, (rule) => rule.cssText).join("\n");
+          } catch {
+            // Cross-origin (fonts): only the link can be copied.
+          }
+          let copy: Element;
+          if (css === null) {
+            copy = owner.cloneNode(true) as Element;
+            pending.push(new Promise((resolve) => copy.addEventListener("load", resolve, { once: true })));
+          } else {
+            copy = doc.createElement("style");
+            copy.textContent = css;
+          }
           copy.setAttribute("data-copied", "");
-          doc.head.appendChild(copy);
-        });
+          copies.push(copy);
+        }
+        doc.head.querySelectorAll("[data-copied]").forEach((node) => node.remove());
+        copies.forEach((copy) => doc.head.appendChild(copy));
       };
       syncStyles();
       const styles = new MutationObserver(syncStyles);
       styles.observe(document.head, { childList: true, subtree: true, characterData: true });
       const size = new ResizeObserver(() => setContentHeight(doc.body.scrollHeight));
       size.observe(doc.body);
-      setBody(doc.body);
+      let cancelled = false;
+      // Show content only once its styles are in, never as bare HTML. Capped, so a slow font never hides the preview.
+      void Promise.race([Promise.all(pending), new Promise((resolve) => window.setTimeout(resolve, 1500))]).then(() => {
+        if (!cancelled) setBody(doc.body);
+      });
       cleanup = () => {
+        cancelled = true;
         styles.disconnect();
         size.disconnect();
       };
