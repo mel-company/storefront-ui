@@ -107,7 +107,7 @@ export const homeCampaign = definePage({
 export const catalogueDefault = definePage({
   id: "catalogue.default",
   name: "Catalogue",
-  description: "Search, filters and every product.",
+  description: "Search, filters and every product. Pass `search` in the page context for search results.",
   pageType: "catalogue",
   requires: ["header.bar", "catalogue.browse", "footer.columns"],
   sections: [header, { section: "catalogue.browse", key: "catalogue", props: {} }, trust, footer],
@@ -146,4 +146,67 @@ export const cartDefault = definePage({
   ],
 });
 
-export const pageDefinitions: PageDefinition[] = [homeClassic, homeCampaign, catalogueDefault, productDefault, cartDefault];
+export const checkoutDefault = definePage({
+  id: "checkout.default",
+  name: "Checkout",
+  description: "Contact, delivery and payment with the order summary, then a thank-you with the order number.",
+  pageType: "checkout",
+  requires: ["header.bar", "checkout.form", "footer.columns"],
+  sections: [header, { section: "checkout.form", key: "checkout", props: {} }, trust, footer],
+  preview: { cart: [{ productId: "p1", quantity: 1, options: { size: "50 ml" } }, { productId: "p6", quantity: 2 }] },
+});
+
+export const confirmationDefault = definePage({
+  id: "confirmation.default",
+  name: "Order confirmation",
+  description: "Thank-you after an order placed or paid elsewhere, with bestsellers to keep browsing.",
+  pageType: "confirmation",
+  requires: ["header.bar", "order.confirmation", "footer.columns"],
+  sections: [
+    header,
+    { section: "order.confirmation", key: "confirmation", props: {} },
+    { section: "products.rail", key: "more", props: { title: "Picked for you", source: { tag: "bestseller" } } },
+    footer,
+  ],
+});
+
+export const favouritesDefault = definePage({
+  id: "favourites.default",
+  name: "Favourites",
+  description: "Every product the shopper saved, with new arrivals underneath.",
+  pageType: "favourites",
+  requires: ["header.bar", "favourites.grid", "footer.columns"],
+  sections: [
+    header,
+    { section: "favourites.grid", key: "favourites", props: {} },
+    { section: "products.rail", key: "new", props: { title: "New arrivals", source: { tag: "new" } } },
+    footer,
+  ],
+  preview: { favourites: ["p1", "p4", "p6"] },
+});
+
+export const notFoundDefault = definePage({
+  id: "notfound.default",
+  name: "Page not found",
+  description: "A broken or old link: a plain message, the way back, and bestsellers.",
+  pageType: "notFound",
+  requires: ["header.bar", "error.notFound", "footer.columns"],
+  sections: [
+    header,
+    { section: "error.notFound", key: "not-found", props: {} },
+    { section: "products.grid", key: "bestsellers", props: { title: "Bestsellers", source: { tag: "bestseller", limit: 4 } } },
+    footer,
+  ],
+});
+
+export const pageDefinitions: PageDefinition[] = [
+  homeClassic,
+  homeCampaign,
+  catalogueDefault,
+  productDefault,
+  cartDefault,
+  checkoutDefault,
+  confirmationDefault,
+  favouritesDefault,
+  notFoundDefault,
+];

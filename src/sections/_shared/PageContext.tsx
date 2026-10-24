@@ -4,6 +4,10 @@ import { createContext, useContext, type ReactNode } from "react";
 export interface PageContextValue {
   productSlug?: string;
   categorySlug?: string;
+  /** What the shopper searched for, e.g. from `/products?search=cream`. */
+  search?: string;
+  /** The order a confirmation page is about, e.g. after an online payment. */
+  orderNumber?: string;
 }
 
 const PageContext = createContext<PageContextValue>({});

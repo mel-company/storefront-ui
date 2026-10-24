@@ -20,6 +20,10 @@ export const storeCompositionSchema = z.object({
     catalogue: pageCompositionSchema.optional(),
     product: pageCompositionSchema.optional(),
     cart: pageCompositionSchema.optional(),
+    checkout: pageCompositionSchema.optional(),
+    confirmation: pageCompositionSchema.optional(),
+    favourites: pageCompositionSchema.optional(),
+    notFound: pageCompositionSchema.optional(),
   }),
 });
 

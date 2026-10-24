@@ -1,0 +1,79 @@
+.field {
+  display: grid;
+  gap: var(--msu-space-1);
+  min-inline-size: 0;
+}
+
+.label {
+  font-size: var(--msu-text-sm);
+  font-weight: 600;
+}
+
+.optional {
+  color: var(--msu-text-muted);
+  font-weight: 400;
+}
+
+.control {
+  inline-size: 100%;
+  min-block-size: 46px;
+  padding-block: var(--msu-space-2);
+  padding-inline: var(--msu-space-3);
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface);
+  transition: border-color var(--msu-duration) ease, box-shadow var(--msu-duration) ease;
+}
+
+.control:hover {
+  border-color: var(--msu-text-muted);
+}
+
+.control:focus-visible {
+  outline: none;
+  border-color: var(--msu-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--msu-focus) 25%, transparent);
+}
+
+.control::placeholder {
+  color: var(--msu-text-muted);
+}
+
+/* Phone numbers and emails type left to right but line up with the rest of an RTL form. */
+[dir="rtl"] .control[dir="ltr"] {
+  text-align: end;
+}
+
+textarea.control {
+  min-block-size: 96px;
+  resize: vertical;
+}
+
+.invalid .control {
+  border-color: var(--msu-danger);
+}
+
+.hint {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--msu-space-1);
+  color: var(--msu-danger);
+  font-size: var(--msu-text-xs);
+  font-weight: 600;
+  animation: shake calc(var(--msu-duration) * 2) ease-out;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(3px);
+  }
+
+  75% {
+    transform: translateX(-3px);
+  }
+}

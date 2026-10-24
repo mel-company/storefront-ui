@@ -1,0 +1,40 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--msu-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-1);
+  min-inline-size: 0;
+}
+
+.link {
+  text-decoration: none;
+  transition: color var(--msu-duration) ease;
+}
+
+.link:hover {
+  color: var(--msu-text);
+  text-decoration: underline;
+}
+
+.current {
+  overflow: hidden;
+  color: var(--msu-text);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.separator {
+  flex: none;
+}

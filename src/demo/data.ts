@@ -9,6 +9,13 @@ export const demoInfo: StoreInfo = {
   deliveryFee: 6,
   contact: { phone: "+1 555 0100", whatsapp: "+15550100", email: "hello@atelier.example", address: "12 Market Street" },
   social: { instagram: "https://instagram.com/atelier", tiktok: "https://tiktok.com/@atelier" },
+  checkout: {
+    email: "optional",
+    payments: [
+      { id: "cash", label: "Cash on delivery", description: "Pay when your order arrives." },
+      { id: "card", label: "Card", description: "Visa or Mastercard, paid online." },
+    ],
+  },
 };
 
 export const demoCategories: Category[] = [
@@ -90,6 +97,13 @@ export const demoInfoAr: StoreInfo = {
   deliveryFee: 5000,
   contact: { phone: "+964 770 000 0100", whatsapp: "+9647700000100", email: "hello@atelier.example", address: "شارع السوق 12، بغداد" },
   social: demoInfo.social,
+  checkout: {
+    cities: ["بغداد", "البصرة", "نينوى", "أربيل", "النجف", "كربلاء", "بابل", "السليمانية", "الأنبار", "ديالى", "كركوك", "ذي قار"],
+    payments: [
+      { id: "cash", label: "الدفع عند الاستلام", description: "ادفع عند وصول طلبك." },
+      { id: "card", label: "بطاقة", description: "فيزا أو ماستركارد، الدفع عبر الإنترنت." },
+    ],
+  },
 };
 
 const AR_CATEGORIES: Record<string, string> = { skin: "العناية بالبشرة", scent: "العطور", home: "المنزل", carry: "الإكسسوارات" };

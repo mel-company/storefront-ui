@@ -15,7 +15,7 @@ npm install @mel-company/storefront-ui
 | --- | --- | --- |
 | Component | The smallest part. Reads the store through hooks. | `commerce.addToCart`, `product.card`, `cart.freeDeliveryProgress` |
 | Section | A full-width block built from components, with its own logic. | `hero.split`, `catalogue.browse`, `bundle.builder`, `product.detail` |
-| Page | Sections in order, saved as plain JSON. | `home.classic`, `catalogue.default`, `cart.default` |
+| Page | Sections in order, saved as plain JSON. | `home.classic`, `catalogue.default`, `cart.default`, `checkout.default` |
 
 Every piece has a stable `id`, a one-line `description` (what an agent reads to
 choose), a zod `props` schema, and examples that the checker renders.
@@ -59,6 +59,15 @@ start from. Components read the store with `useProducts`, `useCart`,
 `useFormatPrice` and friends, so products and prices always come from the
 store, never from props.
 
+The whole journey is covered: home, catalogue (pass `search` in the page
+context for search results), product, cart, checkout, order confirmation,
+favourites and page not found. To take orders, add `placeOrder(order)` to your
+store. The checkout form checks the fields, sends the customer, payment choice,
+cart lines and totals, and then shows the order number, or sends the shopper to
+`redirectUrl` when you return one (an online payment page, for example). Without
+`placeOrder` it says ordering is not set up. `info.checkout` sets the city list,
+the payment methods and whether to ask for an email.
+
 ## Theme and dark mode
 
 A theme is a palette for light and one for dark, plus radius, density, type
@@ -83,7 +92,7 @@ not `margin-left`), so every piece works in RTL.
 Run them all:
 
 ```
-npm run check     # themes, 19 components, 16 sections, 5 pages × 4 themes, stylesheets
+npm run check     # themes, 24 components, 20 sections, 9 pages × 4 themes, stylesheets
 npm run verify    # typecheck + lint + tests + check
 ```
 

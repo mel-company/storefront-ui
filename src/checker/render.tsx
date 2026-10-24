@@ -39,10 +39,16 @@ export function fillCart(store: StoreClient, cart: Example<unknown>["cart"] = []
   cart.forEach((line) => store.addToCart(line.productId, line.quantity, localOptions(store, line.productId, line.options)));
 }
 
-/** A fresh demo store with the example's cart already filled. */
-export function previewStore(example?: Pick<Example<unknown>, "cart">, language: Language = "en"): StoreClient {
-  const store = createDemoStore({ language });
+/** Puts an example's cart and favourites into a store. */
+export function seedExample(store: StoreClient, example?: Pick<Example<unknown>, "cart" | "favourites">) {
   fillCart(store, example?.cart);
+  example?.favourites?.forEach((id) => store.toggleFavourite(id));
+}
+
+/** A fresh demo store with the example's cart and favourites already filled. */
+export function previewStore(example?: Pick<Example<unknown>, "cart" | "favourites">, language: Language = "en"): StoreClient {
+  const store = createDemoStore({ language });
+  seedExample(store, example);
   return store;
 }
 
@@ -76,9 +82,13 @@ export function exampleElement(
   );
 }
 
-export function pageElement(composition: PageCompositionInput, context: PageContextValue = {}, options: RenderOptions = {}) {
+export function pageElement(
+  composition: PageCompositionInput,
+  context: PageContextValue = {},
+  options: RenderOptions & { preview?: Pick<Example<unknown>, "cart" | "favourites"> } = {},
+) {
   return (
-    <PreviewFrame store={previewStore(undefined, languageFor(options))} options={options}>
+    <PreviewFrame store={previewStore(options.preview, languageFor(options))} options={options}>
       <PageRenderer composition={composition} context={context} />
     </PreviewFrame>
   );

@@ -4,9 +4,11 @@ import {
   compositionOf,
   pageCompositionSchema,
   PageRenderer,
+  seedExample,
   validateComposition,
   type PageComposition,
   type PageContextValue,
+  type StoreClient,
 } from "../../src";
 import { initialView, route } from "../route";
 import { useSettings } from "../settings";
@@ -16,6 +18,9 @@ import { LivePreview } from "./LivePreview";
 import { translateDeep, type Lang } from "../i18n";
 
 const PAGES = [...builtInRegistry.pages.values()];
+
+/** Every page's preview cart and favourites, so checkout and favourites open filled. */
+const seedPreviews = (store: StoreClient) => PAGES.forEach((page) => seedExample(store, page.preview));
 const DEVICES = [
   { id: "phone", label: "390", width: 390 },
   { id: "desktop", label: "1280", width: 1280 },
@@ -130,7 +135,7 @@ export function Playground() {
         <div className="pg-preview">
           <Frame scrollKey={`${activeId}-${context.productSlug ?? ""}-${context.categorySlug ?? ""}`} width={width} title={`${activeId} preview`} fill>
             {composition && (
-              <LivePreview key={`${themeId}-${mode}-${dir}`} onNavigate={navigate}>
+              <LivePreview key={`${themeId}-${mode}-${dir}`} seed={seedPreviews} onNavigate={navigate}>
                 <PageRenderer composition={composition} context={context} />
               </LivePreview>
             )}

@@ -19,7 +19,7 @@ export const productsGridDefinition = defineSection({
   description: "A heading and a grid of real products chosen by category, tag, sale or ids. Hides when empty.",
   tags: ["products", "commerce", "grid"],
   uses: ["ui.sectionHeading", "product.card"],
-  pages: ["home", "product", "cart"],
+  pages: ["home", "product", "cart", "favourites", "confirmation", "notFound"],
   props: productsSectionProps.extend({ columns: columnsField(4) }),
   examples: [
     {

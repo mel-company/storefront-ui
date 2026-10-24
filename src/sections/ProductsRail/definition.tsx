@@ -9,7 +9,7 @@ export const productsRailDefinition = defineSection({
   description: "A swipeable row of real products. Good for new arrivals and picks that should not take a full grid.",
   tags: ["products", "commerce", "carousel"],
   uses: ["ui.sectionHeading", "ui.button", "product.card"],
-  pages: ["home", "product", "cart"],
+  pages: ["home", "product", "cart", "favourites", "confirmation", "notFound"],
   props: productsSectionProps.omit({ action: true }).extend({
     visible: z.number().int().min(2).max(5).default(4).describe("Cards visible at once on desktop"),
   }),

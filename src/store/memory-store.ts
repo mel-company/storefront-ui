@@ -41,6 +41,7 @@ export function defaultHref(route: Route): string {
  */
 export function createMemoryStore(data: MemoryStoreData): StoreClient {
   const listeners = new Set<() => void>();
+  let orders = 0;
   let snapshot: StoreSnapshot = {
     products: data.products,
     categories: data.categories,
@@ -88,6 +89,12 @@ export function createMemoryStore(data: MemoryStoreData): StoreClient {
     },
     removeFromCart(lineKey) {
       update({ cart: snapshot.cart.filter((line) => line.key !== lineKey) });
+    },
+    async placeOrder() {
+      orders += 1;
+      const id = String(1000 + orders);
+      update({ cart: [] });
+      return { id };
     },
     toggleFavourite(productId) {
       const favourites = snapshot.favourites.includes(productId)

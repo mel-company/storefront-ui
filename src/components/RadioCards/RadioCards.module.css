@@ -1,0 +1,110 @@
+.group {
+  display: grid;
+  gap: var(--msu-space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-block-end: var(--msu-space-1);
+  font-size: var(--msu-text-sm);
+  font-weight: 600;
+}
+
+.options {
+  display: grid;
+  gap: var(--msu-space-2);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--msu-space-3);
+  padding: var(--msu-space-3) var(--msu-space-4);
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface);
+  cursor: pointer;
+  transition: border-color var(--msu-duration) ease, box-shadow var(--msu-duration) ease;
+}
+
+.option:hover {
+  border-color: var(--msu-text-muted);
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.option:has(input:checked) {
+  border-color: var(--msu-text);
+  box-shadow: inset 0 0 0 1px var(--msu-text);
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--msu-focus);
+  outline-offset: 2px;
+}
+
+.dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 20px;
+  block-size: 20px;
+  border: 2px solid var(--msu-border);
+  border-radius: 50%;
+  transition: border-color var(--msu-duration) ease;
+}
+
+.dot::after {
+  content: "";
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  background: var(--msu-text);
+  transform: scale(0);
+  transition: transform var(--msu-duration) ease;
+}
+
+.option:has(input:checked) .dot {
+  border-color: var(--msu-text);
+}
+
+.option:has(input:checked) .dot::after {
+  transform: scale(1);
+}
+
+.text {
+  display: grid;
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.description {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+}
+
+.icon {
+  flex: none;
+  color: var(--msu-text-muted);
+}
