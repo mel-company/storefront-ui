@@ -1,10 +1,11 @@
-import { useId, useState, type FormEvent } from "react";
+import { useId, useState } from "react";
 import { Button } from "../../components/Button/Button";
 import { OrderSteps } from "../../components/OrderSteps/OrderSteps";
-import { TextField } from "../../components/TextField/TextField";
 import { Icon } from "../../icons";
 import { useFormatDate, useFormatPrice, useStore } from "../../store";
-import type { TrackedOrder } from "../../store/types";
+import type { Invoice, TrackedOrder } from "../../store/types";
+import { InvoiceView } from "../_shared/invoice/InvoiceView";
+import { OrderLookup, type OrderQuery } from "../_shared/OrderLookup";
 import { usePageContext } from "../_shared/PageContext";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderTracking.module.css";
@@ -20,12 +21,11 @@ export interface OrderTrackingProps {
   tone?: SectionTone;
 }
 
-type Status = "idle" | "searching" | "notFound" | "failed" | "off";
-
 /**
  * The order tracking page: the shopper enters the order number and their
  * phone, and sees where the order is, what is in it and who is delivering.
- * Looks orders up through `store.trackOrder`. Holds the page's h1.
+ * Looks orders up through `store.trackOrder`; when the store also has
+ * `getInvoice`, the order opens its invoice in place. Holds the page's h1.
  */
 export function OrderTracking({ title, intro, showItems = true, showCourier = true, statusLayout = "horizontal", tone }: OrderTrackingProps) {
   const headingId = useId();
@@ -34,37 +34,28 @@ export function OrderTracking({ title, intro, showItems = true, showCourier = tr
   const m = useMessages();
   const format = useFormatPrice();
   const formatDate = useFormatDate();
-  const [number, setNumber] = useState(page.orderNumber ?? "");
-  const [phone, setPhone] = useState("");
-  const [errors, setErrors] = useState<{ number?: string; phone?: string }>({});
-  const [status, setStatus] = useState<Status>("idle");
-  const [order, setOrder] = useState<TrackedOrder | null>(null);
+  const [found, setFound] = useState<{ order: TrackedOrder; query: OrderQuery } | null>(null);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [invoiceState, setInvoiceState] = useState<"idle" | "busy" | "failed">("idle");
+  const { trackOrder, getInvoice } = store;
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const digits = phone.replace(/\D/g, "");
-    const found = {
-      number: number.trim() ? undefined : m.required,
-      phone: !phone.trim() ? m.required : digits.length < 7 || digits.length > 15 ? m.invalidPhone : undefined,
-    };
-    setErrors(found);
-    if (found.number || found.phone) return;
-    if (!store.trackOrder) {
-      setStatus("off");
-      return;
-    }
-    setStatus("searching");
+  const openInvoice = async () => {
+    if (!found || !getInvoice) return;
+    setInvoiceState("busy");
     try {
-      const result = await store.trackOrder({ number: number.trim(), phone: phone.trim() });
-      setOrder(result);
-      setStatus(result ? "idle" : "notFound");
+      const result = await getInvoice(found.query);
+      setInvoice(result);
+      setInvoiceState(result ? "idle" : "failed");
     } catch {
-      setStatus("failed");
+      setInvoiceState("failed");
     }
   };
 
-  const searching = status === "searching";
-  const alert = status === "notFound" ? m.orderNotFound : status === "off" ? m.trackingOff : status === "failed" ? m.orderFailed : null;
+  const reset = () => {
+    setFound(null);
+    setInvoice(null);
+    setInvoiceState("idle");
+  };
 
   return (
     <Section labelledBy={headingId} tone={tone}>
@@ -73,60 +64,53 @@ export function OrderTracking({ title, intro, showItems = true, showCourier = tr
           <h1 id={headingId} className={styles.title}>
             {title || m.trackOrder}
           </h1>
-          {!order && <p className={styles.intro}>{intro || m.trackIntro}</p>}
+          {!found && <p className={styles.intro}>{intro || m.trackIntro}</p>}
         </div>
 
-        {order ? (
-          <OrderCard order={order} showItems={showItems} showCourier={showCourier} statusLayout={statusLayout} format={format} formatDate={formatDate} onReset={() => {
-            setOrder(null);
-            setPhone("");
-            setNumber("");
-          }} />
-        ) : (
-          <form className={`${styles.card} ${styles.form}`} onSubmit={onSubmit} noValidate aria-busy={searching || undefined}>
-            {alert && (
+        {found && invoice ? (
+          <InvoiceView
+            invoice={invoice}
+            extraActions={
+              <Button variant="ghost" icon="chevronStart" onClick={() => setInvoice(null)}>
+                {m.backToOrder}
+              </Button>
+            }
+          />
+        ) : found ? (
+          <>
+            <OrderCard order={found.order} showItems={showItems} showCourier={showCourier} statusLayout={statusLayout} format={format} formatDate={formatDate} />
+            {invoiceState === "failed" && (
               <p className={styles.alert} role="alert">
                 <Icon name="alert" size={18} />
-                {alert}
+                {m.orderFailed}
               </p>
             )}
-            <div className={styles.pair}>
-              <TextField
-                label={m.orderNumberLabel}
-                name="order"
-                inputMode="numeric"
-                autoComplete="off"
-                required
-                hint={m.orderNumberHint}
-                value={number}
-                onChange={(value) => {
-                  setNumber(value);
-                  if (errors.number) setErrors((current) => ({ ...current, number: undefined }));
-                }}
-                error={errors.number}
-                maxLength={40}
-              />
-              <TextField
-                label={m.phone}
-                name="phone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                required
-                hint={m.orderPhoneHint}
-                value={phone}
-                onChange={(value) => {
-                  setPhone(value);
-                  if (errors.phone) setErrors((current) => ({ ...current, phone: undefined }));
-                }}
-                error={errors.phone}
-                maxLength={20}
-              />
+            <div className={styles.actions}>
+              {getInvoice && (
+                <Button icon="receipt" onClick={openInvoice} disabled={invoiceState === "busy"}>
+                  {invoiceState === "busy" ? m.findingOrder : m.viewInvoice}
+                </Button>
+              )}
+              <Button variant="secondary" icon="refresh" onClick={reset}>
+                {m.trackAnother}
+              </Button>
             </div>
-            <Button type="submit" size="lg" icon={searching ? undefined : "search"} disabled={searching}>
-              {searching ? m.findingOrder : m.findOrder}
-            </Button>
-          </form>
+          </>
+        ) : (
+          <OrderLookup
+            initialNumber={page.orderNumber}
+            submitLabel={m.findOrder}
+            busyLabel={m.findingOrder}
+            offText={m.trackingOff}
+            onFind={
+              trackOrder &&
+              (async (query) => {
+                const order = await trackOrder(query);
+                if (order) setFound({ order, query });
+                return Boolean(order);
+              })
+            }
+          />
         )}
       </div>
     </Section>
@@ -140,17 +124,15 @@ interface OrderCardProps {
   statusLayout: "horizontal" | "vertical";
   format: (amount: number) => string;
   formatDate: (iso: string, withTime?: boolean) => string;
-  onReset: () => void;
 }
 
-function OrderCard({ order, showItems, showCourier, statusLayout, format, formatDate, onReset }: OrderCardProps) {
+function OrderCard({ order, showItems, showCourier, statusLayout, format, formatDate }: OrderCardProps) {
   const m = useMessages();
   const items = showItems ? (order.lines ?? []) : [];
   const courier = showCourier && order.status !== "cancelled" && order.status !== "delivered" ? order.courier : undefined;
   const open = order.status !== "cancelled" && order.status !== "delivered";
   return (
-    <>
-      <div className={styles.card}>
+    <div className={styles.card}>
         <div className={styles.summary}>
           <div>
             <h2 className={styles.number}>{m.orderNumber(order.number)}</h2>
@@ -246,10 +228,6 @@ function OrderCard({ order, showItems, showCourier, statusLayout, format, format
             )}
           </div>
         )}
-      </div>
-      <Button variant="secondary" icon="refresh" className={styles.again} onClick={onReset}>
-        {m.trackAnother}
-      </Button>
-    </>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   defaultContext,
   favouritesDefault,
   trackingDefault,
+  invoiceDefault,
   productDefault,
   type PageContextValue,
   type PageDefinition,
@@ -32,6 +33,10 @@ export function route(href: string, home: PageDefinition = builtInRegistry.pages
   if (path.startsWith("/cart")) return { page: cartDefault, context: {} };
   if (path.startsWith("/checkout")) return { page: checkoutDefault, context: {} };
   if (path.startsWith("/favourites")) return { page: favouritesDefault, context: {} };
+  if (path.startsWith("/invoice")) {
+    const order = new URLSearchParams(path.split("?")[1] ?? "").get("order");
+    return { page: invoiceDefault, context: order ? { orderNumber: order } : {} };
+  }
   if (path.startsWith("/track")) {
     const order = new URLSearchParams(path.split("?")[1] ?? "").get("order");
     return { page: trackingDefault, context: order ? { orderNumber: order } : {} };

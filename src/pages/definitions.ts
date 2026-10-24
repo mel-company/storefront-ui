@@ -184,6 +184,15 @@ export const trackingDefault = definePage({
   ],
 });
 
+export const invoiceDefault = definePage({
+  id: "invoice.default",
+  name: "Invoice",
+  description: "Order number and phone in, then the invoice with Print and Download PDF.",
+  pageType: "invoice",
+  requires: ["header.bar", "order.invoice", "footer.columns"],
+  sections: [header, { section: "order.invoice", key: "invoice", props: {} }, footer],
+});
+
 export const favouritesDefault = definePage({
   id: "favourites.default",
   name: "Favourites",
@@ -222,6 +231,7 @@ export const pageDefinitions: PageDefinition[] = [
   checkoutDefault,
   confirmationDefault,
   trackingDefault,
+  invoiceDefault,
   favouritesDefault,
   notFoundDefault,
 ];

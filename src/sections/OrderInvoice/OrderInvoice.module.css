@@ -1,0 +1,20 @@
+.wrap {
+  display: grid;
+  gap: var(--msu-space-6);
+  max-inline-size: 880px;
+  margin-inline: auto;
+}
+
+.head {
+  display: grid;
+  gap: var(--msu-space-2);
+}
+
+.title {
+  font-size: var(--msu-text-3xl);
+  font-weight: 800;
+}
+
+.intro {
+  color: var(--msu-text-muted);
+}

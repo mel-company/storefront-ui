@@ -7,7 +7,7 @@ import { OrderTracking } from "./OrderTracking";
 export const orderTrackingDefinition = defineSection({
   id: "order.tracking",
   name: "Order tracking",
-  description: "Order tracking page: the shopper enters order number and phone, then sees the status steps, items, totals and courier.",
+  description: "Order tracking page: the shopper enters order number and phone, then sees the status steps, items, totals and courier, and can open the invoice to print or download.",
   tags: ["order", "tracking", "logic"],
   uses: ["form.textField", "ui.button", "order.steps"],
   pages: ["tracking"],

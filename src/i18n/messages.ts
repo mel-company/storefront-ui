@@ -129,6 +129,30 @@ export interface Messages {
   trackWithCourier: (name: string) => string;
   callCourier: string;
   items: string;
+  invoice: string;
+  getInvoice: string;
+  invoiceIntro: string;
+  showInvoice: string;
+  invoiceOff: string;
+  viewInvoice: string;
+  backToOrder: string;
+  findAnotherInvoice: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  orderRef: string;
+  billTo: string;
+  taxId: string;
+  invoiceStatus: { paid: string; due: string; refunded: string };
+  item: string;
+  unitPrice: string;
+  qty: string;
+  amount: string;
+  discount: string;
+  invoiceThanks: string;
+  print: string;
+  downloadPdf: string;
+  preparingPdf: string;
+  pdfFailed: string;
 }
 
 export type Language = "en" | "ar";
@@ -263,6 +287,30 @@ const en: Messages = {
   trackWithCourier: (name) => `Track with ${name}`,
   callCourier: "Call the courier",
   items: "Items",
+  invoice: "Invoice",
+  getInvoice: "Get your invoice",
+  invoiceIntro: "Enter your order number and the phone you ordered with to see, print or download the invoice.",
+  showInvoice: "Show invoice",
+  invoiceOff: "Invoices are not set up for this store yet.",
+  viewInvoice: "View invoice",
+  backToOrder: "Back to the order",
+  findAnotherInvoice: "Another invoice",
+  invoiceNumber: "Invoice no.",
+  invoiceDate: "Date",
+  orderRef: "Order",
+  billTo: "Bill to",
+  taxId: "Tax no.",
+  invoiceStatus: { paid: "Paid", due: "Payment due", refunded: "Refunded" },
+  item: "Item",
+  unitPrice: "Price",
+  qty: "Qty",
+  amount: "Amount",
+  discount: "Discount",
+  invoiceThanks: "Thank you for shopping with us.",
+  print: "Print",
+  downloadPdf: "Download PDF",
+  preparingPdf: "Preparing PDF…",
+  pdfFailed: "We could not make the PDF here. Use Print and choose Save as PDF instead.",
 };
 
 /** Arabic plural forms for "N items": 1, 2, 3–10, 11+. */
@@ -399,6 +447,30 @@ const ar: Messages = {
   trackWithCourier: (name) => `تتبّع مع ${name}`,
   callCourier: "اتصل بالمندوب",
   items: "المنتجات",
+  invoice: "فاتورة",
+  getInvoice: "احصل على فاتورتك",
+  invoiceIntro: "أدخل رقم الطلب ورقم الهاتف الذي طلبت به لعرض الفاتورة أو طباعتها أو تنزيلها.",
+  showInvoice: "اعرض الفاتورة",
+  invoiceOff: "الفواتير غير مفعّلة في هذا المتجر بعد.",
+  viewInvoice: "عرض الفاتورة",
+  backToOrder: "العودة إلى الطلب",
+  findAnotherInvoice: "فاتورة أخرى",
+  invoiceNumber: "رقم الفاتورة",
+  invoiceDate: "التاريخ",
+  orderRef: "الطلب",
+  billTo: "إلى",
+  taxId: "الرقم الضريبي",
+  invoiceStatus: { paid: "مدفوعة", due: "بانتظار الدفع", refunded: "مستردّة" },
+  item: "المنتج",
+  unitPrice: "السعر",
+  qty: "الكمية",
+  amount: "المبلغ",
+  discount: "الخصم",
+  invoiceThanks: "شكراً لتسوقك معنا.",
+  print: "طباعة",
+  downloadPdf: "تنزيل PDF",
+  preparingPdf: "جارٍ تجهيز الملف…",
+  pdfFailed: "تعذّر إنشاء ملف PDF هنا. استخدم الطباعة واختر الحفظ كـ PDF.",
 };
 
 export const messages: Record<Language, Messages> = { en, ar };

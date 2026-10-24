@@ -9,6 +9,7 @@ export {
   checkoutDefault,
   confirmationDefault,
   trackingDefault,
+  invoiceDefault,
   favouritesDefault,
   notFoundDefault,
 } from "./definitions";

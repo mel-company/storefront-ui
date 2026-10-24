@@ -1,4 +1,4 @@
-import type { Category, Product, StoreInfo, TrackedOrder } from "../store/types";
+import type { Category, Invoice, Product, StoreInfo, TrackedOrder } from "../store/types";
 import { bannerArt, productArt } from "./art";
 
 export const demoInfo: StoreInfo = {
@@ -16,6 +16,7 @@ export const demoInfo: StoreInfo = {
       { id: "card", label: "Card", description: "Visa or Mastercard, paid online." },
     ],
   },
+  invoice: { legalName: "Atelier Goods Ltd", taxId: "TX-4410-2291" },
 };
 
 export const demoCategories: Category[] = [
@@ -104,6 +105,7 @@ export const demoInfoAr: StoreInfo = {
       { id: "card", label: "بطاقة", description: "فيزا أو ماستركارد، الدفع عبر الإنترنت." },
     ],
   },
+  invoice: { legalName: "شركة أتيليه للتجارة", taxId: "TX-4410-2291" },
 };
 
 const AR_CATEGORIES: Record<string, string> = { skin: "العناية بالبشرة", scent: "العطور", home: "المنزل", carry: "الإكسسوارات" };
@@ -168,3 +170,29 @@ function demoOrder(products: Product[], city: string, courier: { name: string; p
 
 export const demoOrder1042 = demoOrder(demoProducts, "Riverside", { name: "Swift Courier", phone: "+1 555 0200" });
 export const demoOrder1042Ar = demoOrder(demoProductsAr, "بغداد", { name: "سويفت للتوصيل", phone: "+964 780 000 0200" });
+
+function demoInvoice(order: TrackedOrder, customer: Invoice["customer"], payment: string, status: Invoice["status"]): Invoice {
+  const lines = (order.lines ?? []).map((line) => ({
+    name: line.name,
+    quantity: line.quantity,
+    unitPrice: line.total / line.quantity,
+    total: line.total,
+    options: line.options,
+  }));
+  return {
+    number: `INV-${order.number}`,
+    orderNumber: order.number,
+    issuedAt: order.placedAt ?? "2026-10-22",
+    status,
+    customer,
+    payment,
+    lines,
+    subtotal: order.subtotal ?? 0,
+    delivery: order.delivery,
+    total: order.total ?? 0,
+  };
+}
+
+/** The invoice for order 1042, found with the same phone. */
+export const demoInvoice1042 = demoInvoice(demoOrder1042, { name: "Sam Rivers", phone: demoOrderPhone, city: "Riverside", address: "4 Elm Road, flat 2" }, "Card", "paid");
+export const demoInvoice1042Ar = demoInvoice(demoOrder1042Ar, { name: "سارة علي", phone: demoOrderPhoneAr, city: "بغداد", address: "الكرادة، شارع 62، بناية 5" }, "الدفع عند الاستلام", "due");

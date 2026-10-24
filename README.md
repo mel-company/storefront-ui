@@ -61,7 +61,7 @@ store, never from props.
 
 The whole journey is covered: home, catalogue (pass `search` in the page
 context for search results), product, cart, checkout, order confirmation,
-favourites and page not found. To take orders, add `placeOrder(order)` to your
+favourites, page not found, order tracking and invoices. To take orders, add `placeOrder(order)` to your
 store. The checkout form checks the fields, sends the customer, payment choice,
 cart lines and totals, and then shows the order number, or sends the shopper to
 `redirectUrl` when you return one (an online payment page, for example). Without
@@ -72,6 +72,14 @@ For order tracking, add `trackOrder({ number, phone })` and return the order's
 status, history, items and courier, or `null`. Both the number and the phone
 must match, so an order number alone shows nothing. The footer and the order
 confirmation link to tracking only when the store has `trackOrder`.
+
+For invoices, add `getInvoice({ number, phone })` (same matching rule). The
+invoice page and the tracked order then show the invoice with **Print**, which
+prints only the invoice, and **Download PDF**, which draws an A4 PDF in the
+browser (pages break between rows), or opens `invoice.pdfUrl` when your server
+makes its own. `info.invoice` adds the logo, legal name, address, tax number and
+a closing note. The invoice is always light, follows RTL, and every label can be
+renamed through `info.messages`.
 
 ## Theme and dark mode
 
@@ -97,7 +105,7 @@ not `margin-left`), so every piece works in RTL.
 Run them all:
 
 ```
-npm run check     # themes, 25 components, 21 sections, 10 pages × 4 themes, stylesheets
+npm run check     # themes, 25 components, 22 sections, 11 pages × 4 themes, stylesheets
 npm run verify    # typecheck + lint + tests + check
 ```
 

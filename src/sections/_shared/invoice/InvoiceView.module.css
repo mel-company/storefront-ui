@@ -1,0 +1,309 @@
+.view {
+  display: grid;
+  gap: var(--msu-space-4);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msu-space-3);
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--msu-space-2);
+  padding: var(--msu-space-3) var(--msu-space-4);
+  border: 1px solid color-mix(in srgb, var(--msu-danger) 40%, transparent);
+  border-radius: var(--msu-radius-md);
+  background: color-mix(in srgb, var(--msu-danger) 8%, transparent);
+  color: var(--msu-danger);
+  font-weight: 600;
+}
+
+/* The light-theme wrapper: the sheet of paper. */
+.sheet {
+  container-type: inline-size;
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+  box-shadow: var(--msu-card-shadow);
+  font-size: var(--msu-text-sm);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+  animation: enter calc(var(--msu-duration) * 1.5) ease-out;
+}
+
+/* Beats the theme wrapper's page background: paper is the surface colour. */
+:global(.msu-root).sheet {
+  background: var(--msu-surface);
+}
+
+.paper {
+  display: grid;
+  gap: var(--msu-space-6);
+  padding: var(--msu-space-6);
+}
+
+.top {
+  display: grid;
+  gap: var(--msu-space-6);
+  padding-block-end: var(--msu-space-6);
+  border-block-end: 2px solid var(--msu-text);
+}
+
+.seller {
+  display: grid;
+  gap: var(--msu-space-2);
+  align-content: start;
+}
+
+.logo {
+  max-block-size: 48px;
+  inline-size: auto;
+  object-fit: contain;
+}
+
+.storeName {
+  font-family: var(--msu-font-heading);
+  font-size: var(--msu-text-xl);
+  font-weight: 800;
+}
+
+.small {
+  display: grid;
+  gap: 2px;
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+}
+
+/* Phone numbers and codes read left to right, but sit on the text side. */
+.ltr {
+  text-align: start;
+}
+
+[dir="rtl"] .ltr {
+  text-align: end;
+}
+
+.meta {
+  display: grid;
+  gap: var(--msu-space-3);
+  align-content: start;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--msu-space-3);
+}
+
+.title {
+  font-size: var(--msu-text-3xl);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.status {
+  padding: 2px var(--msu-space-3);
+  border-radius: var(--msu-radius-full);
+  font-size: var(--msu-text-xs);
+  font-weight: 700;
+}
+
+.paid {
+  background: color-mix(in srgb, var(--msu-success) 14%, transparent);
+  color: var(--msu-success);
+}
+
+.due {
+  background: color-mix(in srgb, var(--msu-warning) 18%, transparent);
+  color: var(--msu-text);
+}
+
+.refunded {
+  background: var(--msu-surface-muted);
+  color: var(--msu-text-muted);
+}
+
+.metaList {
+  display: grid;
+  gap: var(--msu-space-1);
+}
+
+.metaList > div,
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--msu-space-4);
+}
+
+.metaList dt,
+.totals dt {
+  color: var(--msu-text-muted);
+}
+
+.metaList dd,
+.totals dd {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.parties {
+  display: grid;
+  gap: var(--msu-space-4);
+}
+
+.parties p {
+  line-height: 1.5;
+}
+
+.label {
+  margin-block-end: var(--msu-space-1);
+  color: var(--msu-text-muted);
+  font-family: var(--msu-font-body);
+  font-size: var(--msu-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.strong {
+  font-weight: 700;
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: var(--msu-space-2) var(--msu-space-3);
+  background: var(--msu-surface-muted);
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+  font-weight: 700;
+  text-align: start;
+}
+
+.table td {
+  padding: var(--msu-space-3);
+  border-block-end: 1px solid var(--msu-border);
+  vertical-align: top;
+}
+
+.table .num {
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.lineMeta {
+  display: block;
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+}
+
+.totals {
+  display: grid;
+  gap: var(--msu-space-2);
+  inline-size: 100%;
+  justify-self: end;
+}
+
+.grand {
+  padding-block-start: var(--msu-space-3);
+  border-block-start: 2px solid var(--msu-text);
+  font-size: var(--msu-text-lg);
+}
+
+.grand dt,
+.grand dd {
+  color: var(--msu-text);
+  font-weight: 800;
+}
+
+.note {
+  padding-block-start: var(--msu-space-4);
+  border-block-start: 1px solid var(--msu-border);
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+  text-align: center;
+}
+
+@container (min-width: 560px) {
+  .paper {
+    gap: var(--msu-space-8);
+    padding: var(--msu-space-12);
+  }
+
+  .top {
+    grid-template-columns: 1fr auto;
+  }
+
+  .metaList {
+    min-inline-size: 220px;
+  }
+
+  .parties {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .totals {
+    inline-size: 50%;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* The off-screen copy a PDF is drawn from: still, or it is caught mid fade-in. */
+:global(.msu-pdf-stage) * {
+  animation: none !important;
+  transition: none !important;
+}
+
+:global(.msu-pdf-stage) .sheet {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Print: only the copy of the paper that `printPaper` puts in the host. */
+:global(.msu-print-host) {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  :global(body > *:not(.msu-print-host)) {
+    display: none !important;
+  }
+
+  :global(.msu-print-host) {
+    display: block;
+  }
+
+  :global(.msu-print-host) .sheet {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    animation: none;
+  }
+
+  :global(.msu-print-host) .paper {
+    padding: 0;
+  }
+
+  .table tr {
+    break-inside: avoid;
+  }
+}

@@ -1,5 +1,6 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { buildPdf, pageCuts } from "../src/sections/_shared/invoice/pdf";
 import {
   AddToCart,
   BundleBuilder,
@@ -7,6 +8,7 @@ import {
   CheckoutForm,
   Countdown,
   FavouritesGrid,
+  OrderInvoice,
   OrderTracking,
   createDemoStore,
   FreeDeliveryProgress,
@@ -282,5 +284,86 @@ describe("order tracking", () => {
     const { user } = setup(<OrderTracking />, store);
     await find(user, "1001", "5550177");
     expect(await screen.findByText("We have your order and will confirm it soon.")).toBeInTheDocument();
+  });
+});
+
+describe("invoices", () => {
+  const show = async (user: ReturnType<typeof userEvent.setup>, number: string, phone: string) => {
+    await user.type(screen.getByLabelText("Order number"), number);
+    await user.type(screen.getByLabelText("Phone number"), phone);
+    await user.click(screen.getByRole("button", { name: "Show invoice" }));
+  };
+
+  it("shows the invoice once number and phone match, and prints only the paper", async () => {
+    const { user } = setup(<OrderInvoice />);
+    await show(user, "1042", "555 0123");
+    const paper = await screen.findByRole("article", { name: "Invoice" });
+    expect(within(paper).getByText("INV-1042")).toBeInTheDocument();
+    expect(within(paper).getByText("Sam Rivers")).toBeInTheDocument();
+    expect(within(paper).getByText("TX-4410-2291")).toBeInTheDocument();
+    const rows = within(paper).getAllByRole("row");
+    expect(rows).toHaveLength(3);
+    expect(rows[1]).toHaveTextContent("Cloud Cream");
+    expect(screen.getByRole("button", { name: "Download PDF" })).toBeEnabled();
+
+    const print = vi.spyOn(window, "print").mockImplementation(() => {});
+    await user.click(screen.getByRole("button", { name: "Print" }));
+    expect(print).toHaveBeenCalledOnce();
+    const host = document.querySelector(".msu-print-host");
+    expect(host?.querySelector("table")).not.toBeNull();
+    window.dispatchEvent(new Event("afterprint"));
+    expect(document.querySelector(".msu-print-host")).toBeNull();
+    print.mockRestore();
+  });
+
+  it("finds nothing when the phone does not match", async () => {
+    const { user } = setup(<OrderInvoice />);
+    await show(user, "1042", "555 9999");
+    expect(await screen.findByRole("alert")).toHaveTextContent("We could not find an order with that number and phone.");
+  });
+
+  it("links to the store's own PDF when it has one", async () => {
+    const store = createDemoStore();
+    const own = await store.getInvoice!({ number: "1042", phone: "555 0123" });
+    const { user } = setup(<OrderInvoice />, { ...store, getInvoice: async () => ({ ...own!, pdfUrl: "https://files.example/INV-1042.pdf" }) });
+    await show(user, "1042", "555 0123");
+    expect(await screen.findByRole("link", { name: "Download PDF" })).toHaveAttribute("href", "https://files.example/INV-1042.pdf");
+  });
+
+  it("opens the invoice from the tracked order, then goes back", async () => {
+    const { user } = setup(<OrderTracking />);
+    await user.type(screen.getByLabelText("Order number"), "1042");
+    await user.type(screen.getByLabelText("Phone number"), "555 0123");
+    await user.click(screen.getByRole("button", { name: "Find my order" }));
+    await user.click(await screen.findByRole("button", { name: "View invoice" }));
+    expect(await screen.findByRole("article", { name: "Invoice" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Back to the order" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Order number 1042" })).toBeInTheDocument();
+  });
+
+  it("makes an invoice for an order placed a moment ago, in Arabic too", async () => {
+    const store = createDemoStore({ language: "ar" });
+    store.addToCart("p2", 2);
+    await store.placeOrder!({
+      customer: { name: "علي", phone: "0770 555 0177", city: "البصرة", address: "شارع 1" },
+      payment: "cash",
+      lines: store.getSnapshot().cart,
+      subtotal: 36000,
+      delivery: 5000,
+      total: 41000,
+    });
+    const invoice = await store.getInvoice!({ number: "1001", phone: "07705550177" });
+    expect(invoice).toMatchObject({ number: "INV-1001", status: "due", payment: "الدفع عند الاستلام", total: 41000 });
+    expect(invoice?.lines[0]).toMatchObject({ quantity: 2 });
+  });
+
+  it("writes a PDF with one page per image, cut between rows", () => {
+    const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+    const text = new TextDecoder("latin1").decode(buildPdf([{ jpeg, width: 10, height: 10 }, { jpeg, width: 10, height: 5 }]));
+    expect(text.startsWith("%PDF-1.4")).toBe(true);
+    expect(text).toContain("/Count 2");
+    expect(text.trimEnd().endsWith("%%EOF")).toBe(true);
+    // Cuts at the last row edge that fits, or at the page edge when no row edge does.
+    expect(pageCuts(2500, 1000, [400, 950, 1300, 1990])).toEqual([950, 1950]);
   });
 });

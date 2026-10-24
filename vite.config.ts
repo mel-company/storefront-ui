@@ -17,7 +17,7 @@ export default defineConfig({
     cssCodeSplit: false,
     sourcemap: true,
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", "zod"],
+      external: ["react", "react-dom", "react/jsx-runtime", "zod", "html-to-image"],
     },
   },
   test: {

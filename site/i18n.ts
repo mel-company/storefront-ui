@@ -147,6 +147,7 @@ const AR: Record<string, string> = {
   "Confirm order": "أكّد الطلب",
   "Where is my order?": "أين طلبي؟",
   "Try order 1042 with phone 555 0123.": "جرّب الطلب 1042 مع الهاتف 0770 123 4567.",
+  "Your receipt": "إيصالك",
   "Saved for later": "محفوظ لوقت لاحق",
   "This page has moved on": "هذه الصفحة لم تعد هنا",
   "Try the shop instead.": "جرّب المتجر بدلاً منها.",

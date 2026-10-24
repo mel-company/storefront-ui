@@ -30,20 +30,6 @@
   animation: enter calc(var(--msu-duration) * 1.5) ease-out;
 }
 
-.form {
-  display: grid;
-  gap: var(--msu-space-4);
-}
-
-.pair {
-  display: grid;
-  gap: var(--msu-space-4);
-}
-
-.pair > * {
-  align-self: start;
-}
-
 .alert {
   display: flex;
   align-items: flex-start;
@@ -182,8 +168,10 @@
   font-weight: 600;
 }
 
-.again {
-  justify-self: start;
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msu-space-3);
 }
 
 @keyframes enter {
@@ -194,10 +182,6 @@
 }
 
 @media (min-width: 640px) {
-  .pair {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .details {
     grid-template-columns: 1.4fr 1fr;
   }
