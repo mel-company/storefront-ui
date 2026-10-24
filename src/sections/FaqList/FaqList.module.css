@@ -1,0 +1,10 @@
+.layout {
+  display: grid;
+  gap: var(--msu-space-8);
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr 1.6fr;
+  }
+}

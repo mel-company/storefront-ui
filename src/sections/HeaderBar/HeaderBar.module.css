@@ -1,0 +1,163 @@
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--msu-background) 94%, transparent);
+  border-block-end: 1px solid var(--msu-border);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--msu-space-4);
+  min-block-size: 64px;
+}
+
+.centered .bar {
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.brand {
+  font-family: var(--msu-font-heading);
+  font-size: var(--msu-text-xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.centered .brand {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: center;
+}
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  gap: var(--msu-space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  font-size: var(--msu-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--msu-text-muted);
+}
+
+.navLink:hover {
+  color: var(--msu-text);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: var(--msu-space-1);
+}
+
+.centered .actions {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.iconLink {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--msu-radius-full);
+  text-decoration: none;
+}
+
+.iconLink:hover {
+  background: var(--msu-surface-muted);
+}
+
+.count {
+  position: absolute;
+  inset-block-start: 4px;
+  inset-inline-end: 2px;
+  min-inline-size: 18px;
+  block-size: 18px;
+  padding-inline: 4px;
+  border-radius: 999px;
+  background: var(--msu-accent);
+  color: var(--msu-accent-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.menuButton {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: 0;
+  border-radius: var(--msu-radius-full);
+  background: transparent;
+  cursor: pointer;
+}
+
+.centered .menuButton {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.drawer {
+  border-block-start: 1px solid var(--msu-border);
+  padding-block: var(--msu-space-4);
+}
+
+.drawerList {
+  display: grid;
+  gap: var(--msu-space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.drawerLink {
+  display: block;
+  padding-block: var(--msu-space-3);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.announcement {
+  padding-block: var(--msu-space-2);
+  background: var(--msu-text);
+  color: var(--msu-background);
+  font-size: var(--msu-text-sm);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    display: block;
+  }
+
+  .classic .nav {
+    justify-self: center;
+  }
+
+  .centered .nav {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .menuButton,
+  .drawer {
+    display: none;
+  }
+}

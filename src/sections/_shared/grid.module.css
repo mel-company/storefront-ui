@@ -1,0 +1,12 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--msu-space-6) var(--msu-space-4);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(var(--msu-columns, 4), minmax(0, 1fr));
+    gap: var(--msu-space-8) var(--msu-space-6);
+  }
+}

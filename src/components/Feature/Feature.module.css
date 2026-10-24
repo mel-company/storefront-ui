@@ -1,0 +1,33 @@
+.feature {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--msu-space-3);
+  align-items: start;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface-muted);
+  color: var(--msu-accent);
+}
+
+.stacked {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: var(--msu-text-md);
+  font-weight: 700;
+  font-family: var(--msu-font-body);
+}
+
+.text {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+}

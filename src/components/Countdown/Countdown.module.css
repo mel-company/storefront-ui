@@ -1,0 +1,27 @@
+.countdown {
+  display: inline-flex;
+  gap: var(--msu-space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  display: grid;
+  justify-items: center;
+  min-inline-size: 56px;
+  padding-block: var(--msu-space-2);
+  padding-inline: var(--msu-space-2);
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface);
+  border: 1px solid var(--msu-border);
+}
+
+.value {
+  font-size: var(--msu-text-xl);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.label {
+  font-size: var(--msu-text-xs);
+  color: var(--msu-text-muted);
+}

@@ -1,0 +1,20 @@
+.favourite {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface);
+  color: var(--msu-text);
+  cursor: pointer;
+  transition: color var(--msu-duration) ease, transform var(--msu-duration) ease;
+}
+
+.favourite:hover {
+  transform: scale(1.05);
+}
+
+.on {
+  color: var(--msu-danger);
+}

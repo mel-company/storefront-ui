@@ -1,0 +1,88 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--msu-space-3);
+  min-inline-size: 0;
+}
+
+.boxed {
+  padding: var(--msu-space-3);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+  box-shadow: var(--msu-card-shadow);
+}
+
+.mediaWrap {
+  position: relative;
+}
+
+.badges {
+  position: absolute;
+  inset-block-start: var(--msu-space-2);
+  inset-inline-start: var(--msu-space-2);
+  display: flex;
+  gap: var(--msu-space-1);
+}
+
+.favourite {
+  position: absolute;
+  inset-block-start: var(--msu-space-2);
+  inset-inline-end: var(--msu-space-2);
+}
+
+.link {
+  text-decoration: none;
+}
+
+.link::after {
+  /* The whole card is clickable, while buttons on top stay their own targets. */
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.name {
+  font-family: var(--msu-font-body);
+  font-size: var(--msu-text-md);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msu-space-2);
+}
+
+.quickAdd {
+  position: relative;
+  z-index: 1;
+}
+
+.favourite,
+.badges {
+  z-index: 1;
+}
+
+.overlay .info {
+  position: absolute;
+  inset-inline: var(--msu-space-2);
+  inset-block-end: var(--msu-space-2);
+  padding: var(--msu-space-3);
+  border-radius: var(--msu-radius-md);
+  background: color-mix(in srgb, var(--msu-surface) 92%, transparent);
+}
+
+.horizontal {
+  display: grid;
+  grid-template-columns: minmax(88px, 34%) 1fr;
+  align-items: center;
+}
+
+.minimal .name {
+  font-weight: 500;
+}

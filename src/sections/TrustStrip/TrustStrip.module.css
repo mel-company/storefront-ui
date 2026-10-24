@@ -1,0 +1,10 @@
+.strip {
+  display: grid;
+  gap: var(--msu-space-6);
+}
+
+@media (min-width: 768px) {
+  .strip {
+    grid-template-columns: repeat(var(--msu-count, 3), minmax(0, 1fr));
+  }
+}

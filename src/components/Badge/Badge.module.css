@@ -1,0 +1,45 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-1);
+  padding-block: 2px;
+  padding-inline: var(--msu-space-2);
+  border-radius: var(--msu-radius-full);
+  font-size: var(--msu-text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.neutral {
+  background: var(--msu-surface-muted);
+  color: var(--msu-text);
+}
+
+.accent {
+  background: var(--msu-accent);
+  color: var(--msu-accent-text);
+}
+
+.success,
+.warning,
+.danger {
+  background: var(--msu-surface);
+}
+
+.success {
+  color: var(--msu-success);
+  border-color: currentColor;
+}
+
+.warning {
+  color: var(--msu-warning);
+  border-color: currentColor;
+}
+
+.danger {
+  color: var(--msu-danger);
+  border-color: currentColor;
+}

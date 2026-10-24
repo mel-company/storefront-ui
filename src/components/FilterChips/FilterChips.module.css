@@ -1,0 +1,25 @@
+.chips {
+  display: flex;
+  gap: var(--msu-space-2);
+  overflow-x: auto;
+  padding-block: var(--msu-space-1);
+  scrollbar-width: none;
+}
+
+.chip {
+  flex: none;
+  min-block-size: 38px;
+  padding-inline: var(--msu-space-4);
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface);
+  font-size: var(--msu-text-sm);
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--msu-text);
+  border-color: var(--msu-text);
+  color: var(--msu-background);
+  font-weight: 600;
+}

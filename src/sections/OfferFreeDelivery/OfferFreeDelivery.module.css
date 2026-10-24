@@ -1,0 +1,31 @@
+.panel {
+  display: grid;
+  gap: var(--msu-space-6);
+  padding: var(--msu-space-6);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+  box-shadow: var(--msu-card-shadow);
+}
+
+.copy {
+  display: grid;
+  gap: var(--msu-space-2);
+}
+
+.title {
+  font-size: var(--msu-text-xl);
+  font-weight: 800;
+}
+
+.text {
+  color: var(--msu-text-muted);
+}
+
+@media (min-width: 900px) {
+  .panel {
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+    padding: var(--msu-space-8);
+  }
+}
