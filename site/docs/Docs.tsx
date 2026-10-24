@@ -207,13 +207,14 @@ function DefinitionDoc({ definition }: { definition: Definition }) {
     window.innerWidth < 700 ? "phone" : definition.kind === "component" ? "tablet" : "desktop",
   );
   const [tab, setTab] = useState<Tab>("code");
+  const [skeleton, setSkeleton] = useState(false);
   const example = definition.examples[exampleIndex] ?? definition.examples[0];
   // In RTL the example text is shown in Arabic, like a real Arabic store would fill it in.
   const props = useMemo(() => translateDeep(lang, (example?.props ?? {}) as Record<string, unknown>), [lang, example]);
   const report = useMemo(() => runCheck(definition, theme), [definition, theme]);
   const rows = useMemo(() => propRows(definition), [definition]);
   const width = DEVICES.find((item) => item.id === device)!.width;
-  const Render = definition.render;
+  const Render = (skeleton && definition.kind === "section" && definition.skeleton) || definition.render;
 
   const builtFrom = definition.kind === "section" ? definition.uses : [];
   const usedIn =
@@ -273,13 +274,16 @@ function DefinitionDoc({ definition }: { definition: Definition }) {
         ) : (
           <span />
         )}
-        <DeviceSwitch device={device} onChange={setDevice} />
+        <div className="toolbar-end">
+          {definition.kind === "section" && definition.skeleton && <SkeletonSwitch skeleton={skeleton} onChange={setSkeleton} />}
+          <DeviceSwitch device={device} onChange={setDevice} />
+        </div>
       </div>
 
       <div className="preview">
         <Frame width={width} title={`${definition.name} preview`}>
           {example && (
-            <LivePreview key={`${exampleIndex}-${themeId}-${mode}-${dir}`} seed={(store) => seedExample(store, example)}>
+            <LivePreview key={`${exampleIndex}-${themeId}-${mode}-${dir}-${skeleton}`} seed={(store) => seedExample(store, example)}>
               <div style={{ padding: definition.kind === "component" ? 24 : 0 }}>
                 <Render {...definition.props.parse(props)} />
               </div>
@@ -334,6 +338,20 @@ function IdLinks({ ids }: { ids: string[] }) {
         </Link>
       ))}
     </span>
+  );
+}
+
+/** Live content or the loading skeleton. */
+function SkeletonSwitch({ skeleton, onChange }: { skeleton: boolean; onChange: (skeleton: boolean) => void }) {
+  return (
+    <div className="segmented" role="group" aria-label="State">
+      <button type="button" aria-pressed={!skeleton} onClick={() => onChange(false)}>
+        Live
+      </button>
+      <button type="button" aria-pressed={skeleton} onClick={() => onChange(true)}>
+        Skeleton
+      </button>
+    </div>
   );
 }
 
@@ -428,6 +446,7 @@ function PageDoc({ page }: { page: PageDefinition }) {
   const [device, setDevice] = useState<Device>(() => (window.innerWidth < 700 ? "phone" : "desktop"));
   const [tab, setTab] = useState<PageTab>("json");
   const [view, setView] = useState(() => initialView(page));
+  const [skeleton, setSkeleton] = useState(false);
   const composition = useMemo(() => translateDeep(lang, compositionOf(page)), [lang, page]);
   const report = useMemo(() => checkPageDefinition(page, { theme }), [page, theme]);
   const width = DEVICES.find((item) => item.id === device)!.width;
@@ -469,13 +488,16 @@ function PageDoc({ page }: { page: PageDefinition }) {
         ) : (
           <span className="muted small">Links in the preview work.</span>
         )}
-        <DeviceSwitch device={device} onChange={setDevice} />
+        <div className="toolbar-end">
+          <SkeletonSwitch skeleton={skeleton} onChange={setSkeleton} />
+          <DeviceSwitch device={device} onChange={setDevice} />
+        </div>
       </div>
 
       <div className="preview">
         <Frame width={width} title={`${page.name} preview`} maxHeight={760} scrollKey={`${view.page.id}-${view.context.productSlug ?? ""}-${view.context.categorySlug ?? ""}`}>
           <LivePreview key={`${themeId}-${mode}-${dir}`} seed={(store) => seedExample(store, page.preview)} onNavigate={(href) => setView(route(href))}>
-            <PageRenderer composition={shown} context={context} />
+            <PageRenderer composition={shown} context={context} loading={skeleton} />
           </LivePreview>
         </Frame>
       </div>

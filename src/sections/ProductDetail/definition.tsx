@@ -3,6 +3,7 @@ import { accordionItemsSchema } from "../../components/Accordion/definition";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { ProductDetail } from "./ProductDetail";
+import { ProductDetailSkeleton } from "../_shared/skeleton/sections";
 
 export const productDetailDefinition = defineSection({
   id: "product.detail",
@@ -40,6 +41,7 @@ export const productDetailDefinition = defineSection({
     },
     { name: "Low stock", props: { productId: "p2", stickyBuyBar: false } },
   ],
+  skeleton: ProductDetailSkeleton,
   render: function ProductDetailPreset(props) {
     return <ProductDetail {...props} />;
   },

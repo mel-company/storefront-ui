@@ -4,6 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField } from "../_shared/shared-props";
 import { CatalogueBrowse } from "./CatalogueBrowse";
+import { CatalogueBrowseSkeleton } from "../_shared/skeleton/sections";
 
 export const catalogueBrowseDefinition = defineSection({
   id: "catalogue.browse",
@@ -25,6 +26,7 @@ export const catalogueBrowseDefinition = defineSection({
     { name: "Full", props: {} },
     { name: "Simple, three columns", props: { title: "Shop", showSort: false, columns: 3, pageSize: 6, card: { variant: "boxed", imageRatio: "square" } } },
   ],
+  skeleton: CatalogueBrowseSkeleton,
   render: function CatalogueBrowsePreset(props) {
     return <CatalogueBrowse {...props} />;
   },

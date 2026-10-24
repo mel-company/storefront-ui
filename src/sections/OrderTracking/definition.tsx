@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OrderTracking } from "./OrderTracking";
+import { OrderLookupSkeleton } from "../_shared/skeleton/sections";
 
 export const orderTrackingDefinition = defineSection({
   id: "order.tracking",
@@ -23,6 +24,7 @@ export const orderTrackingDefinition = defineSection({
     { name: "Default", props: {} },
     { name: "Muted, vertical steps", props: { title: "Where is my order?", intro: "Try order 1042 with phone 555 0123.", statusLayout: "vertical", tone: "muted" } },
   ],
+  skeleton: OrderLookupSkeleton,
   render: function OrderTrackingPreset(props) {
     return <OrderTracking {...props} />;
   },

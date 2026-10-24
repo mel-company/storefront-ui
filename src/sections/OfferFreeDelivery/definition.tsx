@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OfferFreeDelivery } from "./OfferFreeDelivery";
+import { OfferFreeDeliverySkeleton } from "../_shared/skeleton/sections";
 
 export const offerFreeDeliveryDefinition = defineSection({
   id: "offer.freeDelivery",
@@ -21,6 +22,7 @@ export const offerFreeDeliveryDefinition = defineSection({
     { name: "Empty cart", props: { title: "Free delivery is close", text: "Every order over the threshold ships free.", action: { label: "Keep shopping", route: { to: "catalogue" } } } },
     { name: "Half way", props: { title: "Almost there" }, cart: [{ productId: "p4", quantity: 1 }] },
   ],
+  skeleton: OfferFreeDeliverySkeleton,
   render: function OfferFreeDeliveryPreset(props) {
     return <OfferFreeDelivery {...props} />;
   },

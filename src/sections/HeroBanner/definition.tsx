@@ -4,6 +4,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field } from "../../core/fields";
 import { demoBanners } from "../../demo";
 import { HeroBanner } from "./HeroBanner";
+import { HeroBannerSkeleton } from "../_shared/skeleton/sections";
 
 export const heroBannerDefinition = defineSection({
   id: "hero.banner",
@@ -38,6 +39,7 @@ export const heroBannerDefinition = defineSection({
       props: { title: "Scents for slow evenings", image: demoBanners.warm, imageAlt: "", align: "center", action: { label: "Discover", route: { to: "category", slug: "fragrance" } } },
     },
   ],
+  skeleton: HeroBannerSkeleton,
   render: function HeroBannerPreset(props) {
     return <HeroBanner {...props} now={PREVIEW_NOW} />;
   },

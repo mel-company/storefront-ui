@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField, headingFields, toneField } from "../_shared/shared-props";
 import { CategoriesTiles } from "./CategoriesTiles";
+import { CategoriesTilesSkeleton } from "../_shared/skeleton/sections";
 
 export const categoriesTilesDefinition = defineSection({
   id: "categories.tiles",
@@ -23,6 +24,7 @@ export const categoriesTilesDefinition = defineSection({
     { name: "Circles", props: { title: "Browse", variant: "circle", columns: 4, tone: "muted" } },
     { name: "Labels", props: { title: "Jump to", variant: "label", categoryIds: ["skin", "home"], columns: 2 } },
   ],
+  skeleton: CategoriesTilesSkeleton,
   render: function CategoriesTilesPreset(props) {
     return <CategoriesTiles {...props} />;
   },

@@ -3,6 +3,7 @@ import { accordionItemsSchema } from "../../components/Accordion/definition";
 import { defineSection } from "../../core/define";
 import { headingFields, toneField } from "../_shared/shared-props";
 import { FaqList } from "./FaqList";
+import { FaqListSkeleton } from "../_shared/skeleton/sections";
 
 export const faqListDefinition = defineSection({
   id: "faq.list",
@@ -26,6 +27,7 @@ export const faqListDefinition = defineSection({
       },
     },
   ],
+  skeleton: FaqListSkeleton,
   render: function FaqListPreset(props) {
     return <FaqList {...props} />;
   },

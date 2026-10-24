@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, productSourceSchema } from "../../core/fields";
 import { headingFields, toneField } from "../_shared/shared-props";
 import { BundleBuilder } from "./BundleBuilder";
+import { BundleBuilderSkeleton } from "../_shared/skeleton/sections";
 
 export const bundleBuilderDefinition = defineSection({
   id: "bundle.builder",
@@ -22,6 +23,7 @@ export const bundleBuilderDefinition = defineSection({
     { name: "Pick three", props: { eyebrow: "Make it yours", title: "Build your ritual", subtitle: "Pick any three.", source: { limit: 8 } } },
     { name: "Pick two bestsellers", props: { title: "Two of our best", source: { tag: "bestseller" }, pickCount: 2, tone: "muted" } },
   ],
+  skeleton: BundleBuilderSkeleton,
   render: function BundleBuilderPreset(props) {
     return <BundleBuilder {...props} />;
   },

@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, iconSchema } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OrderConfirmation } from "./OrderConfirmation";
+import { OrderConfirmationSkeleton } from "../_shared/skeleton/sections";
 
 export const orderConfirmationDefinition = defineSection({
   id: "order.confirmation",
@@ -21,6 +22,7 @@ export const orderConfirmationDefinition = defineSection({
     tone: toneField,
   }),
   examples: [{ name: "Default", props: {} }, { name: "Own words and icon", props: { icon: "gift", title: "Your order is on its way", text: "We pack every order the same day.", showContact: false, tone: "muted" } }],
+  skeleton: OrderConfirmationSkeleton,
   render: function OrderConfirmationPreset(props) {
     return <OrderConfirmation {...props} />;
   },

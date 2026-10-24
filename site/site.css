@@ -806,6 +806,12 @@ body:has(> #root) {
   gap: 8px;
 }
 
+.toolbar-end {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .preview {
   overflow: hidden;
   border: 1px solid var(--border);

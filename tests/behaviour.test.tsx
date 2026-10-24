@@ -390,3 +390,13 @@ describe("invoices", () => {
     expect(pageCuts(2500, 1000, [400, 950, 1300, 1990])).toEqual([950, 1950]);
   });
 });
+
+describe("loading pages", () => {
+  it("shows the page's skeleton: busy, named Loading, nothing to press", () => {
+    setup(<PageRenderer composition={compositionOf(productDefault)} context={{ productSlug: "cloud-cream" }} loading />);
+    expect(screen.getByRole("main")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getAllByRole("region", { name: "Loading…" }).length).toBeGreaterThan(0);
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.queryAllByRole("link")).toHaveLength(0);
+  });
+});
