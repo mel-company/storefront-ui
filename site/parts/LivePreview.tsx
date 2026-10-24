@@ -1,5 +1,5 @@
 import { useMemo, useState, type MouseEvent, type ReactNode } from "react";
-import { Storefront, createDemoStore, type LinkProps, type StoreClient } from "../../src";
+import { Storefront, createDemoStore, type LinkProps, type StoreClient, type Theme } from "../../src";
 import { useSettings } from "../settings";
 
 export type Navigate = (href: string) => void;
@@ -33,11 +33,14 @@ export interface LivePreviewProps {
   children: ReactNode;
   onNavigate?: Navigate;
   seed?: (store: StoreClient) => void;
+  /** Overrides the site-wide theme, e.g. for the hero's theme carousel. */
+  theme?: Theme;
 }
 
 /** Library content under the gallery's current theme, mode and direction. */
-export function LivePreview({ children, onNavigate, seed }: LivePreviewProps) {
-  const { theme, mode, dir } = useSettings();
+export function LivePreview({ children, onNavigate, seed, theme: themeOverride }: LivePreviewProps) {
+  const { theme: siteTheme, mode, dir } = useSettings();
+  const theme = themeOverride ?? siteTheme;
   const store = useDemoStore(onNavigate, seed);
   return (
     <Storefront store={store} theme={theme} mode={mode} dir={dir}>
