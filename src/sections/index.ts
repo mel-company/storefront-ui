@@ -45,6 +45,7 @@ export * from "./ProductsRelated";
 export * from "./StoryEditorial";
 export * from "./TrustStrip";
 export { InvoiceView, type InvoiceViewProps } from "./_shared/invoice/InvoiceView";
+export { INVOICE_TEMPLATES } from "./_shared/invoice/paper";
 export { Section, type SectionProps, type SectionTone } from "./_shared/Section";
 export { PageContextProvider, usePageContext, type PageContextValue } from "./_shared/PageContext";
 

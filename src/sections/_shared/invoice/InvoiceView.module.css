@@ -40,9 +40,10 @@
 }
 
 .paper {
+  --pad: var(--msu-space-6);
   display: grid;
   gap: var(--msu-space-6);
-  padding: var(--msu-space-6);
+  padding: var(--pad);
 }
 
 .top {
@@ -232,10 +233,236 @@
   text-align: center;
 }
 
+
+/* ---- modern: an accent band across the top and an accent total ---- */
+.modern {
+  overflow: clip;
+}
+
+.modern .top {
+  margin-block-start: calc(-1 * var(--pad));
+  margin-inline: calc(-1 * var(--pad));
+  padding: var(--pad);
+  border-block-end: 0;
+  background: var(--msu-accent);
+  color: var(--msu-accent-text);
+}
+
+.modern .top .small,
+.modern .top dt {
+  color: color-mix(in srgb, var(--msu-accent-text) 85%, transparent);
+}
+
+.modern .top .status {
+  background: var(--msu-accent-text);
+  color: var(--msu-accent);
+}
+
+.modern .label {
+  color: var(--msu-accent);
+}
+
+.modern .table th {
+  background: color-mix(in srgb, var(--msu-accent) 10%, var(--msu-surface));
+  color: var(--msu-text);
+}
+
+.modern .grand {
+  padding: var(--msu-space-3) var(--msu-space-4);
+  border: 0;
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-accent);
+}
+
+.modern .grand dt,
+.modern .grand dd {
+  color: var(--msu-accent-text);
+}
+
+/* ---- compact: small type, hairlines, fits more lines on a page ---- */
+.compact {
+  font-size: var(--msu-text-xs);
+}
+
+.compact .paper {
+  --pad: var(--msu-space-4);
+  gap: var(--msu-space-4);
+}
+
+.compact .top {
+  gap: var(--msu-space-3);
+  padding-block-end: var(--msu-space-4);
+  border-block-end-width: 1px;
+}
+
+.compact .title {
+  color: var(--msu-accent);
+  font-family: var(--msu-font-body);
+  font-size: var(--msu-text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Number, date and order side by side, label over value. */
+.compact .metaList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msu-space-6);
+}
+
+.compact .metaList > div {
+  display: grid;
+  gap: 0;
+  justify-content: start;
+}
+
+.compact .metaList dd {
+  font-size: var(--msu-text-sm);
+}
+
+.compact .storeName {
+  font-size: var(--msu-text-md);
+}
+
+.compact .table th {
+  padding-inline: 0;
+  border-block-end: 1px solid var(--msu-text);
+  background: none;
+}
+
+.compact .table td {
+  padding: var(--msu-space-2) 0;
+}
+
+.compact .table th + th,
+.compact .table td + td {
+  padding-inline-start: var(--msu-space-3);
+}
+
+.compact .grand {
+  padding-block-start: var(--msu-space-2);
+  border-block-start-width: 1px;
+  font-size: var(--msu-text-md);
+}
+
+.compact .note {
+  padding-block-start: var(--msu-space-3);
+}
+
+/* ---- receipt80 / receipt58: thermal receipt rolls ---- */
+.receipt80,
+.receipt58 {
+  justify-self: center;
+  inline-size: 302px;
+  max-inline-size: 100%;
+  border-radius: var(--msu-radius-sm);
+  font-size: var(--msu-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.receipt58 {
+  inline-size: 219px;
+}
+
+.receipt {
+  display: grid;
+  gap: var(--msu-space-3);
+  padding: var(--msu-space-4) var(--msu-space-3);
+}
+
+/* Thermal heads print grey as speckles: everything is full black. */
+.receipt .small,
+.receipt .lineMeta,
+.receipt dt,
+.receipt .totals dt {
+  color: var(--msu-text);
+}
+
+.rHead {
+  display: grid;
+  gap: var(--msu-space-1);
+  justify-items: center;
+  text-align: center;
+}
+
+.rHead .ltr,
+[dir="rtl"] .rHead .ltr {
+  text-align: center;
+}
+
+.rBrand {
+  font-size: var(--msu-text-lg);
+}
+
+.rBlock {
+  padding-block-start: var(--msu-space-3);
+  border-block-start: 1px dashed var(--msu-text);
+}
+
+.rTitle {
+  margin-block-end: var(--msu-space-2);
+  font-family: var(--msu-font-body);
+  font-size: var(--msu-text-sm);
+  font-weight: 800;
+  text-align: center;
+}
+
+.rRows {
+  display: grid;
+  gap: 2px;
+}
+
+.rRows > div,
+.rCalc {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--msu-space-2);
+}
+
+.rRows dd {
+  font-weight: 600;
+  text-align: end;
+}
+
+.rLines {
+  display: grid;
+  gap: var(--msu-space-2);
+  margin: 0;
+  padding: var(--msu-space-3) 0 0;
+  border-block-start: 1px dashed var(--msu-text);
+  list-style: none;
+}
+
+.rName {
+  display: block;
+  font-weight: 700;
+}
+
+.rName .lineMeta {
+  font-weight: 400;
+}
+
+.receipt .totals {
+  inline-size: 100%;
+  gap: 2px;
+}
+
+.receipt .grand {
+  padding-block-start: var(--msu-space-2);
+  border-block-start-width: 1px;
+  font-size: var(--msu-text-md);
+}
+
+.rNote {
+  padding-block-start: var(--msu-space-3);
+  border-block-start: 1px dashed var(--msu-text);
+  text-align: center;
+}
+
 @container (min-width: 560px) {
   .paper {
+    --pad: var(--msu-space-12);
     gap: var(--msu-space-8);
-    padding: var(--msu-space-12);
   }
 
   .top {
@@ -252,6 +479,14 @@
 
   .totals {
     inline-size: 50%;
+  }
+
+  .compact .paper {
+    --pad: var(--msu-space-8);
+  }
+
+  .compact .totals {
+    inline-size: 40%;
   }
 }
 
@@ -279,11 +514,8 @@
   display: none;
 }
 
+/* The page size comes from `printPaper`: A4, or a roll as long as the receipt. */
 @media print {
-  @page {
-    margin: 12mm;
-  }
-
   :global(body > *:not(.msu-print-host)) {
     display: none !important;
   }
@@ -300,7 +532,16 @@
   }
 
   :global(.msu-print-host) .paper {
-    padding: 0;
+    --pad: 0px;
+  }
+
+  :global(.msu-print-host) .modern .paper {
+    --pad: var(--msu-space-6);
+  }
+
+  :global(.msu-print-host) .receipt80,
+  :global(.msu-print-host) .receipt58 {
+    inline-size: 100%;
   }
 
   .table tr {

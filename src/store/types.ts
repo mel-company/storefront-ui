@@ -87,7 +87,12 @@ export interface StoreInfo {
   invoice?: InvoiceSettings;
 }
 
+/** `classic`, `modern` and `compact` print on A4; `receipt80` and `receipt58` on thermal receipt rolls. */
+export type InvoiceTemplate = "classic" | "modern" | "compact" | "receipt80" | "receipt58";
+
 export interface InvoiceSettings {
+  /** The design every invoice uses unless a section picks another. Default `classic`. */
+  template?: InvoiceTemplate;
   /** Shown at the top of the invoice. Absent = the store name as text. */
   logo?: string;
   /** Registered business name, when it differs from the store name. */

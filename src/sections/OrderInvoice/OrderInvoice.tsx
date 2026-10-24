@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { Button } from "../../components/Button/Button";
 import { useMessages } from "../../i18n";
 import { useStore } from "../../store";
-import type { Invoice } from "../../store/types";
+import type { Invoice, InvoiceTemplate } from "../../store/types";
 import { InvoiceView } from "../_shared/invoice/InvoiceView";
 import { OrderLookup } from "../_shared/OrderLookup";
 import { usePageContext } from "../_shared/PageContext";
@@ -12,6 +12,8 @@ import styles from "./OrderInvoice.module.css";
 export interface OrderInvoiceProps {
   title?: string;
   intro?: string;
+  /** Default: the store's `info.invoice.template`, then `classic`. */
+  template?: InvoiceTemplate;
   showPrint?: boolean;
   showDownload?: boolean;
   showSeller?: boolean;
@@ -24,7 +26,7 @@ export interface OrderInvoiceProps {
  * then sees the invoice with Print and Download PDF. Looks it up through
  * `store.getInvoice`. Holds the page's h1.
  */
-export function OrderInvoice({ title, intro, showPrint, showDownload, showSeller, showStatus, tone }: OrderInvoiceProps) {
+export function OrderInvoice({ title, intro, template, showPrint, showDownload, showSeller, showStatus, tone }: OrderInvoiceProps) {
   const headingId = useId();
   const store = useStore();
   const page = usePageContext();
@@ -44,6 +46,7 @@ export function OrderInvoice({ title, intro, showPrint, showDownload, showSeller
         {invoice ? (
           <InvoiceView
             invoice={invoice}
+            template={template}
             showPrint={showPrint}
             showDownload={showDownload}
             showSeller={showSeller}

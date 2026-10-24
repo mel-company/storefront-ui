@@ -5,9 +5,15 @@ export interface PdfImage {
   height: number;
 }
 
-/** A4 in points. */
-const PAGE = { width: 595.28, height: 841.89 };
-const MARGIN = 28;
+/** A page in points. `height: null` makes each page as tall as its image. */
+export interface PdfPage {
+  width: number;
+  height: number | null;
+  margin: number;
+}
+
+/** A4 with a 1 cm margin. */
+export const A4: PdfPage = { width: 595.28, height: 841.89, margin: 28 };
 
 const encoder = new TextEncoder();
 
@@ -15,7 +21,7 @@ const encoder = new TextEncoder();
  * A minimal PDF: one JPEG per page, drawn at the page's content width from
  * the top. No dependencies, so it works the same in every browser.
  */
-export function buildPdf(images: PdfImage[]): Uint8Array {
+export function buildPdf(images: PdfImage[], page: PdfPage = A4): Uint8Array {
   const parts: Uint8Array[] = [];
   const offsets: number[] = [];
   let length = 0;
@@ -39,14 +45,16 @@ export function buildPdf(images: PdfImage[]): Uint8Array {
   const pageId = (index: number) => 3 + index * 3;
   object(1, "<< /Type /Catalog /Pages 2 0 R >>");
   object(2, `<< /Type /Pages /Kids [${images.map((_, index) => `${pageId(index)} 0 R`).join(" ")}] /Count ${images.length} >>`);
-  const contentWidth = PAGE.width - MARGIN * 2;
+  const { margin } = page;
+  const contentWidth = page.width - margin * 2;
   images.forEach((image, index) => {
     const id = pageId(index);
     const drawHeight = (image.height / image.width) * contentWidth;
+    const height = page.height ?? drawHeight + margin * 2;
     const content = encoder.encode(
-      `q ${contentWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${MARGIN} ${(PAGE.height - MARGIN - drawHeight).toFixed(2)} cm /Im0 Do Q`,
+      `q ${contentWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${margin} ${(height - margin - drawHeight).toFixed(2)} cm /Im0 Do Q`,
     );
-    object(id, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE.width} ${PAGE.height}] /Resources << /XObject << /Im0 ${id + 2} 0 R >> >> /Contents ${id + 1} 0 R >>`);
+    object(id, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${page.width.toFixed(2)} ${height.toFixed(2)}] /Resources << /XObject << /Im0 ${id + 2} 0 R >> >> /Contents ${id + 1} 0 R >>`);
     object(id + 1, `<< /Length ${content.length} >>`, content);
     object(
       id + 2,
@@ -70,8 +78,9 @@ export function buildPdf(images: PdfImage[]): Uint8Array {
   return out;
 }
 
-/** Page height in source pixels for an image `width` pixels wide. */
-export const pageHeightFor = (width: number) => Math.floor(((PAGE.height - MARGIN * 2) / (PAGE.width - MARGIN * 2)) * width);
+/** Page height in source pixels for an image `width` pixels wide; `Infinity` for pages that fit their content. */
+export const pageHeightFor = (width: number, page: PdfPage = A4) =>
+  page.height === null ? Infinity : Math.floor(((page.height - page.margin * 2) / (page.width - page.margin * 2)) * width);
 
 /**
  * Where to cut a tall image into pages: as far down as fits, but at the last

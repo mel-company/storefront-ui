@@ -77,8 +77,12 @@ For invoices, add `getInvoice({ number, phone })` (same matching rule). The
 invoice page and the tracked order then show the invoice with **Print**, which
 prints only the invoice, and **Download PDF**, which draws an A4 PDF in the
 browser (pages break between rows), or opens `invoice.pdfUrl` when your server
-makes its own. `info.invoice` adds the logo, legal name, address, tax number and
-a closing note. The invoice is always light, follows RTL, and every label can be
+makes its own. `info.invoice` adds the logo, legal name, address, tax number, a
+closing note and the design: `classic`, `modern` or `compact` on A4, or
+`receipt80` / `receipt58` for thermal receipt printers (a narrow black-on-white
+slip that prints on a roll exactly as long as the receipt, and downloads as a
+PDF of the same size). The `order.invoice` section's `template` prop overrides
+it, and `InvoiceView` renders any invoice directly (a till or a dashboard). The invoice is always light, follows RTL, and every label can be
 renamed through `info.messages`.
 
 ## Theme and dark mode
