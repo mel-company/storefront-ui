@@ -1,24 +1,32 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-export function CodeBlock({ code, label }: { code: string; label?: string }) {
+export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
+    <button
+      type="button"
+      className="copy"
+      onClick={() => {
+        void navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1400);
+        });
+      }}
+    >
+      {copied ? "Copied" : "Copy"}
+    </button>
+  );
+}
+
+export function CodeBlock({ code, label, children }: { code: string; label?: string; children?: ReactNode }) {
+  return (
     <div className="code">
-      {label && <span className="code-label">{label}</span>}
-      <button
-        type="button"
-        className="code-copy"
-        onClick={() => {
-          void navigator.clipboard?.writeText(code).then(() => {
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1400);
-          });
-        }}
-      >
-        {copied ? "Copied" : "Copy"}
-      </button>
+      <div className="code-head">
+        <span>{label ?? ""}</span>
+        <CopyButton text={code} />
+      </div>
       <pre>
-        <code>{code}</code>
+        <code>{children ?? code}</code>
       </pre>
     </div>
   );

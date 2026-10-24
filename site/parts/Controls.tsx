@@ -4,7 +4,7 @@ import { useSettings } from "../settings";
 const MODES: { value: ColorModePreference; label: string }[] = [
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
-  { value: "system", label: "Auto" },
+  { value: "system", label: "System" },
 ];
 
 /** Theme, mode and direction switches. They drive the site and every preview. */

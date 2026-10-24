@@ -34,22 +34,22 @@ export function ThemeLab() {
     setDraft((current) => ({ ...current, colors: { ...current.colors, [editMode]: { ...current.colors[editMode], [role]: value } } }));
 
   return (
-    <section className="block" id="themes" aria-labelledby="themes-title">
-      <div className="block-head">
-        <p className="eyebrow">Global theme checker</p>
-        <h2 id="themes-title">One theme, two modes, every colour pair checked</h2>
+    <section className="block" id="theming" aria-labelledby="themes-title">
+      <div className="container">
+      <header className="block-head">
+        <h2 id="themes-title">Theming</h2>
         <p className="muted">
-          Components read only theme variables. The checker tests the pairs they actually draw against WCAG AA, in light and in dark.
-          Try breaking it.
+          A theme is a light palette, a dark palette and a few scales. Components read only theme variables, and{" "}
+          <code>checkTheme</code> tests every colour pair they draw against WCAG AA in both modes. Click a swatch to change a colour and see the checker react.
         </p>
-      </div>
+      </header>
       <div className="theme-lab">
-        <div className="glass panel">
+        <div className="panel">
           <div className="panel-head">
             <div className="segmented" role="group" aria-label="Mode to edit">
               {(["light", "dark"] as const).map((value) => (
                 <button key={value} type="button" aria-pressed={editMode === value} onClick={() => setEditMode(value)}>
-                  {value === "light" ? "Light palette" : "Dark palette"}
+                  {value === "light" ? "Light" : "Dark"}
                 </button>
               ))}
             </div>
@@ -70,12 +70,12 @@ export function ThemeLab() {
               );
             })}
           </div>
-          <table className="contrast">
+          <table className="table contrast">
             <thead>
               <tr>
                 <th scope="col">Pair</th>
-                <th scope="col">Ratio</th>
-                <th scope="col">Needs</th>
+                <th scope="col" className="num">Ratio</th>
+                <th scope="col" className="num">Needs</th>
                 <th scope="col">Result</th>
               </tr>
             </thead>
@@ -85,19 +85,19 @@ export function ThemeLab() {
                   <td>
                     {row.fg} on {row.bg}
                   </td>
-                  <td>{row.ratio.toFixed(2)}</td>
-                  <td>{row.min}</td>
-                  <td className={row.pass ? "pass" : "fail"}>{row.pass ? "Pass" : "Fail"}</td>
+                  <td className="num">{row.ratio.toFixed(2)}</td>
+                  <td className="num">{row.min}</td>
+                  <td className={row.pass ? "pass" : "fail"}>{row.pass ? "pass" : "fail"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           {!report.ok && <CheckIssues report={report} />}
-          <button type="button" className="btn btn-ghost small" onClick={() => setDraft(base)}>
+          <button type="button" className="btn btn-sm" onClick={() => setDraft(base)}>
             Reset colours
           </button>
         </div>
-        <div className="glass panel lab-preview">
+        <div className="panel lab-preview">
           <ThemeProvider theme={draft} mode={editMode}>
             <StoreProvider store={store}>
               <div className="lab-sample">
@@ -113,6 +113,7 @@ export function ThemeLab() {
             </StoreProvider>
           </ThemeProvider>
         </div>
+      </div>
       </div>
     </section>
   );

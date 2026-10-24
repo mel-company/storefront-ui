@@ -1,57 +1,46 @@
-import { builtInRegistry, compositionOf, homeClassic, PageRenderer } from "../../src";
-import { CodeBlock } from "./CodeBlock";
-import { Frame } from "./Frame";
-import { LivePreview } from "./LivePreview";
+import { builtInRegistry } from "../../src";
+import { CopyButton } from "./CodeBlock";
+import { Playground } from "./Playground";
 
-const counts = [
-  { value: builtInRegistry.components.size, label: "components" },
-  { value: builtInRegistry.sections.size, label: "sections" },
-  { value: builtInRegistry.pages.size, label: "pages" },
-  { value: 4, label: "themes, light + dark" },
-];
+const INSTALL = "npm install @mel-company/storefront-ui";
 
 export function Hero() {
   return (
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-glow" aria-hidden="true" />
-      <div className="hero-copy">
-        <p className="pill">For developers and AI agents</p>
-        <h1 id="hero-title">
-          Storefronts from <span className="gradient-text">checked parts</span>, not generated code.
-        </h1>
-        <p className="lead">
-          Components, sections and pages with the shop logic built in: cart, stock, options, filters, bundles. Agents compose them
-          from a schema; a checker proves every result renders, reads well in light and dark, and works right to left.
+    <section className="intro" aria-labelledby="intro-title">
+      <div className="container">
+        <p className="meta">
+          v0.1.0 · React 18 · TypeScript · {builtInRegistry.components.size} components, {builtInRegistry.sections.size} sections,{" "}
+          {builtInRegistry.pages.size} pages
         </p>
-        <div className="hero-actions">
-          <a className="btn btn-primary" href="#gallery">
-            Open the gallery
+        <h1 id="intro-title">React building blocks for online stores</h1>
+        <p className="lead">
+          Components, sections and pages with cart, stock, options and filters already wired. Every piece has a props schema, so
+          developers and AI agents describe a page as JSON and a checker validates it before it ships.
+        </p>
+        <div className="intro-actions">
+          <div className="cmd">
+            <code>
+              <span className="muted" aria-hidden="true">
+                ${" "}
+              </span>
+              {INSTALL}
+            </code>
+            <CopyButton text={INSTALL} />
+          </div>
+          <a className="btn btn-primary" href="https://github.com/mel-company/storefront-ui#readme">
+            Documentation
           </a>
-          <a className="btn btn-ghost" href="#agents">
-            Use it from an agent
+          <a className="btn" href="#components">
+            Browse components
           </a>
         </div>
-        <ul className="stats">
-          {counts.map((item) => (
-            <li key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </li>
-          ))}
-        </ul>
-        <CodeBlock label="Install" code="npm install @mel-company/storefront-ui" />
       </div>
-      <div className="hero-visual glass" aria-label="Live home page preview">
-        <div className="window-bar" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <Frame width={1280} title="Home page preview" maxHeight={1100}>
-          <LivePreview>
-            <PageRenderer composition={compositionOf(homeClassic)} />
-          </LivePreview>
-        </Frame>
+      <div className="container wide">
+        <Playground />
+        <p className="caption">
+          Edit the JSON and the page re-renders and re-validates. Links in the preview work: open a product, filter the catalogue, fill
+          the cart.
+        </p>
       </div>
     </section>
   );

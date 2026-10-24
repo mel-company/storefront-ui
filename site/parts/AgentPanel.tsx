@@ -2,6 +2,13 @@ import { useMemo, useState } from "react";
 import { buildCatalogue, compositionOf, homeCampaign, validateComposition, type CheckReport } from "../../src";
 import { CheckBadge, CheckIssues } from "./CheckResult";
 import { CodeBlock } from "./CodeBlock";
+import { highlightJson } from "./Highlight";
+
+const CONFIG = JSON.stringify(
+  { mcpServers: { "storefront-ui": { command: "npm", args: ["run", "--silent", "mcp"], cwd: "/path/to/storefront-ui" } } },
+  null,
+  2,
+);
 
 const TOOLS = [
   { name: "list_sections", text: "Sections that fit a page type, one line each." },
@@ -38,48 +45,56 @@ export function AgentPanel() {
   };
 
   return (
-    <section className="block" id="agents" aria-labelledby="agents-title">
-      <div className="block-head">
-        <p className="eyebrow">For AI agents</p>
-        <h2 id="agents-title">Agents pick and fill. They never write UI code.</h2>
+    <section className="block" id="mcp" aria-labelledby="agents-title">
+      <div className="container">
+      <header className="block-head">
+        <h2 id="agents-title">MCP server for agents</h2>
         <p className="muted">
-          An agent reads the catalogue, returns a page as JSON and validates it. Everything it can say is in a schema, so a wrong
-          section or a bad prop is caught before a shopper sees it.
+          Agents read the catalogue, write pages as JSON and validate them. They never write UI code, so an unknown section or a bad
+          prop is caught before a shopper sees it. The catalogue ships in the package as <code>catalogue.json</code> ({catalogue.components.length}{" "}
+          components, {catalogue.sections.length} sections, each with a JSON schema and examples).
         </p>
-      </div>
+      </header>
       <div className="agents">
-        <div className="glass panel">
-          <h3>MCP tools</h3>
-          <ul className="tools">
-            {TOOLS.map((tool) => (
-              <li key={tool.name}>
-                <code>{tool.name}</code>
-                <span className="muted small">{tool.text}</span>
-              </li>
-            ))}
-          </ul>
-          <CodeBlock label="Run the MCP server" code="npm run mcp" />
-          <p className="muted small">
-            The catalogue ships with the package: {catalogue.components.length} components and {catalogue.sections.length} sections,
-            each with a JSON schema and examples, at <code>@mel-company/storefront-ui/catalogue.json</code>.
-          </p>
+        <div className="stack">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Tool</th>
+                <th scope="col">Returns</th>
+              </tr>
+            </thead>
+            <tbody>
+              {TOOLS.map((tool) => (
+                <tr key={tool.name}>
+                  <td>
+                    <code>{tool.name}</code>
+                  </td>
+                  <td className="muted">{tool.text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <CodeBlock label="mcp.json" code={CONFIG}>
+            {highlightJson(CONFIG)}
+          </CodeBlock>
         </div>
-        <div className="glass panel">
+        <div className="panel">
           <div className="panel-head">
-            <h3>Validate a page</h3>
+            <h3>validate_page</h3>
             <CheckBadge report={report} />
           </div>
           <label className="sr-only" htmlFor="composition">
             Page composition JSON
           </label>
-          <textarea id="composition" spellCheck={false} value={text} onChange={(event) => setText(event.target.value)} rows={14} />
+          <textarea id="composition" className="code-input" spellCheck={false} value={text} onChange={(event) => setText(event.target.value)} rows={16} />
           <div className="row">
             <button type="button" className="btn btn-primary" onClick={() => validate()}>
               Validate
             </button>
             <button
               type="button"
-              className="btn btn-ghost"
+              className="btn"
               onClick={() => {
                 const broken = JSON.stringify(BROKEN, null, 2);
                 setText(broken);
@@ -92,6 +107,7 @@ export function AgentPanel() {
           {parseError && <p className="fail small">Not valid JSON: {parseError}</p>}
           {report && <CheckIssues report={report} />}
         </div>
+      </div>
       </div>
     </section>
   );

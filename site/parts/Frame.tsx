@@ -10,6 +10,10 @@ export interface FrameProps {
   title: string;
   /** Cap the visible height; the frame scrolls inside. */
   maxHeight?: number;
+  /** Fill the parent's height and scroll inside, instead of growing with the content. */
+  fill?: boolean;
+  /** Scrolls the frame back to the top whenever this changes, like a page navigation. */
+  scrollKey?: string;
   children: ReactNode;
 }
 
@@ -18,17 +22,22 @@ export interface FrameProps {
  * behave like on a phone or desktop, then scales it down to fit the column.
  * The library's styles are copied in and kept in sync during development.
  */
-export function Frame({ width, title, maxHeight, children }: FrameProps) {
+export function Frame({ width, title, maxHeight, fill = false, scrollKey, children }: FrameProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [body, setBody] = useState<HTMLElement | null>(null);
   const [contentHeight, setContentHeight] = useState(320);
   const [available, setAvailable] = useState(width);
+  const [boxHeight, setBoxHeight] = useState(0);
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const observer = new ResizeObserver(([entry]) => entry && setAvailable(entry.contentRect.width));
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      setAvailable(entry.contentRect.width);
+      setBoxHeight(entry.contentRect.height);
+    });
     observer.observe(wrap);
     return () => observer.disconnect();
   }, []);
@@ -72,11 +81,15 @@ export function Frame({ width, title, maxHeight, children }: FrameProps) {
     };
   }, []);
 
+  useEffect(() => {
+    iframeRef.current?.contentWindow?.scrollTo(0, 0);
+  }, [scrollKey]);
+
   const scale = Math.min(1, available / width);
-  const height = maxHeight ? Math.min(contentHeight, maxHeight) : contentHeight;
+  const height = fill ? boxHeight / scale : maxHeight ? Math.min(contentHeight, maxHeight) : contentHeight;
 
   return (
-    <div ref={wrapRef} className="frame" style={{ height: height * scale }}>
+    <div ref={wrapRef} className="frame" style={fill ? { height: "100%" } : { height: height * scale }}>
       <iframe
         ref={iframeRef}
         title={title}
