@@ -16,6 +16,8 @@ export const orderConfirmationDefinition = defineSection({
     title: field.optionalText("Title. Leave out for the built-in text in the store's language", 80),
     text: field.optionalText("What happens next. Leave out for the built-in text in the store's language", 200),
     showContact: field.flag("Show the store's phone and WhatsApp", true),
+    showTracking: field.flag("Show a button to track this order", true),
+    showInvoice: field.flag("Show a button to this order's invoice", true),
     tone: toneField,
   }),
   examples: [{ name: "Default", props: {} }, { name: "Own words and icon", props: { icon: "gift", title: "Your order is on its way", text: "We pack every order the same day.", showContact: false, tone: "muted" } }],

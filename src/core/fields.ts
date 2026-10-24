@@ -39,6 +39,8 @@ export const routeSchema = z
     z.object({ to: z.literal("cart") }),
     z.object({ to: z.literal("checkout") }),
     z.object({ to: z.literal("favourites") }),
+    z.object({ to: z.literal("tracking"), number: z.string().optional() }),
+    z.object({ to: z.literal("invoice"), number: z.string().optional() }),
     z.object({ to: z.literal("url"), href: z.string().url() }),
   ])
   .describe("Where the link goes");

@@ -13,6 +13,8 @@ import { heroSplitDefinition } from "./HeroSplit";
 import { notFoundDefinition } from "./NotFound";
 import { offerFreeDeliveryDefinition } from "./OfferFreeDelivery";
 import { orderConfirmationDefinition } from "./OrderConfirmation";
+import { orderInvoiceDefinition } from "./OrderInvoice";
+import { orderTrackingDefinition } from "./OrderTracking";
 import { productDetailDefinition } from "./ProductDetail";
 import { productsGridDefinition } from "./ProductsGrid";
 import { productsRailDefinition } from "./ProductsRail";
@@ -34,12 +36,16 @@ export * from "./HeroSplit";
 export * from "./NotFound";
 export * from "./OfferFreeDelivery";
 export * from "./OrderConfirmation";
+export * from "./OrderInvoice";
+export * from "./OrderTracking";
 export * from "./ProductDetail";
 export * from "./ProductsGrid";
 export * from "./ProductsRail";
 export * from "./ProductsRelated";
 export * from "./StoryEditorial";
 export * from "./TrustStrip";
+export { InvoiceView, type InvoiceViewProps } from "./_shared/invoice/InvoiceView";
+export { INVOICE_TEMPLATES } from "./_shared/invoice/paper";
 export { Section, type SectionProps, type SectionTone } from "./_shared/Section";
 export { PageContextProvider, usePageContext, type PageContextValue } from "./_shared/PageContext";
 
@@ -61,6 +67,8 @@ export const sectionDefinitions: SectionDefinition[] = [
   cartSummaryDefinition,
   checkoutFormDefinition,
   orderConfirmationDefinition,
+  orderTrackingDefinition,
+  orderInvoiceDefinition,
   favouritesGridDefinition,
   notFoundDefinition,
   footerColumnsDefinition,

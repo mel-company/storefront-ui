@@ -14,12 +14,16 @@ export interface OrderPlacedProps {
   title?: string;
   text?: string;
   showContact?: boolean;
+  /** A button to the tracking page with this order filled in. */
+  showTracking?: boolean;
+  /** A button to the invoice page with this order filled in. */
+  showInvoice?: boolean;
   headingId?: string;
 }
 
 /** The thank-you block: order number, what happens next, how to reach the store. Holds an h1. */
-export function OrderPlaced({ orderNumber, icon = "check", title, text, showContact = true, headingId }: OrderPlacedProps) {
-  const { info } = useStore();
+export function OrderPlaced({ orderNumber, icon = "check", title, text, showContact = true, showTracking = true, showInvoice = true, headingId }: OrderPlacedProps) {
+  const { info, trackOrder, getInvoice } = useStore();
   const m = useMessages();
   const { phone, whatsapp } = info.contact ?? {};
   return (
@@ -34,6 +38,16 @@ export function OrderPlaced({ orderNumber, icon = "check", title, text, showCont
       actions={
         <>
           <ButtonLink route={{ to: "catalogue" }}>{m.continueShopping}</ButtonLink>
+          {showTracking && trackOrder && (
+            <ButtonLink route={{ to: "tracking", number: orderNumber }} variant="secondary" icon="truck">
+              {m.trackOrder}
+            </ButtonLink>
+          )}
+          {showInvoice && getInvoice && (
+            <ButtonLink route={{ to: "invoice", number: orderNumber }} variant="ghost" icon="receipt">
+              {m.viewInvoice}
+            </ButtonLink>
+          )}
           {showContact && (phone || whatsapp) && (
             <div className={styles.contact}>
               {phone && (
@@ -61,6 +75,8 @@ export interface OrderConfirmationProps {
   title?: string;
   text?: string;
   showContact?: boolean;
+  showTracking?: boolean;
+  showInvoice?: boolean;
   tone?: SectionTone;
 }
 

@@ -1,0 +1,44 @@
+.form {
+  display: grid;
+  gap: var(--msu-space-4);
+  padding: var(--msu-space-6);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+  box-shadow: var(--msu-card-shadow);
+  animation: enter calc(var(--msu-duration) * 1.5) ease-out;
+}
+
+.pair {
+  display: grid;
+  gap: var(--msu-space-4);
+}
+
+.pair > * {
+  align-self: start;
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--msu-space-2);
+  padding: var(--msu-space-3) var(--msu-space-4);
+  border: 1px solid color-mix(in srgb, var(--msu-danger) 40%, transparent);
+  border-radius: var(--msu-radius-md);
+  background: color-mix(in srgb, var(--msu-danger) 8%, transparent);
+  color: var(--msu-danger);
+  font-weight: 600;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (min-width: 640px) {
+  .pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,4 +1,4 @@
-import type { Category, Product, StoreInfo } from "../store/types";
+import type { Category, Invoice, Product, StoreInfo, TrackedOrder } from "../store/types";
 import { bannerArt, productArt } from "./art";
 
 export const demoInfo: StoreInfo = {
@@ -16,6 +16,7 @@ export const demoInfo: StoreInfo = {
       { id: "card", label: "Card", description: "Visa or Mastercard, paid online." },
     ],
   },
+  invoice: { legalName: "Atelier Goods Ltd", taxId: "TX-4410-2291" },
 };
 
 export const demoCategories: Category[] = [
@@ -104,6 +105,7 @@ export const demoInfoAr: StoreInfo = {
       { id: "card", label: "بطاقة", description: "فيزا أو ماستركارد، الدفع عبر الإنترنت." },
     ],
   },
+  invoice: { legalName: "شركة أتيليه للتجارة", taxId: "TX-4410-2291" },
 };
 
 const AR_CATEGORIES: Record<string, string> = { skin: "العناية بالبشرة", scent: "العطور", home: "المنزل", carry: "الإكسسوارات" };
@@ -139,3 +141,58 @@ export const demoProductsAr: Product[] = demoProducts.map((product) => ({
   price: product.price * 1000,
   compareAtPrice: product.compareAtPrice === undefined ? undefined : product.compareAtPrice * 1000,
 }));
+
+/** A sample order to track: number `1042` with the phone below. */
+export const demoOrderPhone = "555 0123";
+export const demoOrderPhoneAr = "0770 123 4567";
+
+function demoOrder(products: Product[], city: string, courier: { name: string; phone: string }): TrackedOrder {
+  const pick = (id: string) => products.find((product) => product.id === id)!;
+  const lines: { product: Product; quantity: number; options: Record<string, string> }[] = [
+    { product: pick("p1"), quantity: 1, options: { size: pick("p1").options?.[0]?.values[1] ?? "" } },
+    { product: pick("p6"), quantity: 2, options: {} },
+  ];
+  const subtotal = lines.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
+  return {
+    number: "1042",
+    status: "shipped",
+    placedAt: "2026-10-22T10:15:00+03:00",
+    estimatedDelivery: "2026-10-26",
+    history: { placed: "2026-10-22T10:15:00+03:00", confirmed: "2026-10-22T11:02:00+03:00", shipped: "2026-10-23T09:40:00+03:00" },
+    city,
+    lines: lines.map(({ product, quantity, options }) => ({ name: product.name, quantity, total: product.price * quantity, image: product.images[0], options })),
+    subtotal,
+    delivery: 0,
+    total: subtotal,
+    courier: { ...courier, trackingUrl: "https://courier.example/track/AT1042" },
+  };
+}
+
+export const demoOrder1042 = demoOrder(demoProducts, "Riverside", { name: "Swift Courier", phone: "+1 555 0200" });
+export const demoOrder1042Ar = demoOrder(demoProductsAr, "بغداد", { name: "سويفت للتوصيل", phone: "+964 780 000 0200" });
+
+function demoInvoice(order: TrackedOrder, customer: Invoice["customer"], payment: string, status: Invoice["status"]): Invoice {
+  const lines = (order.lines ?? []).map((line) => ({
+    name: line.name,
+    quantity: line.quantity,
+    unitPrice: line.total / line.quantity,
+    total: line.total,
+    options: line.options,
+  }));
+  return {
+    number: `INV-${order.number}`,
+    orderNumber: order.number,
+    issuedAt: order.placedAt ?? "2026-10-22",
+    status,
+    customer,
+    payment,
+    lines,
+    subtotal: order.subtotal ?? 0,
+    delivery: order.delivery,
+    total: order.total ?? 0,
+  };
+}
+
+/** The invoice for order 1042, found with the same phone. */
+export const demoInvoice1042 = demoInvoice(demoOrder1042, { name: "Sam Rivers", phone: demoOrderPhone, city: "Riverside", address: "4 Elm Road, flat 2" }, "Card", "paid");
+export const demoInvoice1042Ar = demoInvoice(demoOrder1042Ar, { name: "سارة علي", phone: demoOrderPhoneAr, city: "بغداد", address: "الكرادة، شارع 62، بناية 5" }, "الدفع عند الاستلام", "due");

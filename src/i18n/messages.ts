@@ -109,6 +109,50 @@ export interface Messages {
   notFoundTitle: string;
   notFoundText: string;
   goHome: string;
+  trackOrder: string;
+  trackIntro: string;
+  orderNumberLabel: string;
+  orderNumberHint: string;
+  orderPhoneHint: string;
+  findOrder: string;
+  findingOrder: string;
+  orderNotFound: string;
+  trackingOff: string;
+  trackAnother: string;
+  orderStatus: { placed: string; confirmed: string; shipped: string; outForDelivery: string; delivered: string; cancelled: string };
+  orderStatusText: { placed: string; confirmed: string; shipped: string; outForDelivery: string; delivered: string; cancelled: string };
+  orderProgress: string;
+  placedOn: (date: string) => string;
+  arrivesBy: (date: string) => string;
+  deliveredTo: (city: string) => string;
+  courier: string;
+  trackWithCourier: (name: string) => string;
+  callCourier: string;
+  items: string;
+  invoice: string;
+  getInvoice: string;
+  invoiceIntro: string;
+  showInvoice: string;
+  invoiceOff: string;
+  viewInvoice: string;
+  backToOrder: string;
+  findAnotherInvoice: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  orderRef: string;
+  billTo: string;
+  taxId: string;
+  invoiceStatus: { paid: string; due: string; refunded: string };
+  item: string;
+  unitPrice: string;
+  qty: string;
+  amount: string;
+  discount: string;
+  invoiceThanks: string;
+  print: string;
+  downloadPdf: string;
+  preparingPdf: string;
+  pdfFailed: string;
 }
 
 export type Language = "en" | "ar";
@@ -216,6 +260,57 @@ const en: Messages = {
   notFoundTitle: "We could not find that page",
   notFoundText: "The link may be old or the page may have moved.",
   goHome: "Go to the home page",
+  trackOrder: "Track your order",
+  trackIntro: "Enter the order number from your confirmation and the phone number you ordered with.",
+  orderNumberLabel: "Order number",
+  orderNumberHint: "For example 1042",
+  orderPhoneHint: "The number you gave at checkout",
+  findOrder: "Find my order",
+  findingOrder: "Looking up your order…",
+  orderNotFound: "We could not find an order with that number and phone. Check both and try again.",
+  trackingOff: "Order tracking is not set up for this store yet.",
+  trackAnother: "Track another order",
+  orderStatus: { placed: "Placed", confirmed: "Confirmed", shipped: "Shipped", outForDelivery: "Out for delivery", delivered: "Delivered", cancelled: "Cancelled" },
+  orderStatusText: {
+    placed: "We have your order and will confirm it soon.",
+    confirmed: "Your order is confirmed and being packed.",
+    shipped: "Your order is on its way.",
+    outForDelivery: "The courier is bringing your order today.",
+    delivered: "Your order was delivered. Enjoy!",
+    cancelled: "This order was cancelled. Contact us if that is a surprise.",
+  },
+  orderProgress: "Order progress",
+  placedOn: (date) => `Placed ${date}`,
+  arrivesBy: (date) => `Arrives by ${date}`,
+  deliveredTo: (city) => `Delivering to ${city}`,
+  courier: "Courier",
+  trackWithCourier: (name) => `Track with ${name}`,
+  callCourier: "Call the courier",
+  items: "Items",
+  invoice: "Invoice",
+  getInvoice: "Get your invoice",
+  invoiceIntro: "Enter your order number and the phone you ordered with to see, print or download the invoice.",
+  showInvoice: "Show invoice",
+  invoiceOff: "Invoices are not set up for this store yet.",
+  viewInvoice: "View invoice",
+  backToOrder: "Back to the order",
+  findAnotherInvoice: "Another invoice",
+  invoiceNumber: "Invoice no.",
+  invoiceDate: "Date",
+  orderRef: "Order",
+  billTo: "Bill to",
+  taxId: "Tax no.",
+  invoiceStatus: { paid: "Paid", due: "Payment due", refunded: "Refunded" },
+  item: "Item",
+  unitPrice: "Price",
+  qty: "Qty",
+  amount: "Amount",
+  discount: "Discount",
+  invoiceThanks: "Thank you for shopping with us.",
+  print: "Print",
+  downloadPdf: "Download PDF",
+  preparingPdf: "Preparing PDF…",
+  pdfFailed: "We could not make the PDF here. Use Print and choose Save as PDF instead.",
 };
 
 /** Arabic plural forms for "N items": 1, 2, 3–10, 11+. */
@@ -325,6 +420,57 @@ const ar: Messages = {
   notFoundTitle: "لم نجد هذه الصفحة",
   notFoundText: "قد يكون الرابط قديماً أو أن الصفحة نُقلت.",
   goHome: "اذهب إلى الرئيسية",
+  trackOrder: "تتبّع طلبك",
+  trackIntro: "أدخل رقم الطلب من رسالة التأكيد ورقم الهاتف الذي طلبت به.",
+  orderNumberLabel: "رقم الطلب",
+  orderNumberHint: "مثلاً 1042",
+  orderPhoneHint: "الرقم الذي أدخلته عند الطلب",
+  findOrder: "ابحث عن طلبي",
+  findingOrder: "جارٍ البحث عن طلبك…",
+  orderNotFound: "لم نجد طلباً بهذا الرقم وهذا الهاتف. تحقق منهما وحاول مجدداً.",
+  trackingOff: "تتبّع الطلبات غير مفعّل في هذا المتجر بعد.",
+  trackAnother: "تتبّع طلباً آخر",
+  orderStatus: { placed: "تم الطلب", confirmed: "تم التأكيد", shipped: "تم الشحن", outForDelivery: "مع المندوب", delivered: "تم التسليم", cancelled: "ملغي" },
+  orderStatusText: {
+    placed: "وصلنا طلبك وسنؤكده قريباً.",
+    confirmed: "تم تأكيد طلبك ويجري تجهيزه.",
+    shipped: "طلبك في الطريق إليك.",
+    outForDelivery: "المندوب في طريقه إليك اليوم.",
+    delivered: "تم تسليم طلبك. نتمنى أن يعجبك!",
+    cancelled: "أُلغي هذا الطلب. تواصل معنا إن لم تكن تتوقع ذلك.",
+  },
+  orderProgress: "مراحل الطلب",
+  placedOn: (date) => `تاريخ الطلب ${date}`,
+  arrivesBy: (date) => `يصل قبل ${date}`,
+  deliveredTo: (city) => `التوصيل إلى ${city}`,
+  courier: "شركة التوصيل",
+  trackWithCourier: (name) => `تتبّع مع ${name}`,
+  callCourier: "اتصل بالمندوب",
+  items: "المنتجات",
+  invoice: "فاتورة",
+  getInvoice: "احصل على فاتورتك",
+  invoiceIntro: "أدخل رقم الطلب ورقم الهاتف الذي طلبت به لعرض الفاتورة أو طباعتها أو تنزيلها.",
+  showInvoice: "اعرض الفاتورة",
+  invoiceOff: "الفواتير غير مفعّلة في هذا المتجر بعد.",
+  viewInvoice: "عرض الفاتورة",
+  backToOrder: "العودة إلى الطلب",
+  findAnotherInvoice: "فاتورة أخرى",
+  invoiceNumber: "رقم الفاتورة",
+  invoiceDate: "التاريخ",
+  orderRef: "الطلب",
+  billTo: "إلى",
+  taxId: "الرقم الضريبي",
+  invoiceStatus: { paid: "مدفوعة", due: "بانتظار الدفع", refunded: "مستردّة" },
+  item: "المنتج",
+  unitPrice: "السعر",
+  qty: "الكمية",
+  amount: "المبلغ",
+  discount: "الخصم",
+  invoiceThanks: "شكراً لتسوقك معنا.",
+  print: "طباعة",
+  downloadPdf: "تنزيل PDF",
+  preparingPdf: "جارٍ تجهيز الملف…",
+  pdfFailed: "تعذّر إنشاء ملف PDF هنا. استخدم الطباعة واختر الحفظ كـ PDF.",
 };
 
 export const messages: Record<Language, Messages> = { en, ar };

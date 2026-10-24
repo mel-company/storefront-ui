@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import type { z } from "zod";
 
-export type PageType = "home" | "catalogue" | "product" | "cart" | "checkout" | "confirmation" | "favourites" | "notFound" | "any";
+export type PageType = "home" | "catalogue" | "product" | "cart" | "checkout" | "confirmation" | "tracking" | "invoice" | "favourites" | "notFound" | "any";
 
 export interface Example<Props> {
   name: string;

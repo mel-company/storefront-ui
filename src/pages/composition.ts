@@ -22,6 +22,8 @@ export const storeCompositionSchema = z.object({
     cart: pageCompositionSchema.optional(),
     checkout: pageCompositionSchema.optional(),
     confirmation: pageCompositionSchema.optional(),
+    tracking: pageCompositionSchema.optional(),
+    invoice: pageCompositionSchema.optional(),
     favourites: pageCompositionSchema.optional(),
     notFound: pageCompositionSchema.optional(),
   }),

@@ -10,7 +10,7 @@ export const faqListDefinition = defineSection({
   description: "Heading beside a list of questions that open to their answers.",
   tags: ["faq", "text", "support"],
   uses: ["ui.sectionHeading", "ui.accordion"],
-  pages: ["home", "product", "cart"],
+  pages: ["home", "product", "cart", "tracking"],
   props: z.object({ ...headingFields, items: accordionItemsSchema, tone: toneField }),
   examples: [
     {

@@ -59,6 +59,8 @@ export type Route =
   | { to: "cart" }
   | { to: "checkout" }
   | { to: "favourites" }
+  | { to: "tracking"; number?: string }
+  | { to: "invoice"; number?: string }
   | { to: "url"; href: string };
 
 export interface StoreSnapshot {
@@ -81,6 +83,26 @@ export interface StoreInfo {
   messages?: Partial<Messages>;
   /** What the checkout form asks for. Absent = a city text field and cash on delivery. */
   checkout?: CheckoutSettings;
+  /** Seller details printed on invoices. */
+  invoice?: InvoiceSettings;
+}
+
+/** `classic`, `modern` and `compact` print on A4; `receipt80` and `receipt58` on thermal receipt rolls. */
+export type InvoiceTemplate = "classic" | "modern" | "compact" | "receipt80" | "receipt58";
+
+export interface InvoiceSettings {
+  /** The design every invoice uses unless a section picks another. Default `classic`. */
+  template?: InvoiceTemplate;
+  /** Shown at the top of the invoice. Absent = the store name as text. */
+  logo?: string;
+  /** Registered business name, when it differs from the store name. */
+  legalName?: string;
+  /** Defaults to `contact.address`. */
+  address?: string;
+  /** Tax or business registration number. */
+  taxId?: string;
+  /** A line at the bottom, e.g. a returns policy. Absent = a built-in thank-you. */
+  note?: string;
 }
 
 export interface PaymentMethod {
@@ -118,6 +140,67 @@ export interface OrderRequest {
   total: number;
 }
 
+export type OrderStatus = "placed" | "confirmed" | "shipped" | "outForDelivery" | "delivered" | "cancelled";
+
+export interface TrackedOrderLine {
+  name: string;
+  quantity: number;
+  /** Line total. */
+  total: number;
+  image?: string;
+  options?: Record<string, string>;
+}
+
+/** What a shopper sees when tracking an order. Only `number` and `status` are required. */
+export interface TrackedOrder {
+  number: string;
+  status: OrderStatus;
+  /** ISO date-time. */
+  placedAt?: string;
+  /** ISO date or date-time. */
+  estimatedDelivery?: string;
+  /** When each status was reached, ISO date-time. */
+  history?: Partial<Record<OrderStatus, string>>;
+  lines?: TrackedOrderLine[];
+  subtotal?: number;
+  delivery?: number;
+  total?: number;
+  city?: string;
+  courier?: { name: string; trackingUrl?: string; phone?: string };
+}
+
+export interface InvoiceLine {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  /** Line total. */
+  total: number;
+  options?: Record<string, string>;
+  sku?: string;
+}
+
+/** A bill for one order, ready to show, print or save as PDF. */
+export interface Invoice {
+  /** e.g. `INV-1042`. */
+  number: string;
+  orderNumber: string;
+  /** ISO date or date-time. */
+  issuedAt: string;
+  status?: "paid" | "due" | "refunded";
+  customer: { name: string; phone: string; email?: string; city?: string; address?: string };
+  /** How it was or will be paid, as the shopper should read it. */
+  payment?: string;
+  lines: InvoiceLine[];
+  subtotal: number;
+  delivery?: number;
+  /** A positive amount taken off. */
+  discount?: number;
+  tax?: { label: string; amount: number };
+  total: number;
+  /** A PDF your server made. When set, Download PDF opens it instead of drawing one in the browser. */
+  pdfUrl?: string;
+}
+
 export interface OrderResult {
   id: string;
   /** What the shopper sees, e.g. `1042`. Defaults to `id`. */
@@ -135,8 +218,8 @@ export interface LinkProps {
 }
 
 /**
- * Everything the library needs from a platform. The Mel platform implements
- * this over its own API and cart store; `createMemoryStore` implements it for
+ * Everything the library needs from a platform. A platform implements this
+ * over its own API and cart store; `createMemoryStore` implements it for
  * tests, the gallery and AI previews.
  */
 export interface StoreClient {
@@ -153,6 +236,13 @@ export interface StoreClient {
    * explains that ordering is not set up instead of failing silently.
    */
   placeOrder?(order: OrderRequest): Promise<OrderResult>;
+  /**
+   * Finds an order by its number and the phone it was placed with, or
+   * `null`. Both must match, so order numbers alone reveal nothing.
+   */
+  trackOrder?(query: { number: string; phone: string }): Promise<TrackedOrder | null>;
+  /** The invoice for an order, found the same way as `trackOrder`, or `null`. */
+  getInvoice?(query: { number: string; phone: string }): Promise<Invoice | null>;
   /** The platform's router link. Defaults to a plain `<a>`. */
   Link?: ComponentType<LinkProps>;
 }
