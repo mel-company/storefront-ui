@@ -1,15 +1,16 @@
 import { useId } from "react";
 import { ButtonLink } from "../../components/Button/Button";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
-import { Icon } from "../../icons";
+import { Icon, type IconName } from "../../icons";
 import { useStore } from "../../store";
 import { usePageContext } from "../_shared/PageContext";
-import { Section } from "../_shared/Section";
+import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderConfirmation.module.css";
 import { useMessages } from "../../i18n";
 
 export interface OrderPlacedProps {
   orderNumber?: string;
+  icon?: IconName;
   title?: string;
   text?: string;
   showContact?: boolean;
@@ -17,13 +18,13 @@ export interface OrderPlacedProps {
 }
 
 /** The thank-you block: order number, what happens next, how to reach the store. Holds an h1. */
-export function OrderPlaced({ orderNumber, title, text, showContact = true, headingId }: OrderPlacedProps) {
+export function OrderPlaced({ orderNumber, icon = "check", title, text, showContact = true, headingId }: OrderPlacedProps) {
   const { info } = useStore();
   const m = useMessages();
   const { phone, whatsapp } = info.contact ?? {};
   return (
     <EmptyState
-      icon="check"
+      icon={icon}
       tone="success"
       headingLevel={1}
       headingId={headingId}
@@ -56,17 +57,19 @@ export function OrderPlaced({ orderNumber, title, text, showContact = true, head
 }
 
 export interface OrderConfirmationProps {
+  icon?: IconName;
   title?: string;
   text?: string;
   showContact?: boolean;
+  tone?: SectionTone;
 }
 
 /** The page a shopper lands on after paying elsewhere. The order number comes from the page context. */
-export function OrderConfirmation(props: OrderConfirmationProps) {
+export function OrderConfirmation({ tone, ...props }: OrderConfirmationProps) {
   const headingId = useId();
   const { orderNumber } = usePageContext();
   return (
-    <Section labelledBy={headingId}>
+    <Section labelledBy={headingId} tone={tone}>
       <OrderPlaced {...props} orderNumber={orderNumber} headingId={headingId} />
     </Section>
   );

@@ -203,6 +203,21 @@ describe("checkout", () => {
     expect(store.getSnapshot().cart).toHaveLength(0);
   });
 
+  it("takes the store's own wording for every field", () => {
+    const store = filledStore();
+    setup(<CheckoutForm />, { ...store, info: { ...store.info, messages: { fullName: "Your name", placeOrder: "Send my order" } } });
+    expect(screen.getByLabelText("Your name")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Send my order" })).toBeInTheDocument();
+  });
+
+  it("asks for an Arabic store's city from its list, in Arabic", () => {
+    const store = createDemoStore({ language: "ar" });
+    store.addToCart("p2", 1);
+    setup(<CheckoutForm />, store);
+    expect(screen.getByRole("combobox", { name: "المحافظة" })).toHaveDisplayValue("اختر المحافظة");
+    expect(screen.getByRole("button", { name: "تأكيد الطلب" })).toBeInTheDocument();
+  });
+
   it("says so when the platform cannot take orders", async () => {
     const store = filledStore();
     const { user } = setup(<CheckoutForm />, { ...store, placeOrder: undefined });

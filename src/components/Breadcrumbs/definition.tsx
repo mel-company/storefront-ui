@@ -15,10 +15,11 @@ export const breadcrumbsDefinition = defineComponent({
       .max(5)
       .describe("Trail after Home, ending with the current page"),
     showHome: field.flag("Start with Home", true),
+    separator: field.choice("Between items", ["chevron", "slash"] as const, "chevron"),
   }),
   examples: [
     { name: "Checkout", props: { items: [{ label: "Cart", route: { to: "cart" } }, { label: "Checkout" }] } },
-    { name: "Category", props: { items: [{ label: "Shop all", route: { to: "catalogue" } }, { label: "Skincare" }] } },
+    { name: "Category, slashes", props: { items: [{ label: "Shop all", route: { to: "catalogue" } }, { label: "Skincare" }], separator: "slash" } },
   ],
   render: function BreadcrumbsPreset(props) {
     return <Breadcrumbs {...props} />;

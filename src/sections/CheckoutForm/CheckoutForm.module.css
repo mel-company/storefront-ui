@@ -194,6 +194,12 @@
   }
 }
 
+@media (max-width: 899px) {
+  .summaryFirst .summary {
+    order: -1;
+  }
+}
+
 @media (min-width: 640px) {
   .pair {
     grid-template-columns: 1fr 1fr;

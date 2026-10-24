@@ -10,7 +10,8 @@ import { Icon } from "../../icons";
 import { useCart, useFormatPrice, useStore, useStoreSnapshot } from "../../store";
 import type { CheckoutCustomer, OrderResult } from "../../store/types";
 import { OrderPlaced } from "../OrderConfirmation/OrderConfirmation";
-import { Section } from "../_shared/Section";
+import { Section, type SectionTone } from "../_shared/Section";
+import { cx } from "../../utils";
 import styles from "./CheckoutForm.module.css";
 import { useMessages, type Messages } from "../../i18n";
 
@@ -19,6 +20,13 @@ export interface CheckoutFormProps {
   placeOrderLabel?: string;
   showBreadcrumbs?: boolean;
   showNotes?: boolean;
+  /** Numbered circles before each group. */
+  showSteps?: boolean;
+  /** `grid` puts payment methods side by side on wider screens. */
+  paymentLayout?: "list" | "grid";
+  /** On phones, show the order summary above the form instead of under it. */
+  summaryFirst?: boolean;
+  tone?: SectionTone;
   /** Shown once the order is placed. */
   successTitle?: string;
   successText?: string;
@@ -53,7 +61,18 @@ function validate(values: Values, email: "off" | "optional" | "required", m: Mes
  * beside it. Sends the order through `store.placeOrder`, then thanks the
  * shopper in place, or goes to the platform's payment page. Holds the page's h1.
  */
-export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, showNotes = true, successTitle, successText }: CheckoutFormProps) {
+export function CheckoutForm({
+  title,
+  placeOrderLabel,
+  showBreadcrumbs = true,
+  showNotes = true,
+  showSteps = true,
+  paymentLayout = "list",
+  summaryFirst = false,
+  tone,
+  successTitle,
+  successText,
+}: CheckoutFormProps) {
   const headingId = useId();
   const store = useStore();
   const snapshot = useStoreSnapshot();
@@ -93,7 +112,7 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
 
   if (result) {
     return (
-      <Section labelledBy={headingId}>
+      <Section labelledBy={headingId} tone={tone}>
         <OrderPlaced orderNumber={result.number ?? result.id} title={successTitle} text={successText} headingId={headingId} />
       </Section>
     );
@@ -101,7 +120,7 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
 
   if (cart.lines.length === 0) {
     return (
-      <Section labelledBy={headingId}>
+      <Section labelledBy={headingId} tone={tone}>
         <EmptyState
           icon="bag"
           headingLevel={1}
@@ -158,14 +177,14 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
   const sending = status === "sending";
 
   return (
-    <Section labelledBy={headingId}>
+    <Section labelledBy={headingId} tone={tone}>
       <div className={styles.head}>
         {showBreadcrumbs && <Breadcrumbs items={[{ label: m.cart, route: { to: "cart" } }, { label: title || m.checkout }]} />}
         <h1 id={headingId} className={styles.title}>
           {title || m.checkout}
         </h1>
       </div>
-      <form ref={formRef} className={styles.layout} onSubmit={onSubmit} noValidate aria-busy={sending || undefined}>
+      <form ref={formRef} className={cx(styles.layout, summaryFirst && styles.summaryFirst)} onSubmit={onSubmit} noValidate aria-busy={sending || undefined}>
         <div className={styles.fields}>
           {(errorCount > 0 || status === "failed" || status === "off") && (
             <p className={styles.alert} role="alert">
@@ -175,7 +194,11 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
           )}
           <fieldset className={styles.group}>
             <legend className={styles.legend}>
-              <span className={styles.step} aria-hidden="true">1</span>
+              {showSteps && (
+                <span className={styles.step} aria-hidden="true">
+                  1
+                </span>
+              )}
               {m.contactDetails}
             </legend>
             <TextField label={m.fullName} name="name" autoComplete="name" required value={values.name} onChange={set("name")} error={errors.name} maxLength={80} />
@@ -210,7 +233,11 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
           </fieldset>
           <fieldset className={styles.group}>
             <legend className={styles.legend}>
-              <span className={styles.step} aria-hidden="true">2</span>
+              {showSteps && (
+                <span className={styles.step} aria-hidden="true">
+                  2
+                </span>
+              )}
               {m.deliveryDetails}
             </legend>
             {settings.cities?.length ? (
@@ -245,11 +272,16 @@ export function CheckoutForm({ title, placeOrderLabel, showBreadcrumbs = true, s
               legendClassName={styles.legend}
               legend={
                 <>
-                  <span className={styles.step} aria-hidden="true">3</span>
+                  {showSteps && (
+                <span className={styles.step} aria-hidden="true">
+                  3
+                </span>
+              )}
                   {m.payment}
                 </>
               }
               options={payments}
+              layout={paymentLayout}
               value={payment}
               onChange={setPayment}
             />

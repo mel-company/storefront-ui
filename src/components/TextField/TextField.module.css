@@ -39,6 +39,11 @@
   color: var(--msu-text-muted);
 }
 
+/* Phone numbers and emails type left to right but line up with the rest of an RTL form. */
+[dir="rtl"] .control[dir="ltr"] {
+  text-align: end;
+}
+
 textarea.control {
   min-block-size: 96px;
   resize: vertical;

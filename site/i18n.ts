@@ -144,6 +144,14 @@ const AR: Record<string, string> = {
   "We will contact you soon to confirm delivery.": "سنتواصل معك قريباً لتأكيد التوصيل.",
   "Your order is on its way": "طلبك في الطريق",
   "We pack every order the same day.": "نجهّز كل طلب في اليوم نفسه.",
+  "Confirm order": "أكّد الطلب",
+  "Saved for later": "محفوظ لوقت لاحق",
+  "This page has moved on": "هذه الصفحة لم تعد هنا",
+  "Try the shop instead.": "جرّب المتجر بدلاً منها.",
+  Delivery: "التوصيل",
+  Standard: "عادي",
+  Express: "سريع",
+  "Next working day.": "في يوم العمل التالي.",
 };
 
 export function tr(lang: Lang, text: string): string {

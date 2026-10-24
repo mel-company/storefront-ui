@@ -4,7 +4,7 @@ import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import { useFavourites, useProducts } from "../../store";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";
-import { Section } from "../_shared/Section";
+import { Section, type SectionTone } from "../_shared/Section";
 import grid from "../_shared/grid.module.css";
 import styles from "./FavouritesGrid.module.css";
 import { useMessages } from "../../i18n";
@@ -15,10 +15,11 @@ export interface FavouritesGridProps {
   emptyText?: string;
   columns?: number;
   card?: CardOptions;
+  tone?: SectionTone;
 }
 
 /** The favourites page: every saved product, newest first, with an empty state. Holds the page's h1. */
-export function FavouritesGrid({ title, emptyTitle, emptyText, columns = 4, card }: FavouritesGridProps) {
+export function FavouritesGrid({ title, emptyTitle, emptyText, columns = 4, card, tone }: FavouritesGridProps) {
   const headingId = useId();
   const m = useMessages();
   const { ids } = useFavourites();
@@ -28,7 +29,7 @@ export function FavouritesGrid({ title, emptyTitle, emptyText, columns = 4, card
 
   if (products.length === 0) {
     return (
-      <Section labelledBy={headingId}>
+      <Section labelledBy={headingId} tone={tone}>
         <EmptyState
           icon="heart"
           headingLevel={1}
@@ -42,7 +43,7 @@ export function FavouritesGrid({ title, emptyTitle, emptyText, columns = 4, card
   }
 
   return (
-    <Section labelledBy={headingId}>
+    <Section labelledBy={headingId} tone={tone}>
       <div className={styles.head}>
         <h1 id={headingId} className={styles.title}>
           {title || m.favourites}

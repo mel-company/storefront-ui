@@ -23,6 +23,7 @@ export const radioCardsDefinition = defineComponent({
       .min(2)
       .max(6)
       .describe("Choices"),
+    layout: field.choice("Layout", ["list", "grid"] as const, "list"),
   }),
   examples: [
     {
@@ -35,9 +36,20 @@ export const radioCardsDefinition = defineComponent({
         ],
       },
     },
+    {
+      name: "Side by side",
+      props: {
+        legend: "Delivery",
+        layout: "grid",
+        options: [
+          { value: "standard", label: "Standard", description: "Two to four working days.", icon: "truck" },
+          { value: "express", label: "Express", description: "Next working day.", icon: "clock" },
+        ],
+      },
+    },
   ],
-  render: function RadioCardsPreset({ legend, options }) {
+  render: function RadioCardsPreset({ legend, options, layout }) {
     const [value, setValue] = useState(options[0]?.value ?? "");
-    return <RadioCards legend={legend} options={options} value={value} onChange={setValue} />;
+    return <RadioCards legend={legend} options={options} layout={layout} value={value} onChange={setValue} />;
   },
 });

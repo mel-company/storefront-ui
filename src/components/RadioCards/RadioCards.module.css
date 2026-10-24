@@ -14,6 +14,17 @@
   font-weight: 600;
 }
 
+.options {
+  display: grid;
+  gap: var(--msu-space-2);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
 .option {
   position: relative;
   display: flex;

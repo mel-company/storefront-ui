@@ -1,22 +1,27 @@
 import { useId } from "react";
 import { ButtonLink } from "../../components/Button/Button";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
-import { Section } from "../_shared/Section";
+import type { IconName } from "../../icons";
+import { Section, type SectionTone } from "../_shared/Section";
 import { useMessages } from "../../i18n";
 
 export interface NotFoundProps {
+  icon?: IconName;
   title?: string;
   text?: string;
+  /** A second button to every product. */
+  showShopAll?: boolean;
+  tone?: SectionTone;
 }
 
 /** The page for a broken or old link: says so plainly and offers the way back. Holds the page's h1. */
-export function NotFound({ title, text }: NotFoundProps) {
+export function NotFound({ icon = "search", title, text, showShopAll = true, tone }: NotFoundProps) {
   const headingId = useId();
   const m = useMessages();
   return (
-    <Section labelledBy={headingId}>
+    <Section labelledBy={headingId} tone={tone}>
       <EmptyState
-        icon="search"
+        icon={icon}
         headingLevel={1}
         headingId={headingId}
         title={title || m.notFoundTitle}
@@ -26,9 +31,11 @@ export function NotFound({ title, text }: NotFoundProps) {
             <ButtonLink route={{ to: "home" }} icon="home">
               {m.goHome}
             </ButtonLink>
-            <ButtonLink route={{ to: "catalogue" }} variant="secondary">
-              {m.shopAll}
-            </ButtonLink>
+            {showShopAll && (
+              <ButtonLink route={{ to: "catalogue" }} variant="secondary">
+                {m.shopAll}
+              </ButtonLink>
+            )}
           </>
         }
       />
