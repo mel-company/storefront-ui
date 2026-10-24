@@ -79,6 +79,51 @@ export interface StoreInfo {
   social?: { instagram?: string; tiktok?: string; facebook?: string };
   /** Replace any built-in text. The language itself follows `locale`. */
   messages?: Partial<Messages>;
+  /** What the checkout form asks for. Absent = a city text field and cash on delivery. */
+  checkout?: CheckoutSettings;
+}
+
+export interface PaymentMethod {
+  /** Sent back in the order, e.g. `cash`, `card`. */
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export interface CheckoutSettings {
+  /** Cities the shopper picks from. Absent = a free text field. */
+  cities?: string[];
+  /** Absent = cash on delivery only, with built-in text. */
+  payments?: PaymentMethod[];
+  /** Ask for an email address. Default `off`. */
+  email?: "off" | "optional" | "required";
+}
+
+export interface CheckoutCustomer {
+  name: string;
+  phone: string;
+  email?: string;
+  city: string;
+  address: string;
+  notes?: string;
+}
+
+export interface OrderRequest {
+  customer: CheckoutCustomer;
+  /** A `PaymentMethod` id. */
+  payment: string;
+  lines: CartEntry[];
+  subtotal: number;
+  delivery: number;
+  total: number;
+}
+
+export interface OrderResult {
+  id: string;
+  /** What the shopper sees, e.g. `1042`. Defaults to `id`. */
+  number?: string;
+  /** Send the shopper here next, e.g. an online payment page. */
+  redirectUrl?: string;
 }
 
 export interface LinkProps {
@@ -103,6 +148,11 @@ export interface StoreClient {
   removeFromCart(lineKey: string): void;
   toggleFavourite(productId: string): void;
   href(route: Route): string;
+  /**
+   * Sends an order and empties the cart. Without it the checkout form
+   * explains that ordering is not set up instead of failing silently.
+   */
+  placeOrder?(order: OrderRequest): Promise<OrderResult>;
   /** The platform's router link. Defaults to a plain `<a>`. */
   Link?: ComponentType<LinkProps>;
 }

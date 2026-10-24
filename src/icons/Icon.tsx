@@ -16,6 +16,7 @@ const PATHS = {
   minus: "M5 12h14",
   chevronEnd: "m9 6 6 6-6 6",
   chevronStart: "m15 6-6 6 6 6",
+  chevronDown: "m6 9 6 6 6-6",
   check: "m5 12.5 4.5 4.5L19 7.5",
   gift: "M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3-5-1s3 1 5 1Zm0 0c1.5-3 5-3 5-1s-3 1-5 1Z",
   clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-13v4.5l3 2",
@@ -24,6 +25,12 @@ const PATHS = {
   instagram: "M4 8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Zm8 7.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM17 7h.01",
   sparkle: "M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5m7 7L18 18M18 6l-2.5 2.5m-7 7L6 18",
   leaf: "M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19l7-7",
+  pin: "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+  card: "M3 6.5h18v11H3zM3 10h18M7 14.5h3",
+  cash: "M3 7h18v10H3zM12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM6 10v4m12-4v4",
+  alert: "M12 3.5 2.5 20h19L12 3.5ZM12 10v4.5m0 3h.01",
+  home: "M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z",
+  user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7.5 8a7.5 7.5 0 0 1 15 0",
 } as const;
 
 export type IconName = keyof typeof PATHS;

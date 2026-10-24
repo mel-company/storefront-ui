@@ -1,13 +1,15 @@
 import type { ComponentType } from "react";
 import type { z } from "zod";
 
-export type PageType = "home" | "catalogue" | "product" | "cart" | "any";
+export type PageType = "home" | "catalogue" | "product" | "cart" | "checkout" | "confirmation" | "favourites" | "notFound" | "any";
 
 export interface Example<Props> {
   name: string;
   props: Props;
   /** Products put in the preview store's cart before this example renders. */
   cart?: { productId: string; quantity: number; options?: Record<string, string> }[];
+  /** Product ids saved as favourites before this example renders. */
+  favourites?: string[];
 }
 
 interface BaseDefinition<Schema extends z.ZodTypeAny> {
@@ -56,6 +58,8 @@ export interface PageDefinition {
   requires: string[];
   /** The starting layout. Agents may reorder, swap and add body sections. */
   sections: SectionInstance[];
+  /** Cart and favourites for previews and checks, so a checkout page is not shown empty. */
+  preview?: Pick<Example<unknown>, "cart" | "favourites">;
 }
 
 export type AnyDefinition = ComponentDefinition | SectionDefinition | PageDefinition;

@@ -1,6 +1,7 @@
 import type { ComponentDefinition, PageDefinition, SectionDefinition } from "../core/define";
 import type { Registry } from "../core/registry";
 import type { PageCompositionInput } from "../pages/composition";
+import type { PageContextValue } from "../sections/_shared/PageContext";
 import { pageCompositionSchema } from "../pages/composition";
 import { builtInRegistry } from "../registry";
 import type { Theme } from "../theme/schema";
@@ -183,7 +184,7 @@ export function validateComposition(
 export function checkPage(
   composition: PageCompositionInput,
   pageType: PageDefinition["pageType"],
-  options: CheckOptions & { context?: { productSlug?: string; categorySlug?: string } } = {},
+  options: CheckOptions & { context?: PageContextValue; preview?: PageDefinition["preview"] } = {},
 ): CheckReport {
   const parse = options.parse ?? browserParser;
   const theme = options.theme ?? defaultTheme;
@@ -193,10 +194,10 @@ export function checkPage(
   let checks = structural.checks;
   if (!structural.ok) return toReport(composition.page, "page", issues, checks);
 
-  const context = options.context ?? (pageType === "product" ? { productSlug: "cloud-cream" } : {});
+  const context = options.context ?? defaultContext(pageType);
   for (const variant of VARIANTS) {
     const where = `${variant.mode} · ${variant.dir}`;
-    const result = renderAndCheck(() => toHtml(pageElement(composition, context, { ...variant, theme, registry })), where, parse);
+    const result = renderAndCheck(() => toHtml(pageElement(composition, context, { ...variant, theme, registry, preview: options.preview })), where, parse);
     issues.push(...result.issues);
     checks += result.checks;
     if (result.root) {
@@ -212,8 +213,15 @@ export function checkPage(
 
 export function checkPageDefinition(definition: PageDefinition, options: CheckOptions = {}): CheckReport {
   const meta = checkMeta(definition);
-  const report = checkPage({ page: definition.id, sections: definition.sections }, definition.pageType, options);
+  const report = checkPage({ page: definition.id, sections: definition.sections }, definition.pageType, { preview: definition.preview, ...options });
   return toReport(definition.id, "page", [...meta.issues, ...report.issues], meta.checks + report.checks);
+}
+
+/** What a page of this type is about when nothing more is known, for checks and previews. */
+export function defaultContext(pageType: PageDefinition["pageType"]): PageContextValue {
+  if (pageType === "product") return { productSlug: "cloud-cream" };
+  if (pageType === "confirmation") return { orderNumber: "1042" };
+  return {};
 }
 
 function dedupe(issues: CheckIssue[]): CheckIssue[] {

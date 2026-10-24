@@ -4,7 +4,9 @@ import {
   AddToCart,
   BundleBuilder,
   CatalogueBrowse,
+  CheckoutForm,
   Countdown,
+  FavouritesGrid,
   createDemoStore,
   FreeDeliveryProgress,
   HeaderBar,
@@ -151,5 +153,77 @@ describe("Arabic store", () => {
     const store = { ...base, info: { ...base.info, messages: { addToCart: "Buy now" } } };
     setup(<AddToCart productId="p2" />, store);
     expect(screen.getByRole("button", { name: "Buy now" })).toBeInTheDocument();
+  });
+});
+
+describe("checkout", () => {
+  const filledStore = () => {
+    const store = createDemoStore();
+    store.addToCart("p2", 1);
+    return store;
+  };
+
+  it("points at every missing field instead of sending", async () => {
+    const store = filledStore();
+    const placeOrder = vi.fn(store.placeOrder);
+    const { user } = setup(<CheckoutForm />, { ...store, placeOrder });
+    await user.click(screen.getByRole("button", { name: "Place order" }));
+    expect(placeOrder).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert")).toHaveTextContent("Check the 4 fields marked below.");
+    expect(screen.getByLabelText("Full name")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Full name")).toHaveFocus();
+  });
+
+  it("rejects a phone number nobody can call", async () => {
+    const { user } = setup(<CheckoutForm />, filledStore());
+    await user.type(screen.getByLabelText("Phone number"), "12");
+    await user.click(screen.getByRole("button", { name: "Place order" }));
+    expect(screen.getByText("Enter a phone number we can call")).toBeInTheDocument();
+  });
+
+  it("sends the order, empties the cart and shows the order number", async () => {
+    const store = filledStore();
+    const placeOrder = vi.fn(store.placeOrder);
+    const { user } = setup(<CheckoutForm />, { ...store, placeOrder });
+    await user.type(screen.getByLabelText("Full name"), "Sara Ali");
+    await user.type(screen.getByLabelText("Phone number"), "+1 555 0100");
+    await user.type(screen.getByLabelText("City"), "Riverside");
+    await user.type(screen.getByLabelText("Address"), "12 Market Street");
+    await user.click(screen.getByRole("radio", { name: /card/i }));
+    await user.click(screen.getByRole("button", { name: "Place order" }));
+    expect(placeOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payment: "card",
+        customer: { name: "Sara Ali", phone: "+1 555 0100", city: "Riverside", address: "12 Market Street" },
+        lines: [expect.objectContaining({ productId: "p2", quantity: 1 })],
+      }),
+    );
+    expect(await screen.findByRole("heading", { level: 1, name: "Thank you, your order is in" })).toBeInTheDocument();
+    expect(screen.getByText("Order number 1001")).toBeInTheDocument();
+    expect(store.getSnapshot().cart).toHaveLength(0);
+  });
+
+  it("says so when the platform cannot take orders", async () => {
+    const store = filledStore();
+    const { user } = setup(<CheckoutForm />, { ...store, placeOrder: undefined });
+    await user.type(screen.getByLabelText("Full name"), "Sara Ali");
+    await user.type(screen.getByLabelText("Phone number"), "5550100");
+    await user.type(screen.getByLabelText("City"), "Riverside");
+    await user.type(screen.getByLabelText("Address"), "12 Market Street");
+    await user.click(screen.getByRole("button", { name: "Place order" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Ordering is not set up for this store yet.");
+  });
+});
+
+describe("favourites page", () => {
+  it("lists saved products, newest first, and empties when unsaved", async () => {
+    const store = createDemoStore();
+    store.toggleFavourite("p1");
+    store.toggleFavourite("p4");
+    const { user } = setup(<FavouritesGrid />, store);
+    const names = screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent);
+    expect(names).toEqual([store.getSnapshot().products.find((p) => p.id === "p4")!.name, store.getSnapshot().products.find((p) => p.id === "p1")!.name]);
+    for (const button of screen.getAllByRole("button", { name: /remove .* from favourites/i })) await user.click(button);
+    expect(screen.getByRole("heading", { level: 1, name: "No favourites yet" })).toBeInTheDocument();
   });
 });

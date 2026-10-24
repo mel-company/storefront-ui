@@ -25,7 +25,7 @@ import {
 } from "../src";
 
 const parse = (html: string) => new JSDOM(html).window.document;
-const pageTypes = ["home", "catalogue", "product", "cart"] as const;
+const pageTypes = ["home", "catalogue", "product", "cart", "checkout", "confirmation", "favourites", "notFound"] as const;
 
 const json = (value: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }] });
 const report = (result: CheckReport) => ({ ...json(result), isError: false });

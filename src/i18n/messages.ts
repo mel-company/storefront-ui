@@ -75,6 +75,40 @@ export interface Messages {
   nextProducts: string;
   whyShopWithUs: string;
   relatedTitle: string;
+  breadcrumbs: string;
+  home: string;
+  optional: string;
+  required: string;
+  fixErrors: (count: number) => string;
+  invalidPhone: string;
+  invalidEmail: string;
+  contactDetails: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  deliveryDetails: string;
+  city: string;
+  chooseCity: string;
+  address: string;
+  addressHint: string;
+  notes: string;
+  notesHint: string;
+  payment: string;
+  cashOnDelivery: string;
+  cashOnDeliveryText: string;
+  placeOrder: string;
+  placingOrder: string;
+  orderFailed: string;
+  orderingOff: string;
+  orderPlacedTitle: string;
+  orderNumber: (number: string) => string;
+  orderPlacedText: string;
+  continueShopping: string;
+  favouritesEmptyTitle: string;
+  favouritesEmptyText: string;
+  notFoundTitle: string;
+  notFoundText: string;
+  goHome: string;
 }
 
 export type Language = "en" | "ar";
@@ -148,6 +182,40 @@ const en: Messages = {
   nextProducts: "Next products",
   whyShopWithUs: "Why shop with us",
   relatedTitle: "You may also like",
+  breadcrumbs: "Breadcrumb",
+  home: "Home",
+  optional: "optional",
+  required: "This field is required",
+  fixErrors: (count) => (count === 1 ? "Check the field marked below." : `Check the ${count} fields marked below.`),
+  invalidPhone: "Enter a phone number we can call",
+  invalidEmail: "Enter an email like name@example.com",
+  contactDetails: "Your details",
+  fullName: "Full name",
+  phone: "Phone number",
+  email: "Email",
+  deliveryDetails: "Delivery",
+  city: "City",
+  chooseCity: "Choose a city",
+  address: "Address",
+  addressHint: "Area, street and a nearby landmark",
+  notes: "Notes for the order",
+  notesHint: "A delivery time, a gift message, anything else",
+  payment: "Payment",
+  cashOnDelivery: "Cash on delivery",
+  cashOnDeliveryText: "Pay when your order arrives.",
+  placeOrder: "Place order",
+  placingOrder: "Placing your order…",
+  orderFailed: "We could not place your order. Check your connection and try again.",
+  orderingOff: "Ordering is not set up for this store yet.",
+  orderPlacedTitle: "Thank you, your order is in",
+  orderNumber: (number) => `Order number ${number}`,
+  orderPlacedText: "We will contact you soon to confirm delivery.",
+  continueShopping: "Continue shopping",
+  favouritesEmptyTitle: "No favourites yet",
+  favouritesEmptyText: "Tap the heart on any product to keep it here.",
+  notFoundTitle: "We could not find that page",
+  notFoundText: "The link may be old or the page may have moved.",
+  goHome: "Go to the home page",
 };
 
 /** Arabic plural forms for "N items": 1, 2, 3–10, 11+. */
@@ -223,6 +291,40 @@ const ar: Messages = {
   nextProducts: "المنتجات التالية",
   whyShopWithUs: "لماذا تتسوق معنا",
   relatedTitle: "قد يعجبك أيضاً",
+  breadcrumbs: "مسار التنقل",
+  home: "الرئيسية",
+  optional: "اختياري",
+  required: "هذا الحقل مطلوب",
+  fixErrors: (count) => (count === 1 ? "راجع الحقل المحدد أدناه." : count === 2 ? "راجع الحقلين المحددين أدناه." : `راجع الحقول المحددة أدناه (${count}).`),
+  invalidPhone: "أدخل رقم هاتف يمكننا الاتصال به",
+  invalidEmail: "أدخل بريداً مثل name@example.com",
+  contactDetails: "معلوماتك",
+  fullName: "الاسم الكامل",
+  phone: "رقم الهاتف",
+  email: "البريد الإلكتروني",
+  deliveryDetails: "التوصيل",
+  city: "المحافظة",
+  chooseCity: "اختر المحافظة",
+  address: "العنوان",
+  addressHint: "المنطقة والشارع وأقرب نقطة دالة",
+  notes: "ملاحظات الطلب",
+  notesHint: "وقت التوصيل، رسالة هدية، أو أي شيء آخر",
+  payment: "الدفع",
+  cashOnDelivery: "الدفع عند الاستلام",
+  cashOnDeliveryText: "ادفع عند وصول طلبك.",
+  placeOrder: "تأكيد الطلب",
+  placingOrder: "جارٍ إرسال طلبك…",
+  orderFailed: "تعذّر إرسال طلبك. تحقق من الاتصال وحاول مجدداً.",
+  orderingOff: "الطلب غير مفعّل في هذا المتجر بعد.",
+  orderPlacedTitle: "شكراً لك، وصلنا طلبك",
+  orderNumber: (number) => `رقم الطلب ${number}`,
+  orderPlacedText: "سنتواصل معك قريباً لتأكيد التوصيل.",
+  continueShopping: "تابع التسوق",
+  favouritesEmptyTitle: "لا توجد منتجات مفضلة بعد",
+  favouritesEmptyText: "اضغط على القلب في أي منتج ليبقى هنا.",
+  notFoundTitle: "لم نجد هذه الصفحة",
+  notFoundText: "قد يكون الرابط قديماً أو أن الصفحة نُقلت.",
+  goHome: "اذهب إلى الرئيسية",
 };
 
 export const messages: Record<Language, Messages> = { en, ar };

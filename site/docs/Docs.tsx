@@ -6,7 +6,7 @@ import {
   checkPageDefinition,
   checkSection,
   compositionOf,
-  fillCart,
+  seedExample,
   PageRenderer,
   type CheckReport,
   type ComponentDefinition,
@@ -279,7 +279,7 @@ function DefinitionDoc({ definition }: { definition: Definition }) {
       <div className="preview">
         <Frame width={width} title={`${definition.name} preview`}>
           {example && (
-            <LivePreview key={`${exampleIndex}-${themeId}-${mode}-${dir}`} seed={(store) => fillCart(store, example.cart)}>
+            <LivePreview key={`${exampleIndex}-${themeId}-${mode}-${dir}`} seed={(store) => seedExample(store, example)}>
               <div style={{ padding: definition.kind === "component" ? 24 : 0 }}>
                 <Render {...definition.props.parse(props)} />
               </div>
@@ -474,7 +474,7 @@ function PageDoc({ page }: { page: PageDefinition }) {
 
       <div className="preview">
         <Frame width={width} title={`${page.name} preview`} maxHeight={760} scrollKey={`${view.page.id}-${view.context.productSlug ?? ""}-${view.context.categorySlug ?? ""}`}>
-          <LivePreview key={`${themeId}-${mode}-${dir}`} onNavigate={(href) => setView(route(href))}>
+          <LivePreview key={`${themeId}-${mode}-${dir}`} seed={(store) => seedExample(store, page.preview)} onNavigate={(href) => setView(route(href))}>
             <PageRenderer composition={shown} context={context} />
           </LivePreview>
         </Frame>

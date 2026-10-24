@@ -1,0 +1,20 @@
+.contact {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--msu-space-4);
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+}
+
+.contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-1);
+  text-decoration: none;
+}
+
+.contact a:hover {
+  color: var(--msu-text);
+}

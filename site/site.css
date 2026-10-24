@@ -403,8 +403,8 @@ body:has(> #root) {
 
 .pg-files {
   display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .pg-files button {

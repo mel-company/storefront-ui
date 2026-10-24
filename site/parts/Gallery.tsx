@@ -1,6 +1,6 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { builtInRegistry, checkComponent, checkSection, fillCart, type CheckReport, type ComponentDefinition, type SectionDefinition } from "../../src";
+import { builtInRegistry, checkComponent, checkSection, seedExample, type CheckReport, type ComponentDefinition, type SectionDefinition } from "../../src";
 import { useSettings } from "../settings";
 import { CheckBadge, CheckIssues } from "./CheckResult";
 import { CodeBlock } from "./CodeBlock";
@@ -139,7 +139,7 @@ export function Gallery() {
           <div className="preview">
             <Frame width={width} title={`${selected.name} preview`}>
               {example && (
-                <LivePreview key={previewKey} seed={(store) => fillCart(store, example.cart)}>
+                <LivePreview key={previewKey} seed={(store) => seedExample(store, example)}>
                   <div style={{ padding: selected.kind === "component" ? 24 : 0 }}>
                     <Render {...selected.props.parse(exampleProps)} />
                   </div>

@@ -44,7 +44,7 @@ export function CatalogueBrowse({
   const m = useMessages();
   const categories = useCategories();
   const initialCategory = categories.find((c) => c.slug === page.categorySlug)?.id ?? "";
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(page.search ?? "");
   const [categoryId, setCategoryId] = useState(initialCategory);
   const [sort, setSort] = useState<Sort>("featured");
   const [visible, setVisible] = useState(pageSize);
