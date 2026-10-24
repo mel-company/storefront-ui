@@ -18,3 +18,13 @@
 .on {
   color: var(--msu-danger);
 }
+
+.on svg {
+  animation: pop calc(var(--msu-duration) * 2) ease-out;
+}
+
+@keyframes pop {
+  40% {
+    transform: scale(1.3);
+  }
+}

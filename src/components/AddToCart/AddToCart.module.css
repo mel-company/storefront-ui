@@ -1,0 +1,14 @@
+.added svg {
+  animation: pop calc(var(--msu-duration) * 2) ease-out;
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  60% {
+    transform: scale(1.2);
+  }
+}

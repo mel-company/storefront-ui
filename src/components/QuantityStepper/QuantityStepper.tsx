@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Icon } from "../../icons";
 import styles from "./QuantityStepper.module.css";
 import { useMessages } from "../../i18n";
@@ -13,6 +14,8 @@ export interface QuantityStepperProps {
 
 export function QuantityStepper({ value, onChange, min = 1, max = 99, label }: QuantityStepperProps) {
   const m = useMessages();
+  // Bump the number when it changes, not when the stepper first shows.
+  const first = useRef(value);
   return (
     <div className={styles.stepper} role="group" aria-label={label || m.quantity}>
       <button
@@ -25,7 +28,9 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, label }: Q
         <Icon name="minus" size={16} />
       </button>
       <output className={styles.value} aria-live="polite">
-        {value}
+        <span key={value} className={value !== first.current ? styles.bump : undefined}>
+          {value}
+        </span>
       </output>
       <button
         type="button"

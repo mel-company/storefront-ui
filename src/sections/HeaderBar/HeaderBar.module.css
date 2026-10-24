@@ -117,6 +117,24 @@
 .drawer {
   border-block-start: 1px solid var(--msu-border);
   padding-block: var(--msu-space-4);
+  animation: drop var(--msu-duration) ease-out;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.bump {
+  animation: bump calc(var(--msu-duration) * 1.5) ease-out;
+}
+
+@keyframes bump {
+  40% {
+    transform: scale(1.35);
+  }
 }
 
 .drawerList {

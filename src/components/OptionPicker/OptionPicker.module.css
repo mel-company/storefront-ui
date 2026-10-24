@@ -39,6 +39,9 @@
   border-radius: var(--msu-radius-full);
   background: var(--msu-surface);
   font-size: var(--msu-text-sm);
+  transition:
+    border-color var(--msu-duration) ease,
+    box-shadow var(--msu-duration) ease;
 }
 
 .value input:checked + .chip {

@@ -15,6 +15,14 @@
   background: var(--msu-surface);
   font-size: var(--msu-text-sm);
   cursor: pointer;
+  transition:
+    background-color var(--msu-duration) ease,
+    border-color var(--msu-duration) ease,
+    color var(--msu-duration) ease;
+}
+
+.chip:hover:not([aria-pressed="true"]) {
+  border-color: var(--msu-text-muted);
 }
 
 .chip[aria-pressed="true"] {
