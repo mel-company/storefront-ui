@@ -7,6 +7,8 @@ import {
   checkStylesheet,
   checkTheme,
   defineComponent,
+  defineSection,
+  checkSection,
   homeClassic,
   themes,
   validateComposition,
@@ -147,5 +149,56 @@ describe("stylesheet checker", () => {
   it("flags raw colours and physical properties", () => {
     const issues = checkStylesheet("x.css", ".a {\n  color: #fff;\n  margin-left: 4px;\n  padding-inline-start: 4px;\n  background: var(--msu-surface);\n}");
     expect(issues.map((issue) => `${issue.rule}@${issue.where}`)).toEqual(["style.raw-color@x.css:2", "style.physical-property@x.css:3"]);
+  });
+});
+
+describe("skeletons", () => {
+  const base = {
+    id: "demo.block",
+    name: "Demo block",
+    description: "A test section that only shows a heading and a line.",
+    tags: ["test"],
+    uses: [],
+    pages: ["home" as const],
+    props: z.object({ title: z.string().default("Hello") }),
+    examples: [{ name: "Default", props: {} }],
+    render: ({ title }: { title: string }) => (
+      <section aria-label={title}>
+        <h2>{title}</h2>
+      </section>
+    ),
+  };
+
+  it("requires every section to have one", () => {
+    const report = checkSection(defineSection(base), { parse });
+    expect(report.issues.map((issue) => issue.rule)).toContain("section.skeleton");
+  });
+
+  it("flags a skeleton that is not marked busy or has a button", () => {
+    const report = checkSection(
+      defineSection({
+        ...base,
+        skeleton: () => (
+          <section aria-label="Loading">
+            <button type="button">Wait</button>
+          </section>
+        ),
+      }),
+      { parse },
+    );
+    const rules = report.issues.map((issue) => issue.rule);
+    expect(rules).toContain("skeleton.busy");
+    expect(rules).toContain("skeleton.interactive");
+  });
+
+  it("gives every built-in section a passing skeleton", () => {
+    for (const section of builtInRegistry.sections.values()) {
+      expect(section.skeleton, section.id).toBeDefined();
+      expect(checkSection(section, { parse }).issues.filter((issue) => issue.rule.startsWith("skeleton") || issue.where?.startsWith("skeleton")), section.id).toEqual([]);
+    }
+  });
+
+  it("renders a whole page as skeletons, still with one main", () => {
+    expect(checkPage({ page: homeClassic.id, sections: homeClassic.sections }, "home", { parse }).ok).toBe(true);
   });
 });

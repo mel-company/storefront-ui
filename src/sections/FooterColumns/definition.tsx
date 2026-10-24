@@ -2,6 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { FooterColumns } from "./FooterColumns";
+import { FooterColumnsSkeleton } from "../_shared/skeleton/sections";
 
 export const footerColumnsDefinition = defineSection({
   id: "footer.columns",
@@ -16,6 +17,7 @@ export const footerColumnsDefinition = defineSection({
     legal: field.optionalText("Line after the copyright. Leave out for the built-in text in the store's language", 80),
   }),
   examples: [{ name: "Default", props: { about: "Small-batch skincare, scent and home goods." } }],
+  skeleton: FooterColumnsSkeleton,
   render: function FooterColumnsPreset(props) {
     return <FooterColumns {...props} />;
   },

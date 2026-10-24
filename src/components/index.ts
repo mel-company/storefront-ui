@@ -23,6 +23,7 @@ import { ratingDefinition } from "./Rating";
 import { searchFieldDefinition } from "./SearchField";
 import { sectionHeadingDefinition } from "./SectionHeading";
 import { selectFieldDefinition } from "./SelectField";
+import { skeletonDefinition } from "./Skeleton";
 import { textFieldDefinition } from "./TextField";
 
 export * from "./Accordion";
@@ -49,6 +50,7 @@ export * from "./Rating";
 export * from "./SearchField";
 export * from "./SectionHeading";
 export * from "./SelectField";
+export * from "./Skeleton";
 export * from "./TextField";
 
 export const componentDefinitions: ComponentDefinition[] = [
@@ -77,4 +79,5 @@ export const componentDefinitions: ComponentDefinition[] = [
   selectFieldDefinition,
   radioCardsDefinition,
   orderStepsDefinition,
+  skeletonDefinition,
 ] as ComponentDefinition[];

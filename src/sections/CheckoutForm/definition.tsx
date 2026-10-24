@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { CheckoutForm } from "./CheckoutForm";
+import { CheckoutFormSkeleton } from "../_shared/skeleton/sections";
 
 export const checkoutFormDefinition = defineSection({
   id: "checkout.form",
@@ -32,6 +33,7 @@ export const checkoutFormDefinition = defineSection({
     },
     { name: "Empty cart", props: {} },
   ],
+  skeleton: CheckoutFormSkeleton,
   render: function CheckoutFormPreset(props) {
     return <CheckoutForm {...props} />;
   },

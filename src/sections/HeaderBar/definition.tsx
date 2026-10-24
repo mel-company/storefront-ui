@@ -2,6 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field, routeSchema } from "../../core/fields";
 import { HeaderBar } from "./HeaderBar";
+import { HeaderBarSkeleton } from "../_shared/skeleton/sections";
 
 export const headerBarDefinition = defineSection({
   id: "header.bar",
@@ -26,6 +27,7 @@ export const headerBarDefinition = defineSection({
     { name: "Classic", props: {}, cart: [{ productId: "p6", quantity: 2 }] },
     { name: "Centered with announcement", props: { layout: "centered", announcement: "Free delivery on orders over $80" } },
   ],
+  skeleton: HeaderBarSkeleton,
   render: function HeaderBarPreset(props) {
     return <HeaderBar {...props} />;
   },

@@ -4,6 +4,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, productSourceSchema } from "../../core/fields";
 import { columnsField, headingFields, toneField } from "../_shared/shared-props";
 import { ProductsGrid } from "./ProductsGrid";
+import { ProductsGridSkeleton } from "../_shared/skeleton/sections";
 
 export const productsSectionProps = z.object({
   ...headingFields,
@@ -31,6 +32,7 @@ export const productsGridDefinition = defineSection({
       props: { title: "Skincare", source: { categoryId: "skin" }, columns: 3, card: { variant: "boxed", imageRatio: "square" }, tone: "muted" },
     },
   ],
+  skeleton: ProductsGridSkeleton,
   render: function ProductsGridPreset(props) {
     return <ProductsGrid {...props} />;
   },

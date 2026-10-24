@@ -85,6 +85,24 @@ PDF of the same size). The `order.invoice` section's `template` prop overrides
 it, and `InvoiceView` renders any invoice directly (a till or a dashboard). The invoice is always light, follows RTL, and every label can be
 renamed through `info.messages`.
 
+### Loading skeletons
+
+Every section has a skeleton: its real layout as soft placeholder shapes, read
+from the same props (columns, card style, image side, tone), so nothing jumps
+when the data arrives. Pass `loading` while products, the cart or an order
+load:
+
+```tsx
+<PageRenderer composition={page} loading={!ready} />
+<SectionRenderer section="products.grid" props={props} loading />
+```
+
+The page keeps one `<main>`, marked `aria-busy`, and each section is a busy
+region named "Loading…" in the store's language. The shimmer runs on the
+theme's motion, so `motion: "none"` and reduced motion keep it still. Custom
+sections add `skeleton` to `defineSection`, built from `Skeleton` (the
+`ui.skeleton` component); the checker requires one and renders it.
+
 ## Theme and dark mode
 
 A theme is a palette for light and one for dark, plus radius, density, type
@@ -109,7 +127,7 @@ not `margin-left`), so every piece works in RTL.
 Run them all:
 
 ```
-npm run check     # themes, 25 components, 22 sections, 11 pages × 4 themes, stylesheets
+npm run check     # themes, 26 components, 22 sections, 11 pages × 4 themes, stylesheets
 npm run verify    # typecheck + lint + tests + check
 ```
 

@@ -13,13 +13,16 @@ export interface SectionProps {
   spacing?: SectionSpacing;
   className?: string;
   containerClassName?: string;
+  /** Marks the section as loading, e.g. while a skeleton shows. */
+  busy?: boolean;
   children: ReactNode;
 }
 
 /** The outer frame every body section uses: full-bleed background, centred content. */
-export function Section({ labelledBy, label, tone = "default", spacing = "normal", className, containerClassName, children }: SectionProps) {
+export function Section({ labelledBy, label, tone = "default", spacing = "normal", className, containerClassName, busy, children }: SectionProps) {
   return (
     <section
+      aria-busy={busy || undefined}
       aria-labelledby={labelledBy}
       aria-label={labelledBy ? undefined : label}
       className={cx(styles.section, tone === "muted" && styles.muted, spacing !== "normal" && styles[spacing], className)}

@@ -4,6 +4,7 @@ import { field } from "../../core/fields";
 import { INVOICE_TEMPLATES } from "../_shared/invoice/paper";
 import { toneField } from "../_shared/shared-props";
 import { OrderInvoice } from "./OrderInvoice";
+import { OrderLookupSkeleton } from "../_shared/skeleton/sections";
 
 export const orderInvoiceDefinition = defineSection({
   id: "order.invoice",
@@ -32,6 +33,7 @@ export const orderInvoiceDefinition = defineSection({
     { name: "Receipt printer, 80 mm", props: { template: "receipt80", title: "Your receipt", intro: "Try order 1042 with phone 555 0123.", tone: "muted" } },
     { name: "Receipt printer, 58 mm, print only", props: { template: "receipt58", title: "Your receipt", intro: "Try order 1042 with phone 555 0123.", showDownload: false } },
   ],
+  skeleton: OrderLookupSkeleton,
   render: function OrderInvoicePreset(props) {
     return <OrderInvoice {...props} />;
   },

@@ -153,6 +153,7 @@ export interface Messages {
   downloadPdf: string;
   preparingPdf: string;
   pdfFailed: string;
+  loading: string;
 }
 
 export type Language = "en" | "ar";
@@ -311,6 +312,7 @@ const en: Messages = {
   downloadPdf: "Download PDF",
   preparingPdf: "Preparing PDF…",
   pdfFailed: "We could not make the PDF here. Use Print and choose Save as PDF instead.",
+  loading: "Loading…",
 };
 
 /** Arabic plural forms for "N items": 1, 2, 3–10, 11+. */
@@ -471,6 +473,7 @@ const ar: Messages = {
   downloadPdf: "تنزيل PDF",
   preparingPdf: "جارٍ تجهيز الملف…",
   pdfFailed: "تعذّر إنشاء ملف PDF هنا. استخدم الطباعة واختر الحفظ كـ PDF.",
+  loading: "جارٍ التحميل…",
 };
 
 export const messages: Record<Language, Messages> = { en, ar };

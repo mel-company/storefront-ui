@@ -3,6 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, iconSchema } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { NotFound } from "./NotFound";
+import { NotFoundSkeleton } from "../_shared/skeleton/sections";
 
 export const notFoundDefinition = defineSection({
   id: "error.notFound",
@@ -22,6 +23,7 @@ export const notFoundDefinition = defineSection({
     { name: "Default", props: {} },
     { name: "Own words", props: { icon: "leaf", title: "This page has moved on", text: "Try the shop instead.", showShopAll: false, tone: "muted" } },
   ],
+  skeleton: NotFoundSkeleton,
   render: function NotFoundPreset(props) {
     return <NotFound {...props} />;
   },

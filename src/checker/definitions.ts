@@ -24,6 +24,12 @@ const VARIANTS: Required<Pick<RenderOptions, "mode" | "dir">>[] = [
   { mode: "dark", dir: "rtl" },
 ];
 
+/** Skeletons have no data to vary, so two opposite corners are enough. */
+const SKELETON_VARIANTS: typeof VARIANTS = [
+  { mode: "light", dir: "ltr" },
+  { mode: "dark", dir: "rtl" },
+];
+
 const ID = /^[a-z][a-z0-9]*(\.[a-z][a-zA-Z0-9]*)+$/;
 
 function checkMeta(definition: ComponentDefinition | SectionDefinition | PageDefinition): { issues: CheckIssue[]; checks: number } {
@@ -86,7 +92,43 @@ export function checkComponent(definition: ComponentDefinition | SectionDefiniti
     }
   }
 
+  if (definition.kind === "section") {
+    const skeleton = checkSkeleton(definition, { theme, registry, parse });
+    issues.push(...skeleton.issues);
+    checks += skeleton.checks;
+  }
+
   return toReport(definition.id, definition.kind, dedupe(issues), checks);
+}
+
+/** Every section has a skeleton: same landmark, marked busy, and it passes the DOM rules in light/LTR and dark/RTL. */
+function checkSkeleton(definition: SectionDefinition, { theme, registry, parse }: { theme: Theme; registry: Registry; parse: HtmlParser }) {
+  if (!definition.skeleton) {
+    return { issues: [{ severity: "error" as const, rule: "section.skeleton", message: "Add a skeleton: the loading version of this section." }], checks: 1 };
+  }
+  const issues: CheckIssue[] = [];
+  let checks = 1;
+  for (const example of definition.examples) {
+    if (!definition.props.safeParse(example.props).success) continue;
+    for (const variant of SKELETON_VARIANTS) {
+      const where = `skeleton · ${example.name} · ${variant.mode} · ${variant.dir}`;
+      const result = renderAndCheck(() => toHtml(exampleElement(definition, example, { ...variant, theme, registry, skeleton: true })), where, parse);
+      issues.push(...result.issues);
+      checks += result.checks + 1;
+      if (result.root) {
+        const shape = checkSectionShape(definition, result.root, where);
+        issues.push(...shape.issues);
+        checks += shape.checks;
+        if (!result.root.querySelector("[aria-busy='true']")) {
+          issues.push({ severity: "error", rule: "skeleton.busy", where, message: "Mark the skeleton's landmark aria-busy so screen readers know it is loading." });
+        }
+        if (result.root.querySelector("a, button, input, select, textarea")) {
+          issues.push({ severity: "error", rule: "skeleton.interactive", where, message: "A skeleton has nothing to press or fill in." });
+        }
+      }
+    }
+  }
+  return { issues, checks };
 }
 
 function checkSectionShape(definition: SectionDefinition, root: Element, where: string) {
@@ -207,6 +249,13 @@ export function checkPage(
       if (result.root.querySelectorAll("main").length !== 1) issues.push({ severity: "error", rule: "page.main", where, message: "A page needs exactly one <main>." });
     }
     if (issues.some((issue) => issue.severity === "error")) break;
+  }
+  // The loading page: every section as its skeleton, still one <main>.
+  const loading = renderAndCheck(() => toHtml(pageElement(composition, context, { mode: "light", dir: "ltr", theme, registry, preview: options.preview, skeleton: true })), "skeleton", parse);
+  issues.push(...loading.issues);
+  checks += loading.checks + 1;
+  if (loading.root && loading.root.querySelectorAll("main").length !== 1) {
+    issues.push({ severity: "error", rule: "page.main", where: "skeleton", message: "A page needs exactly one <main>." });
   }
   return toReport(composition.page, "page", dedupe(issues), checks);
 }

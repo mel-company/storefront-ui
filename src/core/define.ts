@@ -39,6 +39,11 @@ export interface SectionDefinition<Schema extends z.ZodTypeAny = z.ZodTypeAny>
   pages: PageType[];
   /** Header and footer sit once per page, first and last. */
   placement?: "header" | "footer" | "body";
+  /**
+   * The loading version: the same layout as grey shapes, shown while the
+   * page's data loads. Gets the same props. The checker requires one.
+   */
+  skeleton?: ComponentType<z.output<Schema>>;
 }
 
 export interface SectionInstance {

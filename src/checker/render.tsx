@@ -20,6 +20,8 @@ export interface RenderOptions {
   registry?: Registry;
   /** Demo store language. Defaults to Arabic for `rtl` and English for `ltr`. */
   language?: Language;
+  /** Render the skeleton (sections) or every section's skeleton (pages). */
+  skeleton?: boolean;
 }
 
 /** An English option value (e.g. `30 ml`) as the same value in the given store's products. */
@@ -73,7 +75,7 @@ export function exampleElement(
   example: Example<unknown>,
   options: RenderOptions = {},
 ): ReactElement {
-  const Render = definition.render;
+  const Render = (options.skeleton && definition.kind === "section" && definition.skeleton) || definition.render;
   const props = definition.props.parse(example.props);
   return (
     <PreviewFrame store={previewStore(example, languageFor(options))} options={options}>
@@ -89,7 +91,7 @@ export function pageElement(
 ) {
   return (
     <PreviewFrame store={previewStore(options.preview, languageFor(options))} options={options}>
-      <PageRenderer composition={composition} context={context} />
+      <PageRenderer composition={composition} context={context} loading={options.skeleton} />
     </PreviewFrame>
   );
 }

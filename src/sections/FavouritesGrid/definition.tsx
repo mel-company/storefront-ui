@@ -4,6 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField, toneField } from "../_shared/shared-props";
 import { FavouritesGrid } from "./FavouritesGrid";
+import { FavouritesGridSkeleton } from "../_shared/skeleton/sections";
 
 export const favouritesGridDefinition = defineSection({
   id: "favourites.grid",
@@ -25,6 +26,7 @@ export const favouritesGridDefinition = defineSection({
     { name: "Boxed cards, 3 columns", props: { title: "Saved for later", columns: 3, card: { variant: "boxed" }, tone: "muted" }, favourites: ["p2", "p3", "p5"] },
     { name: "Empty", props: {} },
   ],
+  skeleton: FavouritesGridSkeleton,
   render: function FavouritesGridPreset(props) {
     return <FavouritesGrid {...props} />;
   },

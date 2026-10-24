@@ -2,6 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { CartSummary } from "./CartSummary";
+import { CartSummarySkeleton } from "../_shared/skeleton/sections";
 
 export const cartSummaryDefinition = defineSection({
   id: "cart.summary",
@@ -21,6 +22,7 @@ export const cartSummaryDefinition = defineSection({
     { name: "With items", props: {}, cart: [{ productId: "p1", quantity: 1, options: { size: "50 ml" } }, { productId: "p6", quantity: 2 }] },
     { name: "Empty", props: {} },
   ],
+  skeleton: CartSummarySkeleton,
   render: function CartSummaryPreset(props) {
     return <CartSummary {...props} />;
   },

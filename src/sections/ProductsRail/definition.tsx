@@ -2,6 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { productsSectionProps } from "../ProductsGrid/definition";
 import { ProductsRail } from "./ProductsRail";
+import { ProductsRailSkeleton } from "../_shared/skeleton/sections";
 
 export const productsRailDefinition = defineSection({
   id: "products.rail",
@@ -17,6 +18,7 @@ export const productsRailDefinition = defineSection({
     { name: "New arrivals", props: { title: "New arrivals", source: { tag: "new" }, visible: 3 } },
     { name: "Overlay cards", props: { eyebrow: "Editors' picks", title: "Picked for you", source: { sort: "rating", limit: 6 }, card: { variant: "overlay", imageRatio: "tall" } } },
   ],
+  skeleton: ProductsRailSkeleton,
   render: function ProductsRailPreset(props) {
     return <ProductsRail {...props} />;
   },
