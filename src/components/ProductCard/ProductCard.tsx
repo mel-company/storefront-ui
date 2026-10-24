@@ -7,6 +7,7 @@ import { Media, type MediaRatio } from "../Media/Media";
 import { Price } from "../Price/Price";
 import { Rating } from "../Rating/Rating";
 import styles from "./ProductCard.module.css";
+import { useMessages } from "../../i18n";
 
 export type ProductCardVariant = "standard" | "boxed" | "overlay" | "minimal" | "horizontal";
 
@@ -34,6 +35,7 @@ export function ProductCard({
 }: ProductCardProps) {
   const store = useStore();
   const Link = useLink();
+  const m = useMessages();
   const product = useProduct(productId);
   if (!product) return null;
 
@@ -57,9 +59,9 @@ export function ProductCard({
         <Media src={product.images[0] ?? ""} alt="" ratio={variant === "horizontal" ? "square" : imageRatio} />
         {variant !== "minimal" && (
           <div className={styles.badges}>
-            {soldOut && <Badge>Sold out</Badge>}
-            {onSale && !soldOut && <Badge tone="danger">Sale</Badge>}
-            {product.tags.includes("new") && !soldOut && <Badge tone="accent">New</Badge>}
+            {soldOut && <Badge>{m.soldOut}</Badge>}
+            {onSale && !soldOut && <Badge tone="danger">{m.sale}</Badge>}
+            {product.tags.includes("new") && !soldOut && <Badge tone="accent">{m.new}</Badge>}
           </div>
         )}
         {showFavourite && variant !== "minimal" && <Favourite productId={product.id} className={styles.favourite} />}
@@ -75,7 +77,7 @@ export function ProductCard({
         )}
         <div className={styles.meta}>
           <Price amount={product.price} compareAt={product.compareAtPrice} />
-          {lowStock && <Badge tone="warning">Only {product.stock} left</Badge>}
+          {lowStock && <Badge tone="warning">{m.onlyLeft(product.stock)}</Badge>}
           {canQuickAdd && variant !== "overlay" && (
             <span className={styles.quickAdd}>
               <AddToCart productId={product.id} compact size="sm" variant="secondary" />

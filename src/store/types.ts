@@ -1,4 +1,5 @@
 import type { ComponentType, ReactNode } from "react";
+import type { Messages } from "../i18n/messages";
 
 export interface ProductOption {
   /** e.g. `size`, `color`. */
@@ -76,6 +77,8 @@ export interface StoreInfo {
   deliveryFee: number;
   contact?: { phone?: string; whatsapp?: string; email?: string; address?: string };
   social?: { instagram?: string; tiktok?: string; facebook?: string };
+  /** Replace any built-in text. The language itself follows `locale`. */
+  messages?: Partial<Messages>;
 }
 
 export interface LinkProps {

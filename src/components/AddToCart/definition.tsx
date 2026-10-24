@@ -10,7 +10,7 @@ export const addToCartDefinition = defineComponent({
   tags: ["commerce", "cart", "action"],
   props: z.object({
     productId: z.string().min(1).describe("Product id"),
-    label: field.text("Button label", 28).default("Add to cart"),
+    label: field.optionalText("Button label. Leave out for the built-in text in the store's language", 28),
     variant: field.choice("Style", ["primary", "secondary", "ghost"], "primary"),
     fullWidth: field.flag("Full width", false),
     compact: field.flag("Icon only", false),

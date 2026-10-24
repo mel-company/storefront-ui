@@ -5,6 +5,7 @@ import type { Route } from "../../store/types";
 import { cx } from "../../utils";
 import { containerClassName } from "../_shared/Section";
 import styles from "./HeaderBar.module.css";
+import { useMessages } from "../../i18n";
 
 export interface HeaderLink {
   label: string;
@@ -24,6 +25,7 @@ export interface HeaderBarProps {
 export function HeaderBar({ layout = "classic", links, announcement, showSearch = true, showFavourites = true }: HeaderBarProps) {
   const store = useStore();
   const Link = useLink();
+  const m = useMessages();
   const categories = useCategories();
   const { count } = useCart();
   const favourites = useFavourites();
@@ -34,7 +36,7 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
     links && links.length > 0
       ? links
       : [
-          { label: "Shop all", route: { to: "catalogue" } },
+          { label: m.shopAll, route: { to: "catalogue" } },
           ...categories.slice(0, 4).map((category) => ({ label: category.name, route: { to: "category", slug: category.slug } as Route })),
         ];
 
@@ -48,7 +50,7 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
             className={styles.menuButton}
             aria-expanded={open}
             aria-controls={drawerId}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? m.closeMenu : m.openMenu}
             onClick={() => setOpen((value) => !value)}
           >
             <Icon name={open ? "close" : "menu"} />
@@ -56,7 +58,7 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
           <Link href={store.href({ to: "home" })} className={styles.brand}>
             {store.info.name}
           </Link>
-          <nav className={styles.nav} aria-label="Main">
+          <nav className={styles.nav} aria-label={m.mainMenu}>
             <ul className={styles.navList}>
               {items.map((item) => (
                 <li key={item.label}>
@@ -69,7 +71,7 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
           </nav>
           <div className={styles.actions}>
             {showSearch && (
-              <Link href={store.href({ to: "catalogue" })} className={styles.iconLink} aria-label="Search">
+              <Link href={store.href({ to: "catalogue" })} className={styles.iconLink} aria-label={m.search}>
                 <Icon name="search" />
               </Link>
             )}
@@ -77,20 +79,20 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
               <Link
                 href={store.href({ to: "favourites" })}
                 className={styles.iconLink}
-                aria-label={`Favourites, ${favourites.ids.length} saved`}
+                aria-label={m.favouritesCount(favourites.ids.length)}
               >
                 <Icon name="heart" />
                 {favourites.ids.length > 0 && <span className={styles.count} aria-hidden="true">{favourites.ids.length}</span>}
               </Link>
             )}
-            <Link href={store.href({ to: "cart" })} className={styles.iconLink} aria-label={`Cart, ${count} items`}>
+            <Link href={store.href({ to: "cart" })} className={styles.iconLink} aria-label={m.cartCount(count)}>
               <Icon name="cart" />
               {count > 0 && <span className={styles.count} aria-hidden="true">{count}</span>}
             </Link>
           </div>
         </div>
         {open && (
-          <nav id={drawerId} className={styles.drawer} aria-label="Mobile">
+          <nav id={drawerId} className={styles.drawer} aria-label={m.mobileMenu}>
             <ul className={styles.drawerList}>
               {items.map((item) => (
                 <li key={item.label}>

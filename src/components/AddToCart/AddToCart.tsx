@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useProduct, useStore } from "../../store";
 import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
+import { useMessages } from "../../i18n";
 
 export interface AddToCartProps {
   productId: string;
@@ -19,13 +20,14 @@ export function AddToCart({
   productId,
   quantity = 1,
   options = {},
-  label = "Add to cart",
+  label,
   variant = "primary",
   size = "md",
   fullWidth = false,
   compact = false,
 }: AddToCartProps) {
   const store = useStore();
+  const m = useMessages();
   const product = useProduct(productId);
   const [added, setAdded] = useState(false);
 
@@ -40,7 +42,7 @@ export function AddToCart({
   const soldOut = product.stock <= 0;
   const missing = (product.options ?? []).filter((option) => !options[option.id]);
   const disabled = soldOut || missing.length > 0;
-  const text = soldOut ? "Sold out" : added ? "Added" : label;
+  const text = soldOut ? m.soldOut : added ? m.added : label || m.addToCart;
 
   return (
     <Button
@@ -49,7 +51,7 @@ export function AddToCart({
       fullWidth={fullWidth}
       icon={added ? "check" : "bag"}
       disabled={disabled}
-      title={missing.length ? `Choose ${missing.map((option) => option.name.toLowerCase()).join(" and ")}` : undefined}
+      title={missing.length ? m.chooseOptions(missing.map((option) => option.name)) : undefined}
       aria-label={compact ? `${text}: ${product.name}` : undefined}
       onClick={() => {
         store.addToCart(product.id, quantity, options);

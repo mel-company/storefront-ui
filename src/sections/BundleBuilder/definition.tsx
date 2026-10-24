@@ -15,7 +15,7 @@ export const bundleBuilderDefinition = defineSection({
     ...headingFields,
     source: productSourceSchema,
     pickCount: field.count("Products in a set", 2, 6, 3),
-    addLabel: field.text("Button label", 32).default("Add set to cart"),
+    addLabel: field.optionalText("Button label. Leave out for the built-in text in the store's language", 32),
     tone: toneField,
   }),
   examples: [

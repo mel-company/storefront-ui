@@ -13,7 +13,7 @@ export const footerColumnsDefinition = defineSection({
   placement: "footer",
   props: z.object({
     about: field.optionalText("About the store", 200),
-    legal: field.text("Line after the copyright", 80).default("All rights reserved."),
+    legal: field.optionalText("Line after the copyright. Leave out for the built-in text in the store's language", 80),
   }),
   examples: [{ name: "Default", props: { about: "Small-batch skincare, scent and home goods." } }],
   render: function FooterColumnsPreset(props) {

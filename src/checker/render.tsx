@@ -2,7 +2,8 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ComponentDefinition, Example, SectionDefinition } from "../core/define";
 import type { Registry } from "../core/registry";
-import { createDemoStore } from "../demo";
+import { createDemoStore, demoProducts } from "../demo";
+import type { Language } from "../i18n/messages";
 import { PageRenderer } from "../pages/PageRenderer";
 import type { PageCompositionInput } from "../pages/composition";
 import { builtInRegistry } from "../registry";
@@ -17,14 +18,35 @@ export interface RenderOptions {
   mode?: ColorMode;
   dir?: Direction;
   registry?: Registry;
+  /** Demo store language. Defaults to Arabic for `rtl` and English for `ltr`. */
+  language?: Language;
+}
+
+/** An English option value (e.g. `30 ml`) as the same value in the given store's products. */
+function localOptions(store: StoreClient, productId: string, options: Record<string, string> = {}) {
+  const source = demoProducts.find((product) => product.id === productId);
+  const target = store.getSnapshot().products.find((product) => product.id === productId);
+  return Object.fromEntries(
+    Object.entries(options).map(([id, value]) => {
+      const index = source?.options?.find((option) => option.id === id)?.values.indexOf(value) ?? -1;
+      return [id, target?.options?.find((option) => option.id === id)?.values[index] ?? value];
+    }),
+  );
+}
+
+/** Puts an example's cart into a store, in that store's language. */
+export function fillCart(store: StoreClient, cart: Example<unknown>["cart"] = []) {
+  cart.forEach((line) => store.addToCart(line.productId, line.quantity, localOptions(store, line.productId, line.options)));
 }
 
 /** A fresh demo store with the example's cart already filled. */
-export function previewStore(example?: Pick<Example<unknown>, "cart">): StoreClient {
-  const store = createDemoStore();
-  example?.cart?.forEach((line) => store.addToCart(line.productId, line.quantity, line.options));
+export function previewStore(example?: Pick<Example<unknown>, "cart">, language: Language = "en"): StoreClient {
+  const store = createDemoStore({ language });
+  fillCart(store, example?.cart);
   return store;
 }
+
+const languageFor = (options: RenderOptions): Language => options.language ?? (options.dir === "rtl" ? "ar" : "en");
 
 export function PreviewFrame({ store, options, children }: { store: StoreClient; options: RenderOptions; children: ReactElement }) {
   return (
@@ -48,7 +70,7 @@ export function exampleElement(
   const Render = definition.render;
   const props = definition.props.parse(example.props);
   return (
-    <PreviewFrame store={previewStore(example)} options={options}>
+    <PreviewFrame store={previewStore(example, languageFor(options))} options={options}>
       <Render {...props} />
     </PreviewFrame>
   );
@@ -56,7 +78,7 @@ export function exampleElement(
 
 export function pageElement(composition: PageCompositionInput, context: PageContextValue = {}, options: RenderOptions = {}) {
   return (
-    <PreviewFrame store={previewStore()} options={options}>
+    <PreviewFrame store={previewStore(undefined, languageFor(options))} options={options}>
       <PageRenderer composition={composition} context={context} />
     </PreviewFrame>
   );

@@ -11,10 +11,10 @@ export const cartSummaryDefinition = defineSection({
   uses: ["cart.line", "cart.freeDeliveryProgress", "ui.button"],
   pages: ["cart"],
   props: z.object({
-    title: field.text("Title", 40).default("Your cart"),
-    checkoutLabel: field.text("Checkout button", 28).default("Checkout"),
-    emptyTitle: field.text("Title when empty", 60).default("Your cart is empty"),
-    emptyText: field.text("Text when empty", 160).default("Find something you love and it will wait for you here."),
+    title: field.optionalText("Title. Leave out for the built-in text in the store's language", 40),
+    checkoutLabel: field.optionalText("Checkout button. Leave out for the built-in text in the store's language", 28),
+    emptyTitle: field.optionalText("Title when empty. Leave out for the built-in text in the store's language", 60),
+    emptyText: field.optionalText("Text when empty. Leave out for the built-in text in the store's language", 160),
     showFreeDelivery: field.flag("Show free-delivery progress", true),
   }),
   examples: [

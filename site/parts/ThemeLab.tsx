@@ -13,16 +13,18 @@ import {
   type Theme,
 } from "../../src";
 import { useSettings } from "../settings";
+import { useT } from "../i18n";
 import { CheckBadge, CheckIssues } from "./CheckResult";
 
 const EDITABLE: (keyof Palette)[] = ["background", "surface", "text", "textMuted", "accent", "accentText"];
 
 /** The global theme checker, live: edit colours and watch contrast pass or fail. */
 export function ThemeLab() {
-  const { theme: base, mode } = useSettings();
+  const { theme: base, mode, lang } = useSettings();
+  const t = useT();
   const [draft, setDraft] = useState<Theme>(base);
   const [editMode, setEditMode] = useState<ColorMode>(mode);
-  const [store] = useState(createDemoStore);
+  const store = useMemo(() => createDemoStore({ language: lang }), [lang]);
 
   useEffect(() => setDraft(base), [base]);
   useEffect(() => setEditMode(mode), [mode]);
@@ -98,16 +100,16 @@ export function ThemeLab() {
           </button>
         </div>
         <div className="panel lab-preview">
-          <ThemeProvider theme={draft} mode={editMode}>
+          <ThemeProvider theme={draft} mode={editMode} dir={lang === "ar" ? "rtl" : "ltr"}>
             <StoreProvider store={store}>
               <div className="lab-sample">
                 <ProductCard productId="p1" variant="boxed" imageRatio="square" />
                 <ProductCard productId="p2" variant="boxed" imageRatio="square" />
               </div>
               <div className="lab-actions">
-                <ButtonLink route={{ to: "catalogue" }}>Primary</ButtonLink>
+                <ButtonLink route={{ to: "catalogue" }}>{t("Primary")}</ButtonLink>
                 <ButtonLink route={{ to: "cart" }} variant="secondary">
-                  Secondary
+                  {t("Secondary")}
                 </ButtonLink>
               </div>
             </StoreProvider>

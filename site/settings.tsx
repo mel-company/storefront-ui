@@ -9,6 +9,8 @@ interface Settings {
   mode: ColorMode;
   dir: Direction;
   setDir: (dir: Direction) => void;
+  /** RTL shows every preview in Arabic. The site itself stays English. */
+  lang: "en" | "ar";
   theme: Theme;
 }
 
@@ -40,6 +42,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const system = useSystemColorMode();
   const mode = preference === "system" ? system : preference;
 
+  const lang = dir === "rtl" ? "ar" : "en";
+
   useEffect(() => {
     document.documentElement.dataset.theme = mode;
   }, [mode]);
@@ -62,9 +66,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setDirState(next);
         write("sfui.dir", next);
       },
+      lang,
       theme: themes[themeId],
     }),
-    [themeId, preference, mode, dir],
+    [themeId, preference, mode, dir, lang],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

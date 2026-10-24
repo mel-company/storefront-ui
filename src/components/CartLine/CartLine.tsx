@@ -3,6 +3,7 @@ import { Media } from "../Media/Media";
 import { Price } from "../Price/Price";
 import { QuantityStepper } from "../QuantityStepper/QuantityStepper";
 import styles from "./CartLine.module.css";
+import { useMessages } from "../../i18n";
 
 export interface CartLineProps {
   lineKey: string;
@@ -11,6 +12,7 @@ export interface CartLineProps {
 export function CartLine({ lineKey }: CartLineProps) {
   const store = useStore();
   const Link = useLink();
+  const m = useMessages();
   const line = useCart().lines.find((item) => item.key === lineKey);
   if (!line) return null;
   const { product } = line;
@@ -30,11 +32,11 @@ export function CartLine({ lineKey }: CartLineProps) {
         <QuantityStepper
           value={line.quantity}
           max={product.stock}
-          label={`Quantity of ${product.name}`}
+          label={m.quantityOf(product.name)}
           onChange={(quantity) => store.setQuantity(line.key, quantity)}
         />
         <button type="button" className={styles.remove} onClick={() => store.removeFromCart(line.key)}>
-          Remove<span className="msu-visually-hidden"> {product.name}</span>
+          {m.remove}<span className="msu-visually-hidden"> {product.name}</span>
         </button>
       </div>
     </div>

@@ -13,7 +13,7 @@ export const catalogueBrowseDefinition = defineSection({
   uses: ["catalogue.search", "catalogue.categoryChips", "product.card", "ui.button"],
   pages: ["catalogue"],
   props: z.object({
-    title: field.text("Title", 60).default("All products"),
+    title: field.optionalText("Title. Leave out for the built-in text in the store's language", 60),
     showSearch: field.flag("Show search", true),
     showCategories: field.flag("Show category chips", true),
     showSort: field.flag("Show sort", true),

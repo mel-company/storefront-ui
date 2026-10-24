@@ -7,6 +7,7 @@ import { useProducts, useStore } from "../../store";
 import type { ProductQuery } from "../../store/types";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./BundleBuilder.module.css";
+import { useMessages } from "../../i18n";
 
 export interface BundleBuilderProps {
   eyebrow?: string;
@@ -29,11 +30,12 @@ export function BundleBuilder({
   subtitle,
   source,
   pickCount = 3,
-  addLabel = "Add set to cart",
+  addLabel,
   tone,
 }: BundleBuilderProps) {
   const headingId = useId();
   const store = useStore();
+  const m = useMessages();
   const [picked, setPicked] = useState<string[]>([]);
   const [added, setAdded] = useState(false);
   const products = useProducts(source).filter((product) => product.stock > 0 && !product.options?.length);
@@ -81,7 +83,7 @@ export function BundleBuilder({
             );
           })}
         </ul>
-        <aside className={styles.summary} aria-label="Your set">
+        <aside className={styles.summary} aria-label={m.yourSet}>
           <ul className={styles.slots}>
             {Array.from({ length: pickCount }, (_, index) => {
               const product = chosen[index];
@@ -89,14 +91,14 @@ export function BundleBuilder({
             })}
           </ul>
           <p className={styles.status} aria-live="polite">
-            {added ? "Your set is in the cart." : full ? "Your set is ready." : `Pick ${pickCount - chosen.length} more.`}
+            {added ? m.setAdded : full ? m.setReady : m.pickMore(pickCount - chosen.length)}
           </p>
           <p className={styles.total}>
-            <span>Total</span>
+            <span>{m.total}</span>
             <Price amount={total} size="lg" />
           </p>
           <Button fullWidth icon="bag" disabled={!full} onClick={addSet}>
-            {addLabel}
+            {addLabel || m.addSet}
           </Button>
         </aside>
       </div>

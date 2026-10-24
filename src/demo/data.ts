@@ -79,3 +79,49 @@ export const demoBanners = {
   cool: bannerArt("#dfe6fb", "#9fb0f0", "#c9d4ff"),
   green: bannerArt("#e3f1df", "#9ccc95", "#d4f0cc"),
 };
+
+/** The same store in Arabic: Iraqi dinars, Arabic names, same ids and slugs so links and compositions still work. */
+export const demoInfoAr: StoreInfo = {
+  name: "أتيليه",
+  currency: "IQD",
+  // Western digits, as most Iraqi stores show prices.
+  locale: "ar-IQ-u-nu-latn",
+  freeDeliveryThreshold: 80000,
+  deliveryFee: 5000,
+  contact: { phone: "+964 770 000 0100", whatsapp: "+9647700000100", email: "hello@atelier.example", address: "شارع السوق 12، بغداد" },
+  social: demoInfo.social,
+};
+
+const AR_CATEGORIES: Record<string, string> = { skin: "العناية بالبشرة", scent: "العطور", home: "المنزل", carry: "الإكسسوارات" };
+
+const AR_PRODUCTS: Record<string, Pick<Product, "name" | "description"> & { options?: Product["options"] }> = {
+  p1: {
+    name: "كريم الغيمة",
+    description: "مرطب يومي خفيف بالشوفان والسكوالان. يمتصه الجلد في ثوانٍ.",
+    options: [{ id: "size", name: "الحجم", values: ["30 مل", "50 مل"] }],
+  },
+  p2: { name: "سيروم الندى", description: "سيروم بحمض الهيالورونيك لإشراقة تدوم طوال اليوم." },
+  p3: { name: "بلسم الليل", description: "بلسم ليلي غني بالسيراميد." },
+  p4: {
+    name: "عطر التين",
+    description: "تين أخضر وخشب الأرز ولمسة من الملح.",
+    options: [{ id: "size", name: "الحجم", values: ["50 مل", "100 مل"] }],
+  },
+  p5: { name: "رذاذ العنبر", description: "رذاذ دافئ بالعنبر للغرف والمفارش." },
+  p6: { name: "شمعة الكتان", description: "شمعة من شمع الصويا تدوم 45 ساعة. قطن نظيف وشاي أبيض." },
+  p7: { name: "مزهرية حجرية", description: "مزهرية خزفية مزججة يدوياً." },
+  p8: {
+    name: "حقيبة السوق",
+    description: "حقيبة قماشية متينة بجيب داخلي.",
+    options: [{ id: "color", name: "اللون", values: ["رملي", "كحلي"] }],
+  },
+};
+
+export const demoCategoriesAr: Category[] = demoCategories.map((category) => ({ ...category, name: AR_CATEGORIES[category.id] ?? category.name }));
+
+export const demoProductsAr: Product[] = demoProducts.map((product) => ({
+  ...product,
+  ...AR_PRODUCTS[product.id],
+  price: product.price * 1000,
+  compareAtPrice: product.compareAtPrice === undefined ? undefined : product.compareAtPrice * 1000,
+}));

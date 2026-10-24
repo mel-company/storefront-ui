@@ -13,6 +13,7 @@ import { cx } from "../../utils";
 import { usePageContext } from "../_shared/PageContext";
 import { Section } from "../_shared/Section";
 import styles from "./ProductDetail.module.css";
+import { useMessages } from "../../i18n";
 
 export interface ProductDetailProps {
   /** Defaults to the product the page is about. */
@@ -26,6 +27,7 @@ export interface ProductDetailProps {
 export function ProductDetail({ productId, details = [], stickyBuyBar = true, lowStockAt = 5 }: ProductDetailProps) {
   const headingId = useId();
   const page = usePageContext();
+  const m = useMessages();
   const product = useProduct(productId ?? page.productSlug);
   const [imageIndex, setImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -50,7 +52,7 @@ export function ProductDetail({ productId, details = [], stickyBuyBar = true, lo
                     type="button"
                     className={styles.thumb}
                     aria-current={index === imageIndex}
-                    aria-label={`Show image ${index + 1}`}
+                    aria-label={m.showImage(index + 1)}
                     onClick={() => setImageIndex(index)}
                   >
                     <Media src={src} alt="" ratio="square" />
@@ -61,14 +63,14 @@ export function ProductDetail({ productId, details = [], stickyBuyBar = true, lo
           )}
         </div>
         <div className={styles.info}>
-          {product.tags.includes("new") && <Badge tone="accent">New</Badge>}
+          {product.tags.includes("new") && <Badge tone="accent">{m.new}</Badge>}
           <h1 id={headingId} className={styles.title}>
             {product.name}
           </h1>
           {product.rating !== undefined && <Rating value={product.rating} count={product.reviewCount} />}
           <Price amount={product.price} compareAt={product.compareAtPrice} size="lg" />
           <p className={cx(styles.stock, soldOut ? styles.out : low ? styles.low : styles.inStock)}>
-            {soldOut ? "Sold out" : low ? `Only ${product.stock} left` : "In stock"}
+            {soldOut ? m.soldOut : low ? m.onlyLeft(product.stock) : m.inStock}
           </p>
           <p className={styles.description}>{product.description}</p>
           {product.options?.map((option) => (

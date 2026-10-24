@@ -1,5 +1,6 @@
 import styles from "./Countdown.module.css";
 import { useNow } from "./useNow";
+import { useMessages } from "../../i18n";
 
 export interface CountdownProps {
   /** ISO date-time the offer ends. */
@@ -8,8 +9,6 @@ export interface CountdownProps {
   now?: number;
   labels?: { days: string; hours: string; minutes: string; seconds: string };
 }
-
-const DEFAULT_LABELS = { days: "Days", hours: "Hours", minutes: "Min", seconds: "Sec" };
 
 export function splitDuration(ms: number) {
   const total = Math.max(0, Math.floor(ms / 1000));
@@ -22,7 +21,8 @@ export function splitDuration(ms: number) {
 }
 
 /** Renders nothing once the date has passed, so an old offer never shows zeros. */
-export function Countdown({ endsAt, now: fixedNow, labels = DEFAULT_LABELS }: CountdownProps) {
+export function Countdown({ endsAt, now: fixedNow, labels }: CountdownProps) {
+  const m = useMessages();
   const ticking = useNow(1000, fixedNow);
   const now = fixedNow ?? ticking;
   const remaining = Date.parse(endsAt) - now;
@@ -30,11 +30,11 @@ export function Countdown({ endsAt, now: fixedNow, labels = DEFAULT_LABELS }: Co
   const parts = splitDuration(remaining);
   const units = ["days", "hours", "minutes", "seconds"] as const;
   return (
-    <div className={styles.countdown} role="timer" aria-label={`Ends in ${parts.days} days ${parts.hours} hours ${parts.minutes} minutes`}>
+    <div className={styles.countdown} role="timer" aria-label={m.endsIn(parts.days, parts.hours, parts.minutes)}>
       {units.map((unit) => (
         <span key={unit} className={styles.unit} aria-hidden="true">
           <span className={styles.value}>{String(parts[unit]).padStart(2, "0")}</span>
-          <span className={styles.label}>{labels[unit]}</span>
+          <span className={styles.label}>{(labels ?? m.countdown)[unit]}</span>
         </span>
       ))}
     </div>
