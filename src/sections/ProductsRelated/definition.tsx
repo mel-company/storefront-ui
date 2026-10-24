@@ -12,7 +12,7 @@ export const productsRelatedDefinition = defineSection({
   uses: ["product.card", "ui.sectionHeading", "ui.button"],
   pages: ["product", "cart"],
   props: z.object({
-    title: field.text("Title", 60).default("You may also like"),
+    title: field.optionalText("Title. Leave out for the built-in text in the store's language", 60),
     productId: z.string().optional().describe("Leave empty to use the product of the current page"),
     limit: field.count("How many", 2, 12, 8),
     card: productCardOptions.partial().default({}),

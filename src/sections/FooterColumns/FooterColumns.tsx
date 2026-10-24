@@ -2,6 +2,7 @@ import { Icon } from "../../icons";
 import { useCategories, useLink, useStore } from "../../store";
 import { containerClassName } from "../_shared/Section";
 import styles from "./FooterColumns.module.css";
+import { useMessages } from "../../i18n";
 
 export interface FooterColumnsProps {
   about?: string;
@@ -10,9 +11,10 @@ export interface FooterColumnsProps {
 }
 
 /** Categories, help links, contact and social from the store's own settings. Once per page, last. */
-export function FooterColumns({ about, legal = "All rights reserved." }: FooterColumnsProps) {
+export function FooterColumns({ about, legal }: FooterColumnsProps) {
   const store = useStore();
   const Link = useLink();
+  const m = useMessages();
   const categories = useCategories();
   const { contact, social, name } = store.info;
 
@@ -39,10 +41,10 @@ export function FooterColumns({ about, legal = "All rights reserved." }: FooterC
             )}
           </div>
           <nav className={styles.column} aria-labelledby="msu-footer-shop">
-            <h2 id="msu-footer-shop">Shop</h2>
+            <h2 id="msu-footer-shop">{m.shop}</h2>
             <ul className={styles.list}>
               <li>
-                <Link href={store.href({ to: "catalogue" })}>All products</Link>
+                <Link href={store.href({ to: "catalogue" })}>{m.allProducts}</Link>
               </li>
               {categories.map((category) => (
                 <li key={category.id}>
@@ -52,19 +54,19 @@ export function FooterColumns({ about, legal = "All rights reserved." }: FooterC
             </ul>
           </nav>
           <nav className={styles.column} aria-labelledby="msu-footer-help">
-            <h2 id="msu-footer-help">Help</h2>
+            <h2 id="msu-footer-help">{m.help}</h2>
             <ul className={styles.list}>
               <li>
-                <Link href={store.href({ to: "cart" })}>Cart</Link>
+                <Link href={store.href({ to: "cart" })}>{m.cart}</Link>
               </li>
               <li>
-                <Link href={store.href({ to: "favourites" })}>Favourites</Link>
+                <Link href={store.href({ to: "favourites" })}>{m.favourites}</Link>
               </li>
             </ul>
           </nav>
           {contact && (
             <div className={styles.column}>
-              <h2>Contact</h2>
+              <h2>{m.contact}</h2>
               <ul className={styles.list}>
                 {contact.phone && (
                   <li>
@@ -82,7 +84,7 @@ export function FooterColumns({ about, legal = "All rights reserved." }: FooterC
           )}
         </div>
         <p className={`${styles.bottom} ${styles.muted}`}>
-          © {new Date().getFullYear()} {name}. {legal}
+          © {new Date().getFullYear()} {name}. {legal || m.rightsReserved}
         </p>
       </div>
     </footer>

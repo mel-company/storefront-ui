@@ -6,6 +6,7 @@
  */
 export * from "./theme";
 export * from "./store";
+export * from "./i18n";
 export * from "./core";
 export * from "./icons";
 export * from "./components";
@@ -14,5 +15,16 @@ export * from "./pages";
 export * from "./checker";
 export { builtInRegistry } from "./registry";
 export { Storefront, type StorefrontProps } from "./Storefront";
-export { createDemoStore, demoProducts, demoCategories, demoInfo, demoBanners, productArt, bannerArt } from "./demo";
+export {
+  createDemoStore,
+  demoProducts,
+  demoProductsAr,
+  demoCategories,
+  demoCategoriesAr,
+  demoInfo,
+  demoInfoAr,
+  demoBanners,
+  productArt,
+  bannerArt,
+} from "./demo";
 export { buildCatalogue, catalogueSummary, COMPOSITION_RULES, type Catalogue, type CatalogueEntry } from "./catalogue";

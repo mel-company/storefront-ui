@@ -129,3 +129,27 @@ describe("theme", () => {
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
   });
 });
+
+describe("Arabic store", () => {
+  it("uses Arabic built-in text and Iraqi dinars", async () => {
+    const store = createDemoStore({ language: "ar" });
+    const { user } = setup(
+      <>
+        <HeaderBar />
+        <AddToCart productId="p2" />
+        <FreeDeliveryProgress />
+      </>,
+      store,
+    );
+    await user.click(screen.getByRole("button", { name: "أضف إلى السلة" }));
+    expect(screen.getByRole("link", { name: "السلة، 1 قطعة" })).toBeInTheDocument();
+    expect(screen.getByText(/للحصول على توصيل مجاني/).textContent).toMatch(/د\.ع/);
+  });
+
+  it("lets a store replace any built-in text", () => {
+    const base = createDemoStore();
+    const store = { ...base, info: { ...base.info, messages: { addToCart: "Buy now" } } };
+    setup(<AddToCart productId="p2" />, store);
+    expect(screen.getByRole("button", { name: "Buy now" })).toBeInTheDocument();
+  });
+});

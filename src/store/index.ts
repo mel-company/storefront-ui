@@ -4,6 +4,7 @@ export { createMemoryStore, defaultHref, type MemoryStoreData } from "./memory-s
 export {
   StoreProvider,
   useStore,
+  useOptionalStore,
   useStoreSnapshot,
   useProducts,
   useProduct,

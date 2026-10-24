@@ -10,19 +10,14 @@ import { Section } from "../_shared/Section";
 import grid from "../_shared/grid.module.css";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";
 import styles from "./CatalogueBrowse.module.css";
+import { useMessages } from "../../i18n";
 
 type Sort = NonNullable<ProductQuery["sort"]>;
 
-const SORT_LABELS: Record<Sort, string> = {
-  featured: "Featured",
-  newest: "Newest",
-  "price-asc": "Price, low to high",
-  "price-desc": "Price, high to low",
-  rating: "Top rated",
-};
+const SORTS: Sort[] = ["featured", "newest", "price-asc", "price-desc", "rating"];
 
 export interface CatalogueBrowseProps {
-  title: string;
+  title?: string;
   showSearch?: boolean;
   showCategories?: boolean;
   showSort?: boolean;
@@ -41,11 +36,12 @@ export function CatalogueBrowse({
   pageSize = 12,
   columns = 4,
   card,
-  emptyText = "No products match. Try another search.",
+  emptyText,
 }: CatalogueBrowseProps) {
   const headingId = useId();
   const sortId = useId();
   const page = usePageContext();
+  const m = useMessages();
   const categories = useCategories();
   const initialCategory = categories.find((c) => c.slug === page.categorySlug)?.id ?? "";
   const [search, setSearch] = useState("");
@@ -55,7 +51,7 @@ export function CatalogueBrowse({
   const products = useProducts({ search, categoryId: categoryId || undefined, sort });
 
   const shown = products.slice(0, visible);
-  const heading = categories.find((c) => c.id === categoryId)?.name ?? title;
+  const heading = categories.find((c) => c.id === categoryId)?.name ?? (title || m.allProducts);
 
   return (
     <Section labelledBy={headingId}>
@@ -74,27 +70,27 @@ export function CatalogueBrowse({
         )}
         {showCategories && (
           <FilterChips
-            label="Categories"
+            label={m.categories}
             value={categoryId}
             onChange={(value) => {
               setCategoryId(value);
               setVisible(pageSize);
             }}
-            options={[{ value: "", label: "All" }, ...categories.map((c) => ({ value: c.id, label: c.name }))]}
+            options={[{ value: "", label: m.all }, ...categories.map((c) => ({ value: c.id, label: c.name }))]}
           />
         )}
       </div>
       <div className={styles.row}>
         <p className={styles.count} aria-live="polite">
-          {products.length} {products.length === 1 ? "product" : "products"}
+          {m.productCount(products.length)}
         </p>
         {showSort && (
           <label className={styles.sort} htmlFor={sortId}>
-            Sort by
+            {m.sortBy}
             <select id={sortId} className={styles.select} value={sort} onChange={(event) => setSort(event.target.value as Sort)}>
-              {(Object.keys(SORT_LABELS) as Sort[]).map((key) => (
+              {SORTS.map((key) => (
                 <option key={key} value={key}>
-                  {SORT_LABELS[key]}
+                  {m.sort[key]}
                 </option>
               ))}
             </select>
@@ -103,7 +99,7 @@ export function CatalogueBrowse({
       </div>
       {shown.length === 0 ? (
         <div className={styles.empty}>
-          <p>{emptyText}</p>
+          <p>{emptyText || m.noMatch}</p>
           <Button
             variant="secondary"
             onClick={() => {
@@ -111,7 +107,7 @@ export function CatalogueBrowse({
               setCategoryId("");
             }}
           >
-            Clear filters
+            {m.clearFilters}
           </Button>
         </div>
       ) : (
@@ -124,7 +120,7 @@ export function CatalogueBrowse({
       {visible < products.length && (
         <div className={styles.more}>
           <Button variant="secondary" onClick={() => setVisible((value) => value + pageSize)}>
-            Show more
+            {m.showMore}
           </Button>
         </div>
       )}

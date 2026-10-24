@@ -9,7 +9,7 @@ export const searchFieldDefinition = defineComponent({
   name: "Search field",
   description: "Text search input. Inside a catalogue section it filters the product grid.",
   tags: ["catalogue", "input", "search"],
-  props: z.object({ placeholder: field.text("Placeholder", 48).default("Search products") }),
+  props: z.object({ placeholder: field.optionalText("Placeholder. Leave out for the built-in text in the store's language", 48) }),
   examples: [{ name: "Default", props: {} }],
   render: function SearchFieldPreset({ placeholder }) {
     const [value, setValue] = useState("");

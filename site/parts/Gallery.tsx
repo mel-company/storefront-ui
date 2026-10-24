@@ -1,12 +1,13 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { builtInRegistry, checkComponent, checkSection, type CheckReport, type ComponentDefinition, type SectionDefinition } from "../../src";
+import { builtInRegistry, checkComponent, checkSection, fillCart, type CheckReport, type ComponentDefinition, type SectionDefinition } from "../../src";
 import { useSettings } from "../settings";
 import { CheckBadge, CheckIssues } from "./CheckResult";
 import { CodeBlock } from "./CodeBlock";
 import { Frame } from "./Frame";
 import { highlightJson } from "./Highlight";
 import { LivePreview } from "./LivePreview";
+import { translateDeep } from "../i18n";
 
 type Tab = "components" | "sections";
 type Definition = ComponentDefinition | SectionDefinition;
@@ -26,7 +27,7 @@ function runCheck(definition: Definition, theme: ReturnType<typeof useSettings>[
 }
 
 export function Gallery() {
-  const { theme, themeId, mode, dir } = useSettings();
+  const { theme, themeId, mode, dir, lang } = useSettings();
   const [tab, setTab] = useState<Tab>("sections");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string>("hero.split");
@@ -41,6 +42,8 @@ export function Gallery() {
   );
   const selected = items.find((item) => item.id === selectedId) ?? items[0]!;
   const example = selected.examples[exampleIndex] ?? selected.examples[0];
+  // In RTL the example text is shown in Arabic, like a real Arabic store would fill it in.
+  const exampleProps = useMemo(() => translateDeep(lang, example?.props), [lang, example]);
   const report = useMemo(() => runCheck(selected, theme), [selected, theme]);
   const width = DEVICES.find((item) => item.id === device)!.width;
 
@@ -132,9 +135,9 @@ export function Gallery() {
           <div className="preview">
             <Frame key={`${tab}-${width}`} width={width} title={`${selected.name} preview`}>
               {example && (
-                <LivePreview key={previewKey} seed={(store) => example.cart?.forEach((line) => store.addToCart(line.productId, line.quantity, line.options))}>
+                <LivePreview key={previewKey} seed={(store) => fillCart(store, example.cart)}>
                   <div style={{ padding: selected.kind === "component" ? 24 : 0 }}>
-                    <Render {...selected.props.parse(example.props)} />
+                    <Render {...selected.props.parse(exampleProps)} />
                   </div>
                 </LivePreview>
               )}
@@ -150,7 +153,7 @@ export function Gallery() {
               ))}
             </div>
             {panel === "checks" && <CheckIssues report={report} />}
-            {panel === "props" && <Json value={example?.props} />}
+            {panel === "props" && <Json value={exampleProps} />}
             {panel === "schema" && <Json value={zodToJsonSchema(selected.props, { $refStrategy: "none" })} />}
           </div>
         </div>

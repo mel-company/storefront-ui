@@ -8,6 +8,7 @@ import type { ProductQuery } from "../../store/types";
 import { Section, type SectionTone } from "../_shared/Section";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";
 import styles from "./ProductsRail.module.css";
+import { useMessages } from "../../i18n";
 
 export interface ProductsRailProps {
   eyebrow?: string;
@@ -26,6 +27,7 @@ export function ProductsRail({ eyebrow, title, subtitle, source, visible = 4, ca
   const headingId = useId();
   const railRef = useRef<HTMLDivElement>(null);
   const { dir } = useTheme();
+  const m = useMessages();
   const products = useProducts(source).filter((product) => product.id !== exclude);
   if (products.length === 0) return null;
 
@@ -45,8 +47,8 @@ export function ProductsRail({ eyebrow, title, subtitle, source, visible = 4, ca
         subtitle={subtitle}
         action={
           <div className={styles.controls}>
-            <Button variant="secondary" size="sm" icon="chevronStart" aria-label="Previous products" onClick={() => scroll(false)} />
-            <Button variant="secondary" size="sm" icon="chevronEnd" aria-label="Next products" onClick={() => scroll(true)} />
+            <Button variant="secondary" size="sm" icon="chevronStart" aria-label={m.previousProducts} onClick={() => scroll(false)} />
+            <Button variant="secondary" size="sm" icon="chevronEnd" aria-label={m.nextProducts} onClick={() => scroll(true)} />
           </div>
         }
       />

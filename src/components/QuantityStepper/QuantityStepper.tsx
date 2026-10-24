@@ -1,5 +1,6 @@
 import { Icon } from "../../icons";
 import styles from "./QuantityStepper.module.css";
+import { useMessages } from "../../i18n";
 
 export interface QuantityStepperProps {
   value: number;
@@ -10,15 +11,16 @@ export interface QuantityStepperProps {
   label?: string;
 }
 
-export function QuantityStepper({ value, onChange, min = 1, max = 99, label = "Quantity" }: QuantityStepperProps) {
+export function QuantityStepper({ value, onChange, min = 1, max = 99, label }: QuantityStepperProps) {
+  const m = useMessages();
   return (
-    <div className={styles.stepper} role="group" aria-label={label}>
+    <div className={styles.stepper} role="group" aria-label={label || m.quantity}>
       <button
         type="button"
         className={styles.step}
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={value <= min}
-        aria-label="Decrease"
+        aria-label={m.decrease}
       >
         <Icon name="minus" size={16} />
       </button>
@@ -30,7 +32,7 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, label = "Q
         className={styles.step}
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
-        aria-label="Increase"
+        aria-label={m.increase}
       >
         <Icon name="plus" size={16} />
       </button>

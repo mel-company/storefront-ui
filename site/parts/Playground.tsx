@@ -13,6 +13,7 @@ import { useSettings } from "../settings";
 import { Frame } from "./Frame";
 import { highlightJson } from "./Highlight";
 import { LivePreview } from "./LivePreview";
+import { translateDeep, type Lang } from "../i18n";
 
 const PAGES = [...builtInRegistry.pages.values()];
 const DEVICES = [
@@ -20,7 +21,7 @@ const DEVICES = [
   { id: "desktop", label: "1280", width: 1280 },
 ] as const;
 
-const sourceOf = (id: string) => JSON.stringify(compositionOf(builtInRegistry.pages.get(id)!), null, 2);
+const sourceOf = (id: string, lang: Lang) => JSON.stringify(translateDeep(lang, compositionOf(builtInRegistry.pages.get(id)!)), null, 2);
 
 function parse(text: string): { value?: unknown; error?: string } {
   try {
@@ -32,7 +33,7 @@ function parse(text: string): { value?: unknown; error?: string } {
 
 /** Page JSON on the left, the rendered store on the right. Edits re-render and re-validate as you type. */
 export function Playground() {
-  const { themeId, mode, dir } = useSettings();
+  const { themeId, mode, dir, lang } = useSettings();
   const [activeId, setActiveId] = useState(PAGES[0]!.id);
   const [sources, setSources] = useState<Record<string, string>>({});
   const [context, setContext] = useState<PageContextValue>({});
@@ -40,7 +41,9 @@ export function Playground() {
   const codeRef = useRef<HTMLPreElement>(null);
 
   const page = builtInRegistry.pages.get(activeId)!;
-  const text = sources[activeId] ?? sourceOf(activeId);
+  // Edits are kept per language, since each language starts from its own text.
+  const sourceKey = `${lang}:${activeId}`;
+  const text = sources[sourceKey] ?? sourceOf(activeId, lang);
   const parsed = useMemo(() => parse(text), [text]);
   const report = useMemo(() => (parsed.value === undefined ? null : validateComposition(parsed.value, page.pageType)), [parsed.value, page.pageType]);
   // Keep showing the last page that had the right shape while the JSON is mid-edit.
@@ -92,7 +95,7 @@ export function Playground() {
               aria-label={`${activeId} composition JSON`}
               spellCheck={false}
               value={text}
-              onChange={(event) => setSources((current) => ({ ...current, [activeId]: event.target.value }))}
+              onChange={(event) => setSources((current) => ({ ...current, [sourceKey]: event.target.value }))}
               onScroll={(event) => {
                 if (codeRef.current) {
                   codeRef.current.scrollTop = event.currentTarget.scrollTop;
@@ -117,8 +120,8 @@ export function Playground() {
                 validateComposition: valid, {report?.checks} checks
               </span>
             )}
-            {sources[activeId] !== undefined && (
-              <button type="button" className="link-btn" onClick={() => setSources(({ [activeId]: _, ...rest }) => rest)}>
+            {sources[sourceKey] !== undefined && (
+              <button type="button" className="link-btn" onClick={() => setSources(({ [sourceKey]: _, ...rest }) => rest)}>
                 Reset
               </button>
             )}

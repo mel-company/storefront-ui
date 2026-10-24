@@ -14,6 +14,11 @@ export function useStore(): StoreClient {
   return store;
 }
 
+/** The store, or `null` outside a provider. For parts that also work standalone. */
+export function useOptionalStore(): StoreClient | null {
+  return useContext(StoreContext);
+}
+
 export function useStoreSnapshot(): StoreSnapshot {
   const store = useStore();
   return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);

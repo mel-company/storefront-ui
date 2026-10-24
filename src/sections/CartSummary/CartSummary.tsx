@@ -6,6 +6,7 @@ import { Icon } from "../../icons";
 import { useCart, useFormatPrice } from "../../store";
 import { Section } from "../_shared/Section";
 import styles from "./CartSummary.module.css";
+import { useMessages } from "../../i18n";
 
 export interface CartSummaryProps {
   title?: string;
@@ -17,15 +18,16 @@ export interface CartSummaryProps {
 
 /** The cart page: lines with quantities, free-delivery progress, totals and checkout. Holds the page's h1. */
 export function CartSummary({
-  title = "Your cart",
-  checkoutLabel = "Checkout",
-  emptyTitle = "Your cart is empty",
-  emptyText = "Find something you love and it will wait for you here.",
+  title,
+  checkoutLabel,
+  emptyTitle,
+  emptyText,
   showFreeDelivery = true,
 }: CartSummaryProps) {
   const headingId = useId();
   const cart = useCart();
   const format = useFormatPrice();
+  const m = useMessages();
 
   if (cart.lines.length === 0) {
     return (
@@ -35,10 +37,10 @@ export function CartSummary({
             <Icon name="bag" size={32} />
           </span>
           <h1 id={headingId} className={styles.title}>
-            {emptyTitle}
+            {emptyTitle || m.cartEmptyTitle}
           </h1>
-          <p>{emptyText}</p>
-          <ButtonLink route={{ to: "catalogue" }}>Start shopping</ButtonLink>
+          <p>{emptyText || m.cartEmptyText}</p>
+          <ButtonLink route={{ to: "catalogue" }}>{m.startShopping}</ButtonLink>
         </div>
       </Section>
     );
@@ -47,7 +49,7 @@ export function CartSummary({
   return (
     <Section labelledBy={headingId}>
       <h1 id={headingId} className={styles.title}>
-        {title} ({cart.count})
+        {title || m.yourCart} ({cart.count})
       </h1>
       <div className={styles.layout}>
         <div className={styles.lines}>
@@ -55,24 +57,24 @@ export function CartSummary({
             <CartLine key={line.key} lineKey={line.key} />
           ))}
         </div>
-        <aside className={styles.summary} aria-label="Order summary">
+        <aside className={styles.summary} aria-label={m.orderSummary}>
           {showFreeDelivery && <FreeDeliveryProgress />}
           <dl className={styles.rows}>
             <div className={styles.row}>
-              <dt>Subtotal</dt>
+              <dt>{m.subtotal}</dt>
               <dd>{format(cart.subtotal)}</dd>
             </div>
             <div className={styles.row}>
-              <dt>Delivery</dt>
-              <dd>{cart.delivery === 0 ? "Free" : format(cart.delivery)}</dd>
+              <dt>{m.delivery}</dt>
+              <dd>{cart.delivery === 0 ? m.free : format(cart.delivery)}</dd>
             </div>
             <div className={`${styles.row} ${styles.total}`}>
-              <dt>Total</dt>
+              <dt>{m.total}</dt>
               <dd>{format(cart.total)}</dd>
             </div>
           </dl>
           <ButtonLink route={{ to: "checkout" }} size="lg" fullWidth iconEnd="chevronEnd">
-            {checkoutLabel}
+            {checkoutLabel || m.checkout}
           </ButtonLink>
         </aside>
       </div>

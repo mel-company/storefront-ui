@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { Icon } from "../../icons";
 import styles from "./SearchField.module.css";
+import { useMessages } from "../../i18n";
 
 export interface SearchFieldProps {
   value: string;
@@ -9,12 +10,13 @@ export interface SearchFieldProps {
   placeholder?: string;
 }
 
-export function SearchField({ value, onChange, label = "Search products", placeholder = "Search products" }: SearchFieldProps) {
+export function SearchField({ value, onChange, label, placeholder }: SearchFieldProps) {
   const id = useId();
+  const m = useMessages();
   return (
     <div className={styles.field} role="search">
       <label htmlFor={id} className="msu-visually-hidden">
-        {label}
+        {label || m.searchProducts}
       </label>
       <Icon name="search" className={styles.icon} />
       <input
@@ -22,7 +24,7 @@ export function SearchField({ value, onChange, label = "Search products", placeh
         className={styles.input}
         type="search"
         value={value}
-        placeholder={placeholder}
+        placeholder={placeholder || m.searchProducts}
         onChange={(event) => onChange(event.target.value)}
       />
     </div>

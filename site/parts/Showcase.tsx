@@ -19,8 +19,10 @@ import {
   useCategories,
   useFormatPrice,
   useProduct,
+  useMessages,
   useProducts,
 } from "../../src";
+import { useT } from "../i18n";
 import { LivePreview } from "./LivePreview";
 
 function Tile({ ids, children, className }: { ids: string[]; children: ReactNode; className?: string }) {
@@ -56,23 +58,23 @@ function BuyBox() {
 function MiniCart() {
   const cart = useCart();
   const format = useFormatPrice();
+  const m = useMessages();
+  const t = useT();
   return (
     <div className="mini-cart">
       <div className="mini-head">
-        <h3>Your cart</h3>
-        <span className="tile-muted">
-          {cart.count} {cart.count === 1 ? "item" : "items"}
-        </span>
+        <h3>{m.yourCart}</h3>
+        <span className="tile-muted">{m.itemCount(cart.count)}</span>
       </div>
       <FreeDeliveryProgress />
       <div className="mini-lines">
         {cart.lines.map((line) => (
           <CartLine key={line.key} lineKey={line.key} />
         ))}
-        {cart.lines.length === 0 && <p className="tile-muted">Empty. Add something from the other cards.</p>}
+        {cart.lines.length === 0 && <p className="tile-muted">{t("Empty. Add something from the other cards.")}</p>}
       </div>
       <div className="mini-total">
-        <span>Total</span>
+        <span>{m.total}</span>
         <strong>{format(cart.total)}</strong>
       </div>
     </div>
@@ -81,6 +83,8 @@ function MiniCart() {
 
 function Browse() {
   const categories = useCategories();
+  const m = useMessages();
+  const t = useT();
   const [category, setCategory] = useState("all");
   const [query, setQuery] = useState("");
   const products = useProducts({ categoryId: category === "all" ? undefined : category, search: query || undefined, limit: 3 });
@@ -88,10 +92,10 @@ function Browse() {
     <div className="browse">
       <SearchField value={query} onChange={setQuery} />
       <FilterChips
-        label="Category"
+        label={m.categories}
         value={category}
         onChange={setCategory}
-        options={[{ value: "all", label: "All" }, ...categories.map((item) => ({ value: item.id, label: item.name }))]}
+        options={[{ value: "all", label: m.all }, ...categories.map((item) => ({ value: item.id, label: item.name }))]}
       />
       <ul className="browse-list">
         {products.map((product) => (
@@ -99,11 +103,14 @@ function Browse() {
             <ProductCard productId={product.id} variant="horizontal" showRating={false} />
           </li>
         ))}
-        {products.length === 0 && <li className="tile-muted">No products match.</li>}
+        {products.length === 0 && <li className="tile-muted">{t("No products match.")}</li>}
       </ul>
     </div>
   );
 }
+
+// Always about two days away, so the offer tile never expires.
+const OFFER_ENDS = new Date(Date.now() + (2 * 24 + 5) * 3600 * 1000).toISOString();
 
 const FAQ = [
   { question: "How long does delivery take?", answer: "Two to four working days in the city, five to seven elsewhere." },
@@ -113,6 +120,8 @@ const FAQ = [
 
 /** Real components on one shared demo store: add something in one card and the cart card updates. */
 export function Showcase() {
+  const t = useT();
+  const faq = FAQ.map((item) => ({ question: t(item.question), answer: t(item.answer) }));
   return (
     <section className="showcase" id="showcase" aria-label="Component showcase">
       <div className="container wide">
@@ -126,9 +135,9 @@ export function Showcase() {
             </Tile>
             <Tile ids={["ui.countdown", "ui.badge"]} className="tile-offer">
               <div className="offer">
-                <Badge tone="danger">Autumn sale</Badge>
-                <h3>Up to 30% off candles</h3>
-                <Countdown endsAt="2026-10-26T15:30:00+03:00" />
+                <Badge tone="danger">{t("Autumn sale")}</Badge>
+                <h3>{t("Up to 30% off candles")}</h3>
+                <Countdown endsAt={OFFER_ENDS} />
               </div>
             </Tile>
             <Tile ids={["catalogue.search", "catalogue.categoryChips", "product.card"]}>
@@ -142,13 +151,13 @@ export function Showcase() {
             </Tile>
             <Tile ids={["ui.feature"]}>
               <div className="features">
-                <Feature icon="truck" title="Free delivery" text="On orders over $80" />
-                <Feature icon="refresh" title="30-day returns" text="No questions asked" />
-                <Feature icon="shield" title="Secure payment" text="Cards and cash on delivery" />
+                <Feature icon="truck" title={t("Free delivery")} text={t("On orders over $80")} />
+                <Feature icon="refresh" title={t("30-day returns")} text={t("No questions asked")} />
+                <Feature icon="shield" title={t("Secure payment")} text={t("Cards and cash on delivery")} />
               </div>
             </Tile>
             <Tile ids={["ui.accordion"]}>
-              <Accordion items={FAQ} openFirst />
+              <Accordion items={faq} openFirst />
             </Tile>
           </div>
         </LivePreview>
