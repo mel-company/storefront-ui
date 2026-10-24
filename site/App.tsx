@@ -6,11 +6,14 @@ import { Gallery } from "./parts/Gallery";
 import { Hero } from "./parts/Hero";
 import { Logo } from "./parts/Logo";
 import { Overview } from "./parts/Overview";
+import { PlaygroundSection } from "./parts/PlaygroundSection";
+import { Showcase } from "./parts/Showcase";
 import { ThemeLab } from "./parts/ThemeLab";
+import { useReveal } from "./reveal";
 import { SettingsProvider } from "./settings";
 
 const NAV = [
-  { href: "#overview", label: "Overview" },
+  { href: "#playground", label: "Playground" },
   { href: "#components", label: "Components" },
   { href: "#checker", label: "Checker" },
   { href: "#theming", label: "Theming" },
@@ -18,6 +21,7 @@ const NAV = [
 ];
 
 function Shell() {
+  useReveal();
   return (
     <div className="site">
       <a className="skip" href="#content">
@@ -49,6 +53,8 @@ function Shell() {
       <main id="content">
         <span id="top" />
         <Hero />
+        <Showcase />
+        <PlaygroundSection />
         <Overview />
         <Gallery />
         <Checker />
