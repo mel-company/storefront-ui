@@ -4,7 +4,8 @@ import { defineConfig } from "vite";
 /** The landing page and live gallery, served from `site/`. */
 export default defineConfig({
   root: "site",
-  base: "./",
+  // Absolute, so assets load on nested routes such as /components/product.card.
+  base: "/",
   plugins: [react()],
   css: {
     modules: { generateScopedName: "msu-[local]-[hash:base64:5]" },

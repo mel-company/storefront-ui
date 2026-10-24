@@ -89,7 +89,9 @@ npm run verify    # typecheck + lint + tests + check
 
 The landing page (`npm run dev`) runs the same checkers live in the browser,
 with a theme lab, a gallery at phone, tablet and desktop widths, and a page
-validator.
+validator. Its docs pages (`/components`, `/sections`, `/pages`, live at
+https://storefront-ui-x.vercel.app/components) show every piece with a preview,
+React code, a props table, its JSON and its source files.
 
 ## For AI agents
 
@@ -134,7 +136,7 @@ as text props.
 
 | Script | Does |
 | --- | --- |
-| `npm run dev` | Landing page and gallery |
+| `npm run dev` | Landing page, gallery and docs |
 | `npm run build` | Library to `dist/` (ESM, types, `style.css`, `catalogue.json`) |
 | `npm run build:site` | Landing page to `dist-site/` |
 | `npm test` | Unit and behaviour tests |

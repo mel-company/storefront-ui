@@ -1,4 +1,5 @@
 import { useRef, type PointerEvent } from "react";
+import { Link } from "../router";
 import { CopyButton } from "./CodeBlock";
 
 const INSTALL = "npm install @mel-company/storefront-ui";
@@ -116,9 +117,9 @@ export function Hero() {
           <a className="btn btn-primary btn-lg" href="https://github.com/mel-company/storefront-ui#readme">
             Get started
           </a>
-          <a className="btn btn-lg" href="#components">
+          <Link className="btn btn-lg" href="/components">
             Browse components
-          </a>
+          </Link>
         </div>
         <div className="cmd">
           <code>

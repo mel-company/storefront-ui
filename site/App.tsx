@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { AgentPanel } from "./parts/AgentPanel";
 import { Checker } from "./parts/Checker";
 import { Controls } from "./parts/Controls";
@@ -9,19 +10,50 @@ import { Overview } from "./parts/Overview";
 import { PlaygroundSection } from "./parts/PlaygroundSection";
 import { Showcase } from "./parts/Showcase";
 import { ThemeLab } from "./parts/ThemeLab";
+import type { DocsKind } from "./docs/Docs";
 import { useReveal } from "./reveal";
+import { Link, useAnchorScroll, usePath } from "./router";
 import { SettingsProvider } from "./settings";
 
-const NAV = [
-  { href: "#playground", label: "Playground" },
-  { href: "#components", label: "Components" },
-  { href: "#checker", label: "Checker" },
-  { href: "#theming", label: "Theming" },
-  { href: "#mcp", label: "MCP" },
+const DOCS_NAV = [
+  { href: "/components", label: "Components" },
+  { href: "/sections", label: "Sections" },
+  { href: "/pages", label: "Pages" },
 ];
 
-function Shell() {
+const SITE_NAV = [
+  { href: "/#playground", label: "Playground" },
+  { href: "/#checker", label: "Checker" },
+  { href: "/#theming", label: "Theming" },
+  { href: "/#mcp", label: "MCP" },
+];
+
+// Docs carry the library's source text, so they load only when opened.
+const Docs = lazy(() => import("./docs/Docs").then((module) => ({ default: module.Docs })));
+
+const DOCS_PATH = /^\/(components|sections|pages)(?:\/([^/]+))?\/?$/;
+
+function Landing() {
   useReveal();
+  return (
+    <main id="content">
+      <span id="top" />
+      <Hero />
+      <Showcase />
+      <PlaygroundSection />
+      <Overview />
+      <Gallery />
+      <Checker />
+      <ThemeLab />
+      <AgentPanel />
+    </main>
+  );
+}
+
+function Shell() {
+  const path = usePath();
+  useAnchorScroll(path);
+  const docs = path.match(DOCS_PATH);
   return (
     <div className="site">
       <a className="skip" href="#content">
@@ -29,16 +61,25 @@ function Shell() {
       </a>
       <header className="site-header">
         <div className="container bar">
-          <a href="#top" className="brand" aria-label="storefront-ui home">
+          <Link href="/" className="brand" aria-label="storefront-ui home">
             <Logo />
-          </a>
-          <nav aria-label="Sections" className="site-nav">
-            {NAV.map((item) => (
-              <a key={item.href} href={item.href}>
+          </Link>
+          <nav aria-label="Site" className="site-nav">
+            {DOCS_NAV.map((item) => (
+              <Link key={item.href} href={item.href} aria-current={docs && item.href === `/${docs[1]}` ? "page" : undefined}>
                 {item.label}
-              </a>
+              </Link>
+            ))}
+            <span className="nav-sep" aria-hidden="true" />
+            {SITE_NAV.map((item) => (
+              <Link key={item.href} href={item.href}>
+                {item.label}
+              </Link>
             ))}
           </nav>
+          <Link href="/components" className="nav-docs">
+            Docs
+          </Link>
           <Controls />
           <a className="gh" href="https://github.com/mel-company/storefront-ui" aria-label="GitHub repository">
             <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
@@ -50,17 +91,13 @@ function Shell() {
           </a>
         </div>
       </header>
-      <main id="content">
-        <span id="top" />
-        <Hero />
-        <Showcase />
-        <PlaygroundSection />
-        <Overview />
-        <Gallery />
-        <Checker />
-        <ThemeLab />
-        <AgentPanel />
-      </main>
+      {docs ? (
+        <Suspense fallback={<div className="docs-loading" />}>
+          <Docs kind={docs[1] as DocsKind} id={docs[2] && decodeURIComponent(docs[2])} />
+        </Suspense>
+      ) : (
+        <Landing key={path} />
+      )}
       <Footer />
     </div>
   );
