@@ -2147,3 +2147,16 @@ body:has(> #root) {
     display: none;
   }
 }
+
+/* Side lists still scroll, without a visible scrollbar. */
+.docs-nav,
+.docs-nav nav,
+.gallery-list ul {
+  scrollbar-width: none;
+}
+
+.docs-nav::-webkit-scrollbar,
+.docs-nav nav::-webkit-scrollbar,
+.gallery-list ul::-webkit-scrollbar {
+  display: none;
+}
