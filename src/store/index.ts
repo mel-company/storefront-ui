@@ -12,5 +12,6 @@ export {
   useCart,
   useFavourites,
   useFormatPrice,
+  useFormatDate,
   useLink,
 } from "./StoreProvider";

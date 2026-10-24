@@ -170,6 +170,20 @@ export const confirmationDefault = definePage({
   ],
 });
 
+export const trackingDefault = definePage({
+  id: "tracking.default",
+  name: "Order tracking",
+  description: "Order number and phone in, then where the order is, what is in it and who is delivering it.",
+  pageType: "tracking",
+  requires: ["header.bar", "order.tracking", "footer.columns"],
+  sections: [
+    header,
+    { section: "order.tracking", key: "tracking", props: {} },
+    { section: "faq.list", key: "faq", props: { title: "Questions, answered", items: [{ question: "How long does delivery take?", answer: "Two to four working days." }] } },
+    footer,
+  ],
+});
+
 export const favouritesDefault = definePage({
   id: "favourites.default",
   name: "Favourites",
@@ -207,6 +221,7 @@ export const pageDefinitions: PageDefinition[] = [
   cartDefault,
   checkoutDefault,
   confirmationDefault,
+  trackingDefault,
   favouritesDefault,
   notFoundDefault,
 ];

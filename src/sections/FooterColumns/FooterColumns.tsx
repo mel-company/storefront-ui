@@ -62,6 +62,11 @@ export function FooterColumns({ about, legal }: FooterColumnsProps) {
               <li>
                 <Link href={store.href({ to: "favourites" })}>{m.favourites}</Link>
               </li>
+              {store.trackOrder && (
+                <li>
+                  <Link href={store.href({ to: "tracking" })}>{m.trackOrder}</Link>
+                </li>
+              )}
             </ul>
           </nav>
           {contact && (

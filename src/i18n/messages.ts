@@ -109,6 +109,26 @@ export interface Messages {
   notFoundTitle: string;
   notFoundText: string;
   goHome: string;
+  trackOrder: string;
+  trackIntro: string;
+  orderNumberLabel: string;
+  orderNumberHint: string;
+  orderPhoneHint: string;
+  findOrder: string;
+  findingOrder: string;
+  orderNotFound: string;
+  trackingOff: string;
+  trackAnother: string;
+  orderStatus: { placed: string; confirmed: string; shipped: string; outForDelivery: string; delivered: string; cancelled: string };
+  orderStatusText: { placed: string; confirmed: string; shipped: string; outForDelivery: string; delivered: string; cancelled: string };
+  orderProgress: string;
+  placedOn: (date: string) => string;
+  arrivesBy: (date: string) => string;
+  deliveredTo: (city: string) => string;
+  courier: string;
+  trackWithCourier: (name: string) => string;
+  callCourier: string;
+  items: string;
 }
 
 export type Language = "en" | "ar";
@@ -216,6 +236,33 @@ const en: Messages = {
   notFoundTitle: "We could not find that page",
   notFoundText: "The link may be old or the page may have moved.",
   goHome: "Go to the home page",
+  trackOrder: "Track your order",
+  trackIntro: "Enter the order number from your confirmation and the phone number you ordered with.",
+  orderNumberLabel: "Order number",
+  orderNumberHint: "For example 1042",
+  orderPhoneHint: "The number you gave at checkout",
+  findOrder: "Find my order",
+  findingOrder: "Looking up your order…",
+  orderNotFound: "We could not find an order with that number and phone. Check both and try again.",
+  trackingOff: "Order tracking is not set up for this store yet.",
+  trackAnother: "Track another order",
+  orderStatus: { placed: "Placed", confirmed: "Confirmed", shipped: "Shipped", outForDelivery: "Out for delivery", delivered: "Delivered", cancelled: "Cancelled" },
+  orderStatusText: {
+    placed: "We have your order and will confirm it soon.",
+    confirmed: "Your order is confirmed and being packed.",
+    shipped: "Your order is on its way.",
+    outForDelivery: "The courier is bringing your order today.",
+    delivered: "Your order was delivered. Enjoy!",
+    cancelled: "This order was cancelled. Contact us if that is a surprise.",
+  },
+  orderProgress: "Order progress",
+  placedOn: (date) => `Placed ${date}`,
+  arrivesBy: (date) => `Arrives by ${date}`,
+  deliveredTo: (city) => `Delivering to ${city}`,
+  courier: "Courier",
+  trackWithCourier: (name) => `Track with ${name}`,
+  callCourier: "Call the courier",
+  items: "Items",
 };
 
 /** Arabic plural forms for "N items": 1, 2, 3–10, 11+. */
@@ -325,6 +372,33 @@ const ar: Messages = {
   notFoundTitle: "لم نجد هذه الصفحة",
   notFoundText: "قد يكون الرابط قديماً أو أن الصفحة نُقلت.",
   goHome: "اذهب إلى الرئيسية",
+  trackOrder: "تتبّع طلبك",
+  trackIntro: "أدخل رقم الطلب من رسالة التأكيد ورقم الهاتف الذي طلبت به.",
+  orderNumberLabel: "رقم الطلب",
+  orderNumberHint: "مثلاً 1042",
+  orderPhoneHint: "الرقم الذي أدخلته عند الطلب",
+  findOrder: "ابحث عن طلبي",
+  findingOrder: "جارٍ البحث عن طلبك…",
+  orderNotFound: "لم نجد طلباً بهذا الرقم وهذا الهاتف. تحقق منهما وحاول مجدداً.",
+  trackingOff: "تتبّع الطلبات غير مفعّل في هذا المتجر بعد.",
+  trackAnother: "تتبّع طلباً آخر",
+  orderStatus: { placed: "تم الطلب", confirmed: "تم التأكيد", shipped: "تم الشحن", outForDelivery: "مع المندوب", delivered: "تم التسليم", cancelled: "ملغي" },
+  orderStatusText: {
+    placed: "وصلنا طلبك وسنؤكده قريباً.",
+    confirmed: "تم تأكيد طلبك ويجري تجهيزه.",
+    shipped: "طلبك في الطريق إليك.",
+    outForDelivery: "المندوب في طريقه إليك اليوم.",
+    delivered: "تم تسليم طلبك. نتمنى أن يعجبك!",
+    cancelled: "أُلغي هذا الطلب. تواصل معنا إن لم تكن تتوقع ذلك.",
+  },
+  orderProgress: "مراحل الطلب",
+  placedOn: (date) => `تاريخ الطلب ${date}`,
+  arrivesBy: (date) => `يصل قبل ${date}`,
+  deliveredTo: (city) => `التوصيل إلى ${city}`,
+  courier: "شركة التوصيل",
+  trackWithCourier: (name) => `تتبّع مع ${name}`,
+  callCourier: "اتصل بالمندوب",
+  items: "المنتجات",
 };
 
 export const messages: Record<Language, Messages> = { en, ar };

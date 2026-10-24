@@ -59,6 +59,7 @@ export type Route =
   | { to: "cart" }
   | { to: "checkout" }
   | { to: "favourites" }
+  | { to: "tracking"; number?: string }
   | { to: "url"; href: string };
 
 export interface StoreSnapshot {
@@ -118,6 +119,35 @@ export interface OrderRequest {
   total: number;
 }
 
+export type OrderStatus = "placed" | "confirmed" | "shipped" | "outForDelivery" | "delivered" | "cancelled";
+
+export interface TrackedOrderLine {
+  name: string;
+  quantity: number;
+  /** Line total. */
+  total: number;
+  image?: string;
+  options?: Record<string, string>;
+}
+
+/** What a shopper sees when tracking an order. Only `number` and `status` are required. */
+export interface TrackedOrder {
+  number: string;
+  status: OrderStatus;
+  /** ISO date-time. */
+  placedAt?: string;
+  /** ISO date or date-time. */
+  estimatedDelivery?: string;
+  /** When each status was reached, ISO date-time. */
+  history?: Partial<Record<OrderStatus, string>>;
+  lines?: TrackedOrderLine[];
+  subtotal?: number;
+  delivery?: number;
+  total?: number;
+  city?: string;
+  courier?: { name: string; trackingUrl?: string; phone?: string };
+}
+
 export interface OrderResult {
   id: string;
   /** What the shopper sees, e.g. `1042`. Defaults to `id`. */
@@ -153,6 +183,11 @@ export interface StoreClient {
    * explains that ordering is not set up instead of failing silently.
    */
   placeOrder?(order: OrderRequest): Promise<OrderResult>;
+  /**
+   * Finds an order by its number and the phone it was placed with, or
+   * `null`. Both must match, so order numbers alone reveal nothing.
+   */
+  trackOrder?(query: { number: string; phone: string }): Promise<TrackedOrder | null>;
   /** The platform's router link. Defaults to a plain `<a>`. */
   Link?: ComponentType<LinkProps>;
 }

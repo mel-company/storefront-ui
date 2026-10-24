@@ -68,6 +68,11 @@ cart lines and totals, and then shows the order number, or sends the shopper to
 `placeOrder` it says ordering is not set up. `info.checkout` sets the city list,
 the payment methods and whether to ask for an email.
 
+For order tracking, add `trackOrder({ number, phone })` and return the order's
+status, history, items and courier, or `null`. Both the number and the phone
+must match, so an order number alone shows nothing. The footer and the order
+confirmation link to tracking only when the store has `trackOrder`.
+
 ## Theme and dark mode
 
 A theme is a palette for light and one for dark, plus radius, density, type
@@ -92,7 +97,7 @@ not `margin-left`), so every piece works in RTL.
 Run them all:
 
 ```
-npm run check     # themes, 24 components, 20 sections, 9 pages × 4 themes, stylesheets
+npm run check     # themes, 25 components, 21 sections, 10 pages × 4 themes, stylesheets
 npm run verify    # typecheck + lint + tests + check
 ```
 

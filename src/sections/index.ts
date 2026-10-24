@@ -13,6 +13,7 @@ import { heroSplitDefinition } from "./HeroSplit";
 import { notFoundDefinition } from "./NotFound";
 import { offerFreeDeliveryDefinition } from "./OfferFreeDelivery";
 import { orderConfirmationDefinition } from "./OrderConfirmation";
+import { orderTrackingDefinition } from "./OrderTracking";
 import { productDetailDefinition } from "./ProductDetail";
 import { productsGridDefinition } from "./ProductsGrid";
 import { productsRailDefinition } from "./ProductsRail";
@@ -34,6 +35,7 @@ export * from "./HeroSplit";
 export * from "./NotFound";
 export * from "./OfferFreeDelivery";
 export * from "./OrderConfirmation";
+export * from "./OrderTracking";
 export * from "./ProductDetail";
 export * from "./ProductsGrid";
 export * from "./ProductsRail";
@@ -61,6 +63,7 @@ export const sectionDefinitions: SectionDefinition[] = [
   cartSummaryDefinition,
   checkoutFormDefinition,
   orderConfirmationDefinition,
+  orderTrackingDefinition,
   favouritesGridDefinition,
   notFoundDefinition,
   footerColumnsDefinition,

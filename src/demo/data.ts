@@ -1,4 +1,4 @@
-import type { Category, Product, StoreInfo } from "../store/types";
+import type { Category, Product, StoreInfo, TrackedOrder } from "../store/types";
 import { bannerArt, productArt } from "./art";
 
 export const demoInfo: StoreInfo = {
@@ -139,3 +139,32 @@ export const demoProductsAr: Product[] = demoProducts.map((product) => ({
   price: product.price * 1000,
   compareAtPrice: product.compareAtPrice === undefined ? undefined : product.compareAtPrice * 1000,
 }));
+
+/** A sample order to track: number `1042` with the phone below. */
+export const demoOrderPhone = "555 0123";
+export const demoOrderPhoneAr = "0770 123 4567";
+
+function demoOrder(products: Product[], city: string, courier: { name: string; phone: string }): TrackedOrder {
+  const pick = (id: string) => products.find((product) => product.id === id)!;
+  const lines: { product: Product; quantity: number; options: Record<string, string> }[] = [
+    { product: pick("p1"), quantity: 1, options: { size: pick("p1").options?.[0]?.values[1] ?? "" } },
+    { product: pick("p6"), quantity: 2, options: {} },
+  ];
+  const subtotal = lines.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
+  return {
+    number: "1042",
+    status: "shipped",
+    placedAt: "2026-10-22T10:15:00+03:00",
+    estimatedDelivery: "2026-10-26",
+    history: { placed: "2026-10-22T10:15:00+03:00", confirmed: "2026-10-22T11:02:00+03:00", shipped: "2026-10-23T09:40:00+03:00" },
+    city,
+    lines: lines.map(({ product, quantity, options }) => ({ name: product.name, quantity, total: product.price * quantity, image: product.images[0], options })),
+    subtotal,
+    delivery: 0,
+    total: subtotal,
+    courier: { ...courier, trackingUrl: "https://courier.example/track/AT1042" },
+  };
+}
+
+export const demoOrder1042 = demoOrder(demoProducts, "Riverside", { name: "Swift Courier", phone: "+1 555 0200" });
+export const demoOrder1042Ar = demoOrder(demoProductsAr, "بغداد", { name: "سويفت للتوصيل", phone: "+964 780 000 0200" });

@@ -14,6 +14,7 @@ import { filterChipsDefinition } from "./FilterChips";
 import { freeDeliveryProgressDefinition } from "./FreeDeliveryProgress";
 import { mediaDefinition } from "./Media";
 import { optionPickerDefinition } from "./OptionPicker";
+import { orderStepsDefinition } from "./OrderSteps";
 import { priceDefinition } from "./Price";
 import { productCardDefinition } from "./ProductCard";
 import { quantityStepperDefinition } from "./QuantityStepper";
@@ -39,6 +40,7 @@ export * from "./FilterChips";
 export * from "./FreeDeliveryProgress";
 export * from "./Media";
 export * from "./OptionPicker";
+export * from "./OrderSteps";
 export * from "./Price";
 export * from "./ProductCard";
 export * from "./QuantityStepper";
@@ -74,4 +76,5 @@ export const componentDefinitions: ComponentDefinition[] = [
   textFieldDefinition,
   selectFieldDefinition,
   radioCardsDefinition,
+  orderStepsDefinition,
 ] as ComponentDefinition[];

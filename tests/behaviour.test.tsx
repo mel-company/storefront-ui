@@ -7,6 +7,7 @@ import {
   CheckoutForm,
   Countdown,
   FavouritesGrid,
+  OrderTracking,
   createDemoStore,
   FreeDeliveryProgress,
   HeaderBar,
@@ -240,5 +241,46 @@ describe("favourites page", () => {
     expect(names).toEqual([store.getSnapshot().products.find((p) => p.id === "p4")!.name, store.getSnapshot().products.find((p) => p.id === "p1")!.name]);
     for (const button of screen.getAllByRole("button", { name: /remove .* from favourites/i })) await user.click(button);
     expect(screen.getByRole("heading", { level: 1, name: "No favourites yet" })).toBeInTheDocument();
+  });
+});
+
+describe("order tracking", () => {
+  const find = async (user: ReturnType<typeof userEvent.setup>, number: string, phone: string) => {
+    await user.type(screen.getByLabelText("Order number"), number);
+    await user.type(screen.getByLabelText("Phone number"), phone);
+    await user.click(screen.getByRole("button", { name: "Find my order" }));
+  };
+
+  it("shows where an order is once number and phone match", async () => {
+    const { user } = setup(<OrderTracking />);
+    await find(user, "1042", "555 0123");
+    expect(await screen.findByRole("heading", { level: 2, name: "Order number 1042" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Your order is on its way.");
+    const steps = within(screen.getByRole("list", { name: "Order progress" })).getAllByRole("listitem");
+    expect(steps).toHaveLength(5);
+    expect(steps[2]).toHaveAttribute("aria-current", "step");
+    expect(screen.getByRole("link", { name: "Track with Swift Courier" })).toHaveAttribute("href", "https://courier.example/track/AT1042");
+  });
+
+  it("finds nothing when the phone does not match", async () => {
+    const { user } = setup(<OrderTracking />);
+    await find(user, "1042", "555 9999");
+    expect(await screen.findByRole("alert")).toHaveTextContent("We could not find an order with that number and phone.");
+  });
+
+  it("tracks an order placed a moment ago", async () => {
+    const store = createDemoStore();
+    store.addToCart("p2", 1);
+    await store.placeOrder!({
+      customer: { name: "Sara", phone: "+1 555 0177", city: "Riverside", address: "1 Lane" },
+      payment: "cash",
+      lines: store.getSnapshot().cart,
+      subtotal: 18,
+      delivery: 6,
+      total: 24,
+    });
+    const { user } = setup(<OrderTracking />, store);
+    await find(user, "1001", "5550177");
+    expect(await screen.findByText("We have your order and will confirm it soon.")).toBeInTheDocument();
   });
 });

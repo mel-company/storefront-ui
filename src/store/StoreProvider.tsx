@@ -81,6 +81,25 @@ export function useFormatPrice(): (amount: number) => string {
   }, [info.locale, info.currency]);
 }
 
+/**
+ * Formats an ISO date in the store's locale, e.g. `Oct 26, 2026`. Date-only
+ * values (`2026-10-26`) stay on that day in every time zone.
+ */
+export function useFormatDate(): (iso: string, withTime?: boolean) => string {
+  const { info } = useStore();
+  return useMemo(() => {
+    const day = new Intl.DateTimeFormat(info.locale, { dateStyle: "medium", timeZone: "UTC" });
+    const local = new Intl.DateTimeFormat(info.locale, { dateStyle: "medium" });
+    const full = new Intl.DateTimeFormat(info.locale, { dateStyle: "medium", timeStyle: "short" });
+    return (iso: string, withTime = false) => {
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return iso;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) return day.format(date);
+      return (withTime ? full : local).format(date);
+    };
+  }, [info.locale]);
+}
+
 function PlainLink({ href, children, ...rest }: LinkProps) {
   return (
     <a href={href} {...rest}>

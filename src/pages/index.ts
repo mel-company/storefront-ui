@@ -8,6 +8,7 @@ export {
   cartDefault,
   checkoutDefault,
   confirmationDefault,
+  trackingDefault,
   favouritesDefault,
   notFoundDefault,
 } from "./definitions";

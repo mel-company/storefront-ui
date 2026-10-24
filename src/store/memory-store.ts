@@ -1,5 +1,5 @@
 import { cartLineKey } from "./query";
-import type { Category, Product, Route, StoreClient, StoreInfo, StoreSnapshot } from "./types";
+import type { Category, Product, Route, StoreClient, StoreInfo, StoreSnapshot, TrackedOrder } from "./types";
 
 export interface MemoryStoreData {
   info: StoreInfo;
@@ -7,7 +7,17 @@ export interface MemoryStoreData {
   categories: Category[];
   cart?: StoreSnapshot["cart"];
   favourites?: string[];
+  /** Orders `trackOrder` can find, with the phone each was placed with. */
+  orders?: { phone: string; order: TrackedOrder }[];
 }
+
+/** Digits only, compared from the end, so `+964 770 123 4567` matches `0770 123 4567` and `+1 555 0177` matches `555 0177`. */
+const samePhone = (a: string, b: string) => {
+  const x = a.replace(/\D/g, "");
+  const y = b.replace(/\D/g, "");
+  const length = Math.min(9, x.length, y.length);
+  return length >= 7 && x.slice(-length) === y.slice(-length);
+};
 
 /** Hash routes, so previews work inside any page without a router. */
 export function defaultHref(route: Route): string {
@@ -30,6 +40,8 @@ export function defaultHref(route: Route): string {
       return "#/checkout";
     case "favourites":
       return "#/favourites";
+    case "tracking":
+      return route.number ? `#/track?order=${encodeURIComponent(route.number)}` : "#/track";
     case "url":
       return route.href;
   }
@@ -41,7 +53,8 @@ export function defaultHref(route: Route): string {
  */
 export function createMemoryStore(data: MemoryStoreData): StoreClient {
   const listeners = new Set<() => void>();
-  let orders = 0;
+  const orders = [...(data.orders ?? [])];
+  let placed = 0;
   let snapshot: StoreSnapshot = {
     products: data.products,
     categories: data.categories,
@@ -90,11 +103,35 @@ export function createMemoryStore(data: MemoryStoreData): StoreClient {
     removeFromCart(lineKey) {
       update({ cart: snapshot.cart.filter((line) => line.key !== lineKey) });
     },
-    async placeOrder() {
-      orders += 1;
-      const id = String(1000 + orders);
+    async placeOrder(order) {
+      placed += 1;
+      const id = String(1000 + placed);
+      const now = new Date().toISOString();
+      orders.push({
+        phone: order.customer.phone,
+        order: {
+          number: id,
+          status: "placed",
+          placedAt: now,
+          history: { placed: now },
+          city: order.customer.city,
+          subtotal: order.subtotal,
+          delivery: order.delivery,
+          total: order.total,
+          lines: order.lines.flatMap((line) => {
+            const product = snapshot.products.find((item) => item.id === line.productId);
+            return product
+              ? [{ name: product.name, quantity: line.quantity, total: product.price * line.quantity, image: product.images[0], options: line.options }]
+              : [];
+          }),
+        },
+      });
       update({ cart: [] });
       return { id };
+    },
+    async trackOrder({ number, phone }) {
+      const wanted = number.replace(/^#/, "").trim();
+      return orders.find((entry) => entry.order.number === wanted && samePhone(entry.phone, phone))?.order ?? null;
     },
     toggleFavourite(productId) {
       const favourites = snapshot.favourites.includes(productId)

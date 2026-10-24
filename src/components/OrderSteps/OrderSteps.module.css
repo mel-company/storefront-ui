@@ -1,0 +1,119 @@
+.steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  column-gap: var(--msu-space-3);
+  padding-block-end: var(--msu-space-6);
+  min-inline-size: 0;
+}
+
+.step:last-child {
+  padding-block-end: 0;
+}
+
+/* The line to the next step: down the inline-start side on phones, across on wider screens. */
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-block: 40px 0;
+  inset-inline-start: 19px;
+  inline-size: 2px;
+  background: var(--msu-border);
+}
+
+.done:not(:last-child)::after {
+  background: var(--msu-accent);
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border: 2px solid var(--msu-border);
+  border-radius: 50%;
+  background: var(--msu-surface);
+  color: var(--msu-text-muted);
+  transition: background-color var(--msu-duration) ease, border-color var(--msu-duration) ease;
+}
+
+.done .dot {
+  border-color: var(--msu-accent);
+  background: var(--msu-accent);
+  color: var(--msu-accent-text);
+}
+
+.current .dot {
+  border-color: var(--msu-accent);
+  color: var(--msu-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--msu-accent) 18%, transparent);
+  animation: pulse calc(var(--msu-duration) * 10) ease-in-out infinite;
+}
+
+.cancelled .dot {
+  border-color: var(--msu-danger);
+  background: var(--msu-danger);
+  color: var(--msu-background);
+}
+
+.text {
+  display: grid;
+  align-content: center;
+  min-block-size: 40px;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.upcoming .label {
+  color: var(--msu-text-muted);
+  font-weight: 500;
+}
+
+.date {
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-xs);
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--msu-accent) 8%, transparent);
+  }
+}
+
+@media (min-width: 640px) {
+  .horizontal {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .horizontal .step {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    row-gap: var(--msu-space-2);
+    padding-block-end: 0;
+    text-align: center;
+  }
+
+  .horizontal .step:not(:last-child)::after {
+    inset-block: 19px auto;
+    inset-inline-start: calc(50% + 24px);
+    inline-size: calc(100% - 48px);
+    block-size: 2px;
+  }
+
+  .horizontal .text {
+    min-block-size: 0;
+  }
+}
