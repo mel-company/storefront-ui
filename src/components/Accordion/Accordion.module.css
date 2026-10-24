@@ -36,3 +36,14 @@
   padding-block-end: var(--msu-space-4);
   color: var(--msu-text-muted);
 }
+
+.item[open] .answer {
+  animation: reveal var(--msu-duration) ease-out;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

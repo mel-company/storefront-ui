@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useProduct, useStore } from "../../store";
 import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
 import { useMessages } from "../../i18n";
+import styles from "./AddToCart.module.css";
 
 export interface AddToCartProps {
   productId: string;
@@ -50,6 +51,7 @@ export function AddToCart({
       size={size}
       fullWidth={fullWidth}
       icon={added ? "check" : "bag"}
+      className={added ? styles.added : undefined}
       disabled={disabled}
       title={missing.length ? m.chooseOptions(missing.map((option) => option.name)) : undefined}
       aria-label={compact ? `${text}: ${product.name}` : undefined}

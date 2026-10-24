@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Icon } from "../../icons";
 import { useCart, useCategories, useFavourites, useLink, useStore } from "../../store";
 import type { Route } from "../../store/types";
@@ -82,12 +82,12 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
                 aria-label={m.favouritesCount(favourites.ids.length)}
               >
                 <Icon name="heart" />
-                {favourites.ids.length > 0 && <span className={styles.count} aria-hidden="true">{favourites.ids.length}</span>}
+                <CountBadge value={favourites.ids.length} />
               </Link>
             )}
             <Link href={store.href({ to: "cart" })} className={styles.iconLink} aria-label={m.cartCount(count)}>
               <Icon name="cart" />
-              {count > 0 && <span className={styles.count} aria-hidden="true">{count}</span>}
+              <CountBadge value={count} />
             </Link>
           </div>
         </div>
@@ -106,5 +106,16 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
         )}
       </div>
     </header>
+  );
+}
+
+/** The number on the cart and favourites icons. It bumps when the number changes, not on first show. */
+function CountBadge({ value }: { value: number }) {
+  const first = useRef(value);
+  if (value <= 0) return null;
+  return (
+    <span key={value} className={cx(styles.count, value !== first.current && styles.bump)} aria-hidden="true">
+      {value}
+    </span>
   );
 }

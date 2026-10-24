@@ -32,3 +32,14 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+.bump {
+  display: inline-block;
+  animation: bump var(--msu-duration) ease-out;
+}
+
+@keyframes bump {
+  50% {
+    transform: scale(1.2);
+  }
+}

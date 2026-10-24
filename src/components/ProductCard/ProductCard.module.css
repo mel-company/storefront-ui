@@ -86,3 +86,9 @@
 .minimal .name {
   font-weight: 500;
 }
+
+@media (hover: hover) {
+  .card:hover .mediaWrap img {
+    transform: scale(1.04);
+  }
+}
