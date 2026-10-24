@@ -27,7 +27,11 @@ function Tile({ ids, children, className }: { ids: string[]; children: ReactNode
   return (
     <figure className={`tile reveal ${className ?? ""}`}>
       <div className="tile-body">{children}</div>
-      <figcaption>{ids.join(" · ")}</figcaption>
+      <figcaption>
+        {ids.map((id) => (
+          <code key={id}>{id}</code>
+        ))}
+      </figcaption>
     </figure>
   );
 }

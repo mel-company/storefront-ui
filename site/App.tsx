@@ -5,6 +5,7 @@ import { Footer } from "./parts/Footer";
 import { Gallery } from "./parts/Gallery";
 import { Hero } from "./parts/Hero";
 import { Logo } from "./parts/Logo";
+import { Overview } from "./parts/Overview";
 import { PlaygroundSection } from "./parts/PlaygroundSection";
 import { Showcase } from "./parts/Showcase";
 import { ThemeLab } from "./parts/ThemeLab";
@@ -54,6 +55,7 @@ function Shell() {
         <Hero />
         <Showcase />
         <PlaygroundSection />
+        <Overview />
         <Gallery />
         <Checker />
         <ThemeLab />
