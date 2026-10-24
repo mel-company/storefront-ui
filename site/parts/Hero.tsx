@@ -1,13 +1,27 @@
+import { useRef, type PointerEvent } from "react";
 import { CopyButton } from "./CodeBlock";
 
 const INSTALL = "npm install @mel-company/storefront-ui";
 
 /** Code-drawn illustration: components, sections and a page stacked as glass layers, with the checker scanning the top one. */
 function LayerStack() {
+  const ref = useRef<HTMLDivElement>(null);
+  // Tilt the stack a few degrees towards the pointer. Written straight to CSS variables, so no re-render.
+  const tilt = (event: PointerEvent<HTMLDivElement>) => {
+    const box = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    const y = (event.clientY - box.top) / box.height - 0.5;
+    ref.current?.style.setProperty("--tx", `${(x * 8).toFixed(2)}deg`);
+    ref.current?.style.setProperty("--ty", `${(-y * 6).toFixed(2)}deg`);
+  };
+  const reset = () => {
+    ref.current?.style.setProperty("--tx", "0deg");
+    ref.current?.style.setProperty("--ty", "0deg");
+  };
   return (
-    <div className="stack-art" aria-hidden="true">
+    <div className="stack-art" aria-hidden="true" onPointerMove={tilt} onPointerLeave={reset}>
       <div className="stack-glow" />
-      <div className="stack-scene">
+      <div className="stack-scene" ref={ref}>
         <div className="plane plane-1">
           <div className="pl-grid">
             <span className="w-btn" />
@@ -27,7 +41,7 @@ function LayerStack() {
               <i />
               <i />
             </span>
-            <span className="w-card" />
+            <span className="w-card flow flow-1" />
           </div>
         </div>
         <div className="plane plane-2">
@@ -37,7 +51,7 @@ function LayerStack() {
               <b />
             </span>
             <span className="s-row">
-              <i />
+              <i className="flow flow-2" />
               <i />
               <i />
               <i />
@@ -53,7 +67,7 @@ function LayerStack() {
               <b />
             </span>
             <span className="p-row">
-              <i />
+              <i className="flow flow-3" />
               <i />
               <i />
             </span>
