@@ -1945,6 +1945,20 @@ body:has(> #root) {
   font-weight: 400;
 }
 
+.docs-subgroup + .docs-subgroup {
+  margin-top: 10px;
+}
+
+.docs-subgroup-title {
+  margin: 0;
+  padding: 6px 10px 4px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .docs-nav ul {
   margin: 0;
   padding: 0;
@@ -2114,6 +2128,15 @@ body:has(> #root) {
   .docs-nav ul {
     display: flex;
     gap: 2px;
+  }
+
+  /* One swipe row on small screens: the group names step aside. */
+  .docs-subgroup {
+    display: contents;
+  }
+
+  .docs-subgroup-title {
+    display: none;
   }
 
   .docs-nav li a {
