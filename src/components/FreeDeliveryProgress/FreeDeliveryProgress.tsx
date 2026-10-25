@@ -21,7 +21,13 @@ export function FreeDeliveryProgress({ remainingText, doneText }: FreeDeliveryPr
 
   const percent = Math.min(100, Math.round((subtotal / threshold) * 100));
   const done = subtotal >= threshold;
-  const text = done ? doneText || m.freeDeliveryDone : (remainingText || m.freeDeliveryRemaining).replace("{amount}", format(threshold - subtotal));
+  // An empty bar reads as broken, so an empty cart gets the offer itself instead.
+  const empty = subtotal <= 0 && !remainingText;
+  const text = done
+    ? doneText || m.freeDeliveryDone
+    : empty
+      ? m.freeDeliveryOver.replace("{amount}", format(threshold))
+      : (remainingText || m.freeDeliveryRemaining).replace("{amount}", format(threshold - subtotal));
 
   return (
     <div className={cx(styles.progress, done && styles.done)}>
@@ -29,6 +35,7 @@ export function FreeDeliveryProgress({ remainingText, doneText }: FreeDeliveryPr
         <Icon name={done ? "check" : "truck"} />
         {text}
       </p>
+      {!empty && (
       <div
         className={styles.track}
         role="progressbar"
@@ -39,6 +46,7 @@ export function FreeDeliveryProgress({ remainingText, doneText }: FreeDeliveryPr
       >
         <div className={styles.fill} style={{ inlineSize: `${percent}%` }} />
       </div>
+      )}
     </div>
   );
 }

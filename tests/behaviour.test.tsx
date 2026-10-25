@@ -73,7 +73,11 @@ describe("cart logic", () => {
   it("free delivery progress updates with the cart", () => {
     const store = createDemoStore();
     setup(<FreeDeliveryProgress />, store);
+    expect(screen.getByText(/Free delivery on orders over/)).toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    act(() => store.addToCart("p1", 1));
     expect(screen.getByText(/more for free delivery/)).toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
     act(() => store.addToCart("p4", 2));
     expect(screen.getByText("You get free delivery")).toBeInTheDocument();
   });

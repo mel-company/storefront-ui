@@ -8,7 +8,7 @@
 
 .stars {
   display: inline-flex;
-  color: var(--msu-warning);
+  color: var(--msu-text);
 }
 
 .empty {

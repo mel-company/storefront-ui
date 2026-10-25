@@ -65,6 +65,11 @@ export function ProductCard({
           </div>
         )}
         {showFavourite && variant !== "minimal" && <Favourite productId={product.id} className={styles.favourite} />}
+        {lowStock && variant !== "minimal" && variant !== "overlay" && (
+          <Badge tone="warning" className={styles.stock}>
+            {m.onlyLeft(product.stock)}
+          </Badge>
+        )}
       </div>
       <div className={styles.info}>
         <Heading className={styles.name}>
@@ -77,7 +82,6 @@ export function ProductCard({
         )}
         <div className={styles.meta}>
           <Price amount={product.price} compareAt={product.compareAtPrice} />
-          {lowStock && <Badge tone="warning">{m.onlyLeft(product.stock)}</Badge>}
           {canQuickAdd && variant !== "overlay" && (
             <span className={styles.quickAdd}>
               <AddToCart productId={product.id} compact size="sm" variant="secondary" />
