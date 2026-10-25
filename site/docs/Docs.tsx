@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import {
   builtInRegistry,
@@ -179,31 +179,84 @@ function DocsIndex({ kind }: { kind: DocsKind }) {
         <h1>{group.title}</h1>
         <p className="muted">{INTRO[kind]}</p>
       </header>
-      <div className="table-scroll">
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Id</th>
-              <th scope="col">{kind === "pages" ? "Sections" : "Use it for"}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {group.items.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <Link href={hrefOf(kind, item.id)}>{item.name}</Link>
-                </td>
-                <td>
-                  <code>{item.id}</code>
-                </td>
-                <td className="muted">{item.description}</td>
-              </tr>
+      {subgroupsOf(kind, group.items).map((sub) => (
+        <section key={sub.title} className="docs-cards-group" aria-label={sub.title}>
+          <h2 className="docs-cards-title">{sub.title}</h2>
+          <ul className="docs-cards">
+            {sub.items.map((item) => (
+              <li key={item.id}>
+                <Link href={hrefOf(kind, item.id)} className="docs-card">
+                  <CardThumb kind={kind} id={item.id} name={item.name} />
+                  <span className="docs-card-body">
+                    <span className="docs-card-name">{item.name}</span>
+                    <code className="docs-card-id">{item.id}</code>
+                    <span className="docs-card-text">{item.description}</span>
+                  </span>
+                </Link>
+              </li>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </ul>
+        </section>
+      ))}
     </>
+  );
+}
+
+/** A small live preview of the first example. Mounted once it scrolls near view, and inert so the whole card stays one link. */
+function CardThumb({ kind, id, name }: { kind: DocsKind; id: string; name: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+  const { themeId, mode, dir, lang } = useSettings();
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    node.setAttribute("inert", "");
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setShown(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "300px" });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="docs-card-thumb" aria-hidden="true">
+      {shown && (
+        <Frame width={kind === "components" ? 420 : 1024} title={`${name} thumbnail`} maxHeight={kind === "components" ? 340 : 700}>
+          <LivePreview key={`${themeId}-${mode}-${dir}`} seed={(store) => seedThumb(store, kind, id)}>
+            <ThumbContent kind={kind} id={id} lang={lang} />
+          </LivePreview>
+        </Frame>
+      )}
+    </div>
+  );
+}
+
+function seedThumb(store: Parameters<typeof seedExample>[0], kind: DocsKind, id: string) {
+  const source = kind === "pages" ? builtInRegistry.pages.get(id)?.preview : (kind === "components" ? builtInRegistry.components.get(id) : builtInRegistry.sections.get(id))?.examples[0];
+  if (source) seedExample(store, source);
+}
+
+function ThumbContent({ kind, id, lang }: { kind: DocsKind; id: string; lang: "en" | "ar" }) {
+  if (kind === "pages") {
+    const page = builtInRegistry.pages.get(id);
+    if (!page) return null;
+    return <PageRenderer composition={translateDeep(lang, compositionOf(page))} context={initialView(page).context} />;
+  }
+  const definition: Definition | undefined = kind === "components" ? builtInRegistry.components.get(id) : builtInRegistry.sections.get(id);
+  const example = definition?.examples[0];
+  if (!definition) return null;
+  const Render = definition.render;
+  const props = translateDeep(lang, (example?.props ?? {}) as Record<string, unknown>);
+  return (
+    <PageContextProvider value={example?.context ?? {}}>
+      <div style={{ padding: kind === "components" ? 24 : 0 }}>
+        <Render {...definition.props.parse(props)} />
+      </div>
+    </PageContextProvider>
   );
 }
 
