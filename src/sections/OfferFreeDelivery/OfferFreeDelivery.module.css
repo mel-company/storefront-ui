@@ -22,8 +22,36 @@
   color: var(--msu-text-muted);
 }
 
+.inverted {
+  border-color: transparent;
+  background: var(--msu-text);
+  color: var(--msu-background);
+}
+
+.inverted .text {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.minimal {
+  justify-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+}
+
+.minimal > * {
+  inline-size: min(100%, 520px);
+}
+
+.minimal > a {
+  inline-size: auto;
+}
+
 @media (min-width: 900px) {
-  .panel {
+  .panel:not(.minimal) {
     grid-template-columns: 1fr 1fr auto;
     align-items: center;
     padding: var(--msu-space-8);

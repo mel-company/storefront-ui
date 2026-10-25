@@ -428,3 +428,72 @@
 .justifyCenter {
   justify-content: center;
 }
+
+.galleryAll {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 86%;
+  gap: var(--msu-space-3);
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .splitReverse > :first-child {
+    order: 2;
+  }
+
+  .gallerySide {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .gallerySide > :first-child {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .gallerySide > .thumbs {
+    grid-column: 1;
+    grid-row: 1;
+    grid-template-columns: none;
+    align-content: start;
+  }
+
+  .galleryAll {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tickerBones {
+  gap: var(--msu-space-12);
+  padding-block: var(--msu-space-4);
+}
+
+.storyOverlap {
+  gap: 0;
+}
+
+.overlapCard {
+  position: relative;
+  margin-block-start: calc(var(--msu-space-12) * -1);
+  margin-inline: var(--msu-space-4);
+}
+
+@media (min-width: 900px) {
+  .overlapCard {
+    justify-self: end;
+    inline-size: min(520px, 50%);
+    margin-block-start: calc(var(--msu-space-24) * -1);
+    margin-inline: 0 var(--msu-space-8);
+  }
+}
+
+.bare.bare {
+  padding: 0;
+  border: 0;
+  background: none;
+}

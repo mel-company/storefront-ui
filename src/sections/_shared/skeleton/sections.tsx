@@ -187,7 +187,18 @@ export function ProductsRailSkeleton({ eyebrow, subtitle, card, visible = 4, num
   );
 }
 
-export function TrustStripSkeleton({ items = [], layout = "inline", tone = "muted" }: { items?: unknown[]; layout?: "inline" | "stacked"; tone?: SectionTone }) {
+export function TrustStripSkeleton({ items = [], layout = "inline", look = "plain", tone = "muted" }: { items?: unknown[]; layout?: "inline" | "stacked"; look?: "plain" | "cards" | "divided" | "ticker"; tone?: SectionTone }) {
+  if (look === "ticker") {
+    return (
+      <SectionSkeleton tone={tone} spacing="tight">
+        <div className={cx(s.inline, s.noWrap, s.tickerBones)}>
+          {Array.from({ length: count(items.length, 4, 4) }, (_, index) => (
+            <Skeleton key={index} width="160px" />
+          ))}
+        </div>
+      </SectionSkeleton>
+    );
+  }
   return (
     <SectionSkeleton tone={tone} spacing="tight">
       <div className={s.cols}>
@@ -205,10 +216,10 @@ export function TrustStripSkeleton({ items = [], layout = "inline", tone = "mute
   );
 }
 
-export function OfferFreeDeliverySkeleton({ text, action, tone }: { text?: string; action?: unknown; tone?: SectionTone }) {
+export function OfferFreeDeliverySkeleton({ text, action, look = "panel", tone }: { text?: string; action?: unknown; look?: "panel" | "inverted" | "minimal"; tone?: SectionTone }) {
   return (
     <SectionSkeleton tone={tone}>
-      <PanelBone className={s.centerStack}>
+      <PanelBone className={cx(s.centerStack, look === "minimal" && s.bare)}>
         <Skeleton shape="circle" height="48px" />
         <Skeleton shape="heading" width="70%" />
         {text && <Skeleton width="90%" />}
@@ -238,7 +249,7 @@ export function BundleBuilderSkeleton({ eyebrow, subtitle, pickCount = 3, tone }
   );
 }
 
-export function StoryEditorialSkeleton({ layout = "imageStart", eyebrow, body = [], image, action, tone }: { layout?: "imageStart" | "imageEnd" | "quote"; eyebrow?: string; body?: string[]; image?: string; action?: unknown; tone?: SectionTone }) {
+export function StoryEditorialSkeleton({ layout = "imageStart", eyebrow, body = [], image, action, tone }: { layout?: "imageStart" | "imageEnd" | "overlap" | "centered" | "quote"; eyebrow?: string; body?: string[]; image?: string; action?: unknown; tone?: SectionTone }) {
   const paragraphs = Array.from({ length: count(body.length, 1, 3) }, (_, index) => <Skeleton key={index} lines={3} />);
   if (layout === "quote" || !image) {
     return (
@@ -260,6 +271,17 @@ export function StoryEditorialSkeleton({ layout = "imageStart", eyebrow, body = 
       {action ? <Skeleton shape="pill" /> : null}
     </div>
   );
+  if (layout === "overlap" || layout === "centered") {
+    return (
+      <SectionSkeleton tone={tone}>
+        <div className={cx(s.stackLg, layout === "overlap" && s.storyOverlap)}>
+          {layout === "centered" && <div className={s.centerStack}>{text}</div>}
+          <Skeleton shape="block" ratio="wide" />
+          {layout === "overlap" && <PanelBone className={s.overlapCard}>{text}</PanelBone>}
+        </div>
+      </SectionSkeleton>
+    );
+  }
   const picture = <Skeleton shape="block" ratio="landscape" />;
   return (
     <SectionSkeleton tone={tone}>
@@ -271,33 +293,52 @@ export function StoryEditorialSkeleton({ layout = "imageStart", eyebrow, body = 
   );
 }
 
-export function FaqListSkeleton({ eyebrow, subtitle, items = [], tone }: Heading & { items?: unknown[]; tone?: SectionTone }) {
+export function FaqListSkeleton({ eyebrow, subtitle, items = [], layout = "split", tone }: Heading & { items?: unknown[]; layout?: "split" | "stacked" | "columns"; tone?: SectionTone }) {
+  const rows = (n: number) => (
+    <div className={s.stack}>
+      {Array.from({ length: n }, (_, index) => (
+        <Skeleton key={index} shape="block" height="56px" />
+      ))}
+    </div>
+  );
+  const total = count(items.length, 3, 8);
   return (
     <SectionSkeleton tone={tone}>
-      <div className={s.narrow}>
-        <HeadingBones eyebrow={Boolean(eyebrow)} subtitle={Boolean(subtitle)} />
-        <div className={s.stack}>
-          {Array.from({ length: count(items.length, 3, 8) }, (_, index) => (
-            <Skeleton key={index} shape="block" height="56px" />
-          ))}
-        </div>
+      <div className={layout === "columns" ? undefined : s.narrow}>
+        <HeadingBones eyebrow={Boolean(eyebrow)} subtitle={Boolean(subtitle)} align={layout === "split" ? "start" : "center"} />
+        {layout === "columns" ? (
+          <div className={s.cols}>
+            {rows(Math.ceil(total / 2))}
+            {rows(Math.floor(total / 2))}
+          </div>
+        ) : (
+          rows(total)
+        )}
       </div>
     </SectionSkeleton>
   );
 }
 
-export function ProductDetailSkeleton({ details = [] }: { details?: unknown[] }) {
+export function ProductDetailSkeleton({ details = [], gallery = "thumbsBelow", imageRatio = "square", gallerySide = "start" }: { details?: unknown[]; gallery?: "thumbsBelow" | "thumbsSide" | "grid" | "stack"; imageRatio?: "square" | "portrait"; gallerySide?: "start" | "end" }) {
   return (
     <SectionSkeleton>
-      <div className={cx(s.split, s.splitTop)}>
-        <div className={s.stack}>
-          <Skeleton shape="block" ratio="square" />
-          <div className={s.thumbs}>
+      <div className={cx(s.split, s.splitTop, gallerySide === "end" && s.splitReverse)}>
+        {gallery === "grid" || gallery === "stack" ? (
+          <div className={cx(s.galleryAll, gallery === "grid" && s.galleryGrid)}>
             {Array.from({ length: 4 }, (_, index) => (
-              <Skeleton key={index} shape="block" ratio="square" />
+              <Skeleton key={index} shape="block" ratio={imageRatio} />
             ))}
           </div>
-        </div>
+        ) : (
+          <div className={cx(s.stack, gallery === "thumbsSide" && s.gallerySide)}>
+            <Skeleton shape="block" ratio={imageRatio} />
+            <div className={s.thumbs}>
+              {Array.from({ length: 4 }, (_, index) => (
+                <Skeleton key={index} shape="block" ratio={imageRatio} />
+              ))}
+            </div>
+          </div>
+        )}
         <div className={s.stackLg}>
           <Skeleton width="120px" />
           <Skeleton shape="heading" lines={2} />

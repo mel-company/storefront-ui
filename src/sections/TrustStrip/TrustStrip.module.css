@@ -3,8 +3,113 @@
   gap: var(--msu-space-6);
 }
 
+.cards {
+  gap: var(--msu-space-3);
+}
+
+.cards > * {
+  padding: var(--msu-space-4);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+  box-shadow: var(--msu-card-shadow);
+}
+
+.divided {
+  gap: 0;
+}
+
+.divided > * {
+  padding-block: var(--msu-space-4);
+}
+
+.divided > * + * {
+  border-block-start: 1px solid var(--msu-border);
+}
+
+/* Ticker: one line that scrolls on its own, and wraps in place when motion is off. */
+.ticker {
+  padding-block: var(--msu-space-4);
+  overflow: hidden;
+}
+
+.tickerTrack {
+  display: flex;
+  inline-size: max-content;
+}
+
+.tickerRow {
+  display: flex;
+  flex: none;
+  gap: var(--msu-space-12);
+  margin: 0;
+  padding: 0;
+  padding-inline-end: var(--msu-space-12);
+  list-style: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tickerRow li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-2);
+}
+
+.tickerRow svg {
+  color: var(--msu-accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tickerTrack {
+    animation: ticker 28s linear infinite;
+  }
+
+  .ticker:hover .tickerTrack {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickerTrack {
+    inline-size: auto;
+    justify-content: center;
+  }
+
+  .tickerTrack > [aria-hidden] {
+    display: none;
+  }
+
+  .tickerRow {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--msu-space-2);
+    padding-inline-end: 0;
+  }
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(calc(-50% * var(--msu-flip, 1)));
+  }
+}
+
 @media (min-width: 768px) {
   .strip {
     grid-template-columns: repeat(var(--msu-count, 3), minmax(0, 1fr));
+  }
+
+  .divided > * {
+    padding-block: 0;
+    padding-inline: var(--msu-space-6);
+  }
+
+  .divided > :first-child {
+    padding-inline-start: 0;
+  }
+
+  .divided > * + * {
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--msu-border);
   }
 }

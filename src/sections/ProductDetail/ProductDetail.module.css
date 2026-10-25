@@ -31,10 +31,33 @@
   border-color: var(--msu-text);
 }
 
+/* Every image at once: a swipe row on phones, a stack or a 2-column grid on desktop. */
+.all {
+  grid-auto-flow: column;
+  grid-auto-columns: 86%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+}
+
+.all::-webkit-scrollbar {
+  display: none;
+}
+
+.all > * {
+  scroll-snap-align: start;
+}
+
 .info {
   display: grid;
   gap: var(--msu-space-4);
   align-content: start;
+}
+
+/* The "new" badge keeps its own width. */
+.info > span:first-child {
+  justify-self: start;
 }
 
 .title {
@@ -93,9 +116,55 @@
     gap: var(--msu-space-12);
   }
 
+  .galleryEnd {
+    grid-template-columns: 1fr 1.1fr;
+  }
+
+  .galleryEnd .gallery {
+    order: 2;
+  }
+
   .gallery {
     position: sticky;
     inset-block-start: 88px;
+  }
+
+  /* Thumbnails in a column beside the big image. */
+  .side {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .side .main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .side .thumbs {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+  }
+
+  .all {
+    position: static;
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    overflow: visible;
+  }
+
+  /* With every image shown, the buy box follows the scroll instead. */
+  .stickyInfo {
+    position: sticky;
+    inset-block-start: 88px;
+  }
+
+  .allGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The first image spans the grid when the count is odd, so no gap is left. */
+  .allGrid > :first-child:nth-last-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .sticky {

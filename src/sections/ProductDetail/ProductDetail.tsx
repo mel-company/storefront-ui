@@ -21,10 +21,23 @@ export interface ProductDetailProps {
   details?: AccordionItem[];
   stickyBuyBar?: boolean;
   lowStockAt?: number;
+  /** thumbsBelow / thumbsSide: one big image and a strip of thumbnails. grid / stack: every image at once on desktop, a swipe row on phones. */
+  gallery?: "thumbsBelow" | "thumbsSide" | "grid" | "stack";
+  imageRatio?: "square" | "portrait";
+  /** Which side the gallery takes on desktop. */
+  gallerySide?: "start" | "end";
 }
 
 /** The product page's main block: gallery, name, price, options, quantity, add to cart. Holds the page's h1. */
-export function ProductDetail({ productId, details = [], stickyBuyBar = true, lowStockAt = 5 }: ProductDetailProps) {
+export function ProductDetail({
+  productId,
+  details = [],
+  stickyBuyBar = true,
+  lowStockAt = 5,
+  gallery = "thumbsBelow",
+  imageRatio = "square",
+  gallerySide = "start",
+}: ProductDetailProps) {
   const headingId = useId();
   const page = usePageContext();
   const m = useMessages();
@@ -41,28 +54,37 @@ export function ProductDetail({ productId, details = [], stickyBuyBar = true, lo
 
   return (
     <Section labelledBy={headingId}>
-      <div className={styles.detail}>
-        <div className={styles.gallery}>
-          <Media src={image} alt={product.name} ratio="square" priority />
-          {product.images.length > 1 && (
-            <ul className={styles.thumbs}>
-              {product.images.map((src, index) => (
-                <li key={src}>
-                  <button
-                    type="button"
-                    className={styles.thumb}
-                    aria-current={index === imageIndex}
-                    aria-label={m.showImage(index + 1)}
-                    onClick={() => setImageIndex(index)}
-                  >
-                    <Media src={src} alt="" ratio="square" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className={styles.info}>
+      <div className={cx(styles.detail, gallerySide === "end" && styles.galleryEnd)}>
+        {gallery === "grid" || gallery === "stack" ? (
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- focusable so keyboard users can swipe it on phones
+          <div className={cx(styles.gallery, styles.all, gallery === "grid" && styles.allGrid)} tabIndex={0} role="region" aria-label={product.name}>
+            {product.images.map((src, index) => (
+              <Media key={src} src={src} alt={index === 0 ? product.name : ""} ratio={imageRatio} priority={index < 2} />
+            ))}
+          </div>
+        ) : (
+          <div className={cx(styles.gallery, gallery === "thumbsSide" && product.images.length > 1 && styles.side)}>
+            <Media src={image} alt={product.name} ratio={imageRatio} priority className={styles.main} />
+            {product.images.length > 1 && (
+              <ul className={styles.thumbs}>
+                {product.images.map((src, index) => (
+                  <li key={src}>
+                    <button
+                      type="button"
+                      className={styles.thumb}
+                      aria-current={index === imageIndex}
+                      aria-label={m.showImage(index + 1)}
+                      onClick={() => setImageIndex(index)}
+                    >
+                      <Media src={src} alt="" ratio={imageRatio} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        <div className={cx(styles.info, (gallery === "grid" || gallery === "stack") && styles.stickyInfo)}>
           {product.tags.includes("new") && <Badge tone="accent">{m.new}</Badge>}
           <h1 id={headingId} className={styles.title}>
             {product.name}
