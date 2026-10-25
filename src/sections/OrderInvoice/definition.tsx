@@ -1,10 +1,14 @@
 import { z } from "zod";
+import { demoOrderKey } from "../../demo/data";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { INVOICE_TEMPLATES } from "../_shared/invoice/paper";
 import { toneField } from "../_shared/shared-props";
 import { OrderInvoice } from "./OrderInvoice";
 import { OrderLookupSkeleton } from "../_shared/skeleton/sections";
+
+/** Order 1042 opened from its confirmation link, which carries the access key. */
+const fromLink = { orderNumber: "1042", orderKey: demoOrderKey };
 
 export const orderInvoiceDefinition = defineSection({
   id: "order.invoice",
@@ -27,11 +31,12 @@ export const orderInvoiceDefinition = defineSection({
     tone: toneField,
   }),
   examples: [
-    { name: "Default", props: {} },
-    { name: "Modern", props: { template: "modern", intro: "Try order 1042 with phone 555 0123." } },
-    { name: "Compact", props: { template: "compact", intro: "Try order 1042 with phone 555 0123." } },
-    { name: "Receipt printer, 80 mm", props: { template: "receipt80", title: "Your receipt", intro: "Try order 1042 with phone 555 0123.", tone: "muted" } },
-    { name: "Receipt printer, 58 mm, print only", props: { template: "receipt58", title: "Your receipt", intro: "Try order 1042 with phone 555 0123.", showDownload: false } },
+    { name: "Classic, from a link", props: {}, context: fromLink },
+    { name: "Modern", props: { template: "modern" }, context: fromLink },
+    { name: "Compact", props: { template: "compact" }, context: fromLink },
+    { name: "Receipt printer, 80 mm", props: { template: "receipt80", title: "Your receipt", tone: "muted" }, context: fromLink },
+    { name: "Receipt printer, 58 mm, print only", props: { template: "receipt58", title: "Your receipt", showDownload: false }, context: fromLink },
+    { name: "Asks for number and phone", props: { intro: "Try order 1042 with phone 555 0123." } },
   ],
   skeleton: OrderLookupSkeleton,
   render: function OrderInvoicePreset(props) {

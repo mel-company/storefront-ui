@@ -6,8 +6,10 @@ export interface PageContextValue {
   categorySlug?: string;
   /** What the shopper searched for, e.g. from `/products?search=cream`. */
   search?: string;
-  /** The order a confirmation page is about, e.g. after an online payment. */
+  /** The order a confirmation, tracking or invoice page is about, e.g. after an online payment. */
   orderNumber?: string;
+  /** The order's access key from the link, so tracking and invoices open without asking for the phone. */
+  orderKey?: string;
 }
 
 const PageContext = createContext<PageContextValue>({});

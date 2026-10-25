@@ -1,11 +1,11 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Button } from "../../components/Button/Button";
 import { OrderSteps } from "../../components/OrderSteps/OrderSteps";
 import { Icon } from "../../icons";
 import { useFormatDate, useFormatPrice, useStore } from "../../store";
 import type { Invoice, TrackedOrder } from "../../store/types";
 import { InvoiceView } from "../_shared/invoice/InvoiceView";
-import { OrderLookup, type OrderQuery } from "../_shared/OrderLookup";
+import { OrderChecking, OrderLookup, useOrderFromPage, type OrderQuery } from "../_shared/OrderLookup";
 import { usePageContext } from "../_shared/PageContext";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderTracking.module.css";
@@ -22,8 +22,9 @@ export interface OrderTrackingProps {
 }
 
 /**
- * The order tracking page: the shopper enters the order number and their
- * phone, and sees where the order is, what is in it and who is delivering.
+ * The order tracking page: where the order is, what is in it and who is
+ * delivering. Opens straight away from a link with the order's key (or for
+ * a signed-in shopper); otherwise asks for the order number and phone.
  * Looks orders up through `store.trackOrder`; when the store also has
  * `getInvoice`, the order opens its invoice in place. Holds the page's h1.
  */
@@ -38,6 +39,10 @@ export function OrderTracking({ title, intro, showItems = true, showCourier = tr
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [invoiceState, setInvoiceState] = useState<"idle" | "busy" | "failed">("idle");
   const { trackOrder, getInvoice } = store;
+  const fromPage = useOrderFromPage(trackOrder);
+  useEffect(() => {
+    if (fromPage.found) setFound({ order: fromPage.found.value, query: fromPage.found.query });
+  }, [fromPage.found]);
 
   const openInvoice = async () => {
     if (!found || !getInvoice) return;
@@ -64,10 +69,12 @@ export function OrderTracking({ title, intro, showItems = true, showCourier = tr
           <h1 id={headingId} className={styles.title}>
             {title || m.trackOrder}
           </h1>
-          {!found && <p className={styles.intro}>{intro || m.trackIntro}</p>}
+          {!found && !fromPage.checking && <p className={styles.intro}>{intro || m.trackIntro}</p>}
         </div>
 
-        {found && invoice ? (
+        {fromPage.checking ? (
+          <OrderChecking />
+        ) : found && invoice ? (
           <InvoiceView
             invoice={invoice}
             extraActions={

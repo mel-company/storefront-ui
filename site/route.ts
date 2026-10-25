@@ -19,6 +19,14 @@ export interface View {
 
 export const initialView = (page: PageDefinition): View => ({ page, context: defaultContext(page.pageType) });
 
+/** `?order=1042&key=…` as the page context tracking and invoice pages read. */
+function orderContext(path: string): PageContextValue {
+  const params = new URLSearchParams(path.split("?")[1] ?? "");
+  const order = params.get("order");
+  const key = params.get("key");
+  return order ? { orderNumber: order, ...(key ? { orderKey: key } : {}) } : {};
+}
+
 /** Turns a link inside a preview into the page it points at, so previews are a clickable store. */
 export function route(href: string, home: PageDefinition = builtInRegistry.pages.get("home.classic")!): View {
   const path = href.replace(/^#/, "");
@@ -33,13 +41,7 @@ export function route(href: string, home: PageDefinition = builtInRegistry.pages
   if (path.startsWith("/cart")) return { page: cartDefault, context: {} };
   if (path.startsWith("/checkout")) return { page: checkoutDefault, context: {} };
   if (path.startsWith("/favourites")) return { page: favouritesDefault, context: {} };
-  if (path.startsWith("/invoice")) {
-    const order = new URLSearchParams(path.split("?")[1] ?? "").get("order");
-    return { page: invoiceDefault, context: order ? { orderNumber: order } : {} };
-  }
-  if (path.startsWith("/track")) {
-    const order = new URLSearchParams(path.split("?")[1] ?? "").get("order");
-    return { page: trackingDefault, context: order ? { orderNumber: order } : {} };
-  }
+  if (path.startsWith("/invoice")) return { page: invoiceDefault, context: orderContext(path) };
+  if (path.startsWith("/track")) return { page: trackingDefault, context: orderContext(path) };
   return { page: home, context: {} };
 }

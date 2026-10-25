@@ -9,6 +9,15 @@
   animation: enter calc(var(--msu-duration) * 1.5) ease-out;
 }
 
+.checking {
+  display: grid;
+  gap: var(--msu-space-4);
+  padding: var(--msu-space-6);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-lg);
+  background: var(--msu-surface);
+}
+
 .pair {
   display: grid;
   gap: var(--msu-space-4);

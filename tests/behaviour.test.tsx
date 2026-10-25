@@ -10,6 +10,8 @@ import {
   FavouritesGrid,
   OrderInvoice,
   OrderTracking,
+  PageContextProvider,
+  demoOrderKey,
   createDemoStore,
   FreeDeliveryProgress,
   HeaderBar,
@@ -398,5 +400,55 @@ describe("loading pages", () => {
     expect(screen.getAllByRole("region", { name: "Loading…" }).length).toBeGreaterThan(0);
     expect(screen.queryAllByRole("button")).toHaveLength(0);
     expect(screen.queryAllByRole("link")).toHaveLength(0);
+  });
+});
+
+describe("orders opened from a link", () => {
+  it("opens the order straight away with the link's key, no phone asked", async () => {
+    setup(
+      <PageContextProvider value={{ orderNumber: "1042", orderKey: demoOrderKey }}>
+        <OrderTracking />
+      </PageContextProvider>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("Looking up your order…");
+    expect(await screen.findByRole("heading", { level: 2, name: "Order number 1042" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Phone number")).toBeNull();
+  });
+
+  it("opens the invoice straight away too", async () => {
+    setup(
+      <PageContextProvider value={{ orderNumber: "1042", orderKey: demoOrderKey }}>
+        <OrderInvoice />
+      </PageContextProvider>,
+    );
+    expect(await screen.findByRole("article", { name: "Invoice" })).toBeInTheDocument();
+  });
+
+  it("asks for the phone when the key is wrong or missing, with the number filled in", async () => {
+    setup(
+      <PageContextProvider value={{ orderNumber: "1042", orderKey: "guess" }}>
+        <OrderTracking />
+      </PageContextProvider>,
+    );
+    expect(await screen.findByLabelText("Phone number")).toBeInTheDocument();
+    expect(screen.getByLabelText("Order number")).toHaveValue("1042");
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("gives a new order a key, and its tracking link carries it", async () => {
+    const store = createDemoStore();
+    store.addToCart("p2", 1);
+    const result = await store.placeOrder!({
+      customer: { name: "Sara", phone: "+1 555 0177", city: "Riverside", address: "1 Lane" },
+      payment: "cash",
+      lines: store.getSnapshot().cart,
+      subtotal: 18,
+      delivery: 6,
+      total: 24,
+    });
+    expect(result.accessKey).toBeTruthy();
+    expect(await store.trackOrder!({ number: "1001", key: result.accessKey })).toMatchObject({ number: "1001" });
+    expect(await store.trackOrder!({ number: "1001" })).toBeNull();
+    expect(store.href({ to: "tracking", number: "1001", key: result.accessKey })).toBe(`#/track?order=1001&key=${result.accessKey}`);
   });
 });

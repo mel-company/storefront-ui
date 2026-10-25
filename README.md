@@ -68,12 +68,18 @@ cart lines and totals, and then shows the order number, or sends the shopper to
 `placeOrder` it says ordering is not set up. `info.checkout` sets the city list,
 the payment methods and whether to ask for an email.
 
-For order tracking, add `trackOrder({ number, phone })` and return the order's
-status, history, items and courier, or `null`. Both the number and the phone
-must match, so an order number alone shows nothing. The footer and the order
+For order tracking, add `trackOrder(query)` and return the order's status,
+history, items and courier, or `null`. The query is the order number plus
+either the phone it was placed with or `key`, the order's access key. Return an
+`accessKey` from `placeOrder`: the confirmation's tracking and invoice links
+carry it (`?order=1042&key=…`, read into the page context as `orderNumber` and
+`orderKey`), so those pages open straight away without asking for the phone.
+For a signed-in shopper, return the order for the number alone when your
+session owns it. Only when nothing matches do the pages show the number and
+phone form, so an order number alone never shows anything. The footer and the order
 confirmation link to tracking only when the store has `trackOrder`.
 
-For invoices, add `getInvoice({ number, phone })` (same matching rule). The
+For invoices, add `getInvoice(query)` (same query and rule). The
 invoice page and the tracked order then show the invoice with **Print**, which
 prints only the invoice, and **Download PDF**, which draws an A4 PDF in the
 browser (pages break between rows), or opens `invoice.pdfUrl` when your server

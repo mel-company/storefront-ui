@@ -10,6 +10,8 @@ import { useMessages } from "../../i18n";
 
 export interface OrderPlacedProps {
   orderNumber?: string;
+  /** The order's access key: tracking and invoice links carry it, so the shopper is not asked for their phone. */
+  orderKey?: string;
   icon?: IconName;
   title?: string;
   text?: string;
@@ -22,7 +24,7 @@ export interface OrderPlacedProps {
 }
 
 /** The thank-you block: order number, what happens next, how to reach the store. Holds an h1. */
-export function OrderPlaced({ orderNumber, icon = "check", title, text, showContact = true, showTracking = true, showInvoice = true, headingId }: OrderPlacedProps) {
+export function OrderPlaced({ orderNumber, orderKey, icon = "check", title, text, showContact = true, showTracking = true, showInvoice = true, headingId }: OrderPlacedProps) {
   const { info, trackOrder, getInvoice } = useStore();
   const m = useMessages();
   const { phone, whatsapp } = info.contact ?? {};
@@ -39,12 +41,12 @@ export function OrderPlaced({ orderNumber, icon = "check", title, text, showCont
         <>
           <ButtonLink route={{ to: "catalogue" }}>{m.continueShopping}</ButtonLink>
           {showTracking && trackOrder && (
-            <ButtonLink route={{ to: "tracking", number: orderNumber }} variant="secondary" icon="truck">
+            <ButtonLink route={{ to: "tracking", number: orderNumber, key: orderKey }} variant="secondary" icon="truck">
               {m.trackOrder}
             </ButtonLink>
           )}
           {showInvoice && getInvoice && (
-            <ButtonLink route={{ to: "invoice", number: orderNumber }} variant="ghost" icon="receipt">
+            <ButtonLink route={{ to: "invoice", number: orderNumber, key: orderKey }} variant="ghost" icon="receipt">
               {m.viewInvoice}
             </ButtonLink>
           )}
@@ -83,10 +85,10 @@ export interface OrderConfirmationProps {
 /** The page a shopper lands on after paying elsewhere. The order number comes from the page context. */
 export function OrderConfirmation({ tone, ...props }: OrderConfirmationProps) {
   const headingId = useId();
-  const { orderNumber } = usePageContext();
+  const { orderNumber, orderKey } = usePageContext();
   return (
     <Section labelledBy={headingId} tone={tone}>
-      <OrderPlaced {...props} orderNumber={orderNumber} headingId={headingId} />
+      <OrderPlaced {...props} orderNumber={orderNumber} orderKey={orderKey} headingId={headingId} />
     </Section>
   );
 }

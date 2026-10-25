@@ -59,8 +59,8 @@ export type Route =
   | { to: "cart" }
   | { to: "checkout" }
   | { to: "favourites" }
-  | { to: "tracking"; number?: string }
-  | { to: "invoice"; number?: string }
+  | { to: "tracking"; number?: string; key?: string }
+  | { to: "invoice"; number?: string; key?: string }
   | { to: "url"; href: string };
 
 export interface StoreSnapshot {
@@ -201,10 +201,27 @@ export interface Invoice {
   pdfUrl?: string;
 }
 
+/**
+ * How a shopper proves an order is theirs: its number plus the phone it was
+ * placed with, or plus `key`, the access key your store gave with the order
+ * (in the confirmation link or email). With neither, return the order only
+ * when your own session shows this shopper owns it (signed in), else `null`.
+ */
+export interface OrderQuery {
+  number: string;
+  phone?: string;
+  key?: string;
+}
+
 export interface OrderResult {
   id: string;
   /** What the shopper sees, e.g. `1042`. Defaults to `id`. */
   number?: string;
+  /**
+   * A secret for this order. Tracking and invoice links from the
+   * confirmation carry it, so the shopper is not asked for their phone.
+   */
+  accessKey?: string;
   /** Send the shopper here next, e.g. an online payment page. */
   redirectUrl?: string;
 }
@@ -237,12 +254,14 @@ export interface StoreClient {
    */
   placeOrder?(order: OrderRequest): Promise<OrderResult>;
   /**
-   * Finds an order by its number and the phone it was placed with, or
-   * `null`. Both must match, so order numbers alone reveal nothing.
+   * Finds an order, or `null`. See `OrderQuery`: a number alone must never
+   * be enough unless your session knows the shopper. The tracking page first
+   * tries the number and key from its link (or the session), and asks for
+   * the phone only when that finds nothing.
    */
-  trackOrder?(query: { number: string; phone: string }): Promise<TrackedOrder | null>;
+  trackOrder?(query: OrderQuery): Promise<TrackedOrder | null>;
   /** The invoice for an order, found the same way as `trackOrder`, or `null`. */
-  getInvoice?(query: { number: string; phone: string }): Promise<Invoice | null>;
+  getInvoice?(query: OrderQuery): Promise<Invoice | null>;
   /** The platform's router link. Defaults to a plain `<a>`. */
   Link?: ComponentType<LinkProps>;
 }

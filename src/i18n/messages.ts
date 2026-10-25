@@ -131,6 +131,7 @@ export interface Messages {
   items: string;
   invoice: string;
   getInvoice: string;
+  yourInvoice: string;
   invoiceIntro: string;
   showInvoice: string;
   invoiceOff: string;
@@ -290,6 +291,7 @@ const en: Messages = {
   items: "Items",
   invoice: "Invoice",
   getInvoice: "Get your invoice",
+  yourInvoice: "Your invoice",
   invoiceIntro: "Enter your order number and the phone you ordered with to see, print or download the invoice.",
   showInvoice: "Show invoice",
   invoiceOff: "Invoices are not set up for this store yet.",
@@ -451,6 +453,7 @@ const ar: Messages = {
   items: "المنتجات",
   invoice: "فاتورة",
   getInvoice: "احصل على فاتورتك",
+  yourInvoice: "فاتورتك",
   invoiceIntro: "أدخل رقم الطلب ورقم الهاتف الذي طلبت به لعرض الفاتورة أو طباعتها أو تنزيلها.",
   showInvoice: "اعرض الفاتورة",
   invoiceOff: "الفواتير غير مفعّلة في هذا المتجر بعد.",

@@ -2,6 +2,7 @@ import type { ComponentDefinition, PageDefinition, SectionDefinition } from "../
 import type { Registry } from "../core/registry";
 import type { PageCompositionInput } from "../pages/composition";
 import type { PageContextValue } from "../sections/_shared/PageContext";
+import { demoOrderKey } from "../demo/data";
 import { pageCompositionSchema } from "../pages/composition";
 import { builtInRegistry } from "../registry";
 import type { Theme } from "../theme/schema";
@@ -269,7 +270,7 @@ export function checkPageDefinition(definition: PageDefinition, options: CheckOp
 /** What a page of this type is about when nothing more is known, for checks and previews. */
 export function defaultContext(pageType: PageDefinition["pageType"]): PageContextValue {
   if (pageType === "product") return { productSlug: "cloud-cream" };
-  if (pageType === "confirmation") return { orderNumber: "1042" };
+  if (pageType === "confirmation") return { orderNumber: "1042", orderKey: demoOrderKey };
   return {};
 }
 
