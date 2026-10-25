@@ -21,11 +21,11 @@
     color var(--msu-duration) ease;
 }
 
-.chip:hover:not([data-state="on"]) {
+.chip:hover:not([aria-checked="true"]) {
   border-color: var(--msu-text-muted);
 }
 
-.chip[data-state="on"] {
+.chip[aria-checked="true"] {
   background: var(--msu-text);
   border-color: var(--msu-text);
   color: var(--msu-background);

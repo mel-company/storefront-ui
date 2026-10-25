@@ -1,6 +1,7 @@
 import * as Select from "@radix-ui/react-select";
-import { useId } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 import { Icon } from "../../icons";
+import { useFramedBlurGuard, useFramedOutsidePress } from "../../theme/framed";
 import { usePortalContainer } from "../../theme/ThemeProvider";
 import { cx } from "../../utils";
 import field from "../TextField/TextField.module.css";
@@ -142,8 +143,21 @@ export function SelectMenu({
   "aria-label": ariaLabel,
 }: SelectMenuProps) {
   const container = usePortalContainer();
+  const [open, setOpen] = useState(false);
+  const list = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => setOpen(false), []);
+  useFramedBlurGuard(container);
+  useFramedOutsidePress(container, open, list, close);
   return (
-    <Select.Root value={value} onValueChange={onChange} name={name} required={required} autoComplete={autoComplete}>
+    <Select.Root
+      value={value}
+      onValueChange={onChange}
+      open={open}
+      onOpenChange={setOpen}
+      name={name}
+      required={required}
+      autoComplete={autoComplete}
+    >
       <Select.Trigger
         id={id}
         className={cx(styles.trigger, className)}
@@ -160,7 +174,7 @@ export function SelectMenu({
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal container={container}>
-        <Select.Content className={styles.content} position="popper" sideOffset={6} collisionPadding={12}>
+        <Select.Content ref={list} className={styles.content} position="popper" sideOffset={6} collisionPadding={12}>
           <Select.ScrollUpButton className={styles.scroll}>
             <Icon name="chevronDown" size={16} className={styles.up} />
           </Select.ScrollUpButton>

@@ -101,12 +101,6 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
       };
       const size = new ResizeObserver(measure);
       size.observe(doc.body);
-      // Radix closes a dropdown when `window` blurs, and focus moving into this frame blurs the site's window,
-      // so the first click on a preview's dropdown would close it at once. Real stores have no frame.
-      const keepOpen = (event: FocusEvent) => {
-        if (event.target === window && document.activeElement === iframe) event.stopImmediatePropagation();
-      };
-      window.addEventListener("blur", keepOpen, true);
       const layers = new MutationObserver(measure);
       layers.observe(doc.body, { childList: true, subtree: true, attributeFilter: ["data-msu-mode", "style"] });
       let cancelled = false;
@@ -119,7 +113,6 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
         styles.disconnect();
         size.disconnect();
         layers.disconnect();
-        window.removeEventListener("blur", keepOpen, true);
       };
     };
 

@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
-/** Library build: ESM bundle + one stylesheet. React and zod stay external. */
+/** Library build: ESM bundle + one stylesheet. React, react-dom (including /server) and every dependency stay external, so the host's React version is the one used. */
 export default defineConfig({
   plugins: [react()],
   css: {
@@ -17,7 +17,7 @@ export default defineConfig({
     cssCodeSplit: false,
     sourcemap: true,
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", "zod", "html-to-image", /^@radix-ui\//],
+      external: [/^react(-dom)?(\/.*)?$/, "zod", "zod-to-json-schema", "html-to-image", /^@radix-ui\//],
     },
   },
   test: {
