@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { createPortal } from "react-dom";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { buildPdf, pageCuts } from "../src/sections/_shared/invoice/pdf";
@@ -13,6 +15,7 @@ import {
   OrderTracking,
   PageContextProvider,
   demoOrderKey,
+  directionOf,
   createDemoStore,
   FilterChips,
   FreeDeliveryProgress,
@@ -503,5 +506,62 @@ describe("radix widgets", () => {
     expect(screen.getByRole("radio", { name: "Skincare" })).toHaveFocus();
     await user.keyboard(" ");
     expect(onChange).toHaveBeenCalledWith("a");
+  });
+});
+
+describe("store portaled into an iframe (editor canvas)", () => {
+  function FramedShop({ children }: { children: React.ReactNode }) {
+    const [body, setBody] = useState<HTMLElement | null>(null);
+    return (
+      <iframe title="canvas" ref={(frame) => frame && !body && setBody(frame.contentDocument!.body)}>
+        {body && createPortal(<Storefront store={createDemoStore()} mode="light">{children}</Storefront>, body)}
+      </iframe>
+    );
+  }
+
+  it("closes the drawer on a press on its backdrop", async () => {
+    render(
+      <FramedShop>
+        <HeaderBar />
+      </FramedShop>,
+    );
+    const doc = (screen.getByTitle("canvas") as HTMLIFrameElement).contentDocument!;
+    await act(async () => {});
+    const open = within(doc.body).getByRole("button", { name: "Open menu" });
+    await act(async () => open.click());
+    expect(within(doc.body).getByRole("dialog")).toBeInTheDocument();
+    const overlay = doc.querySelector('[data-state="open"]:not([role="dialog"])') as HTMLElement;
+    await act(async () => overlay.click());
+    expect(within(doc.body).queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("moves along the chips with the arrow keys", async () => {
+    const options = [
+      { value: "", label: "All" },
+      { value: "a", label: "Skincare" },
+    ];
+    render(
+      <FramedShop>
+        <FilterChips label="Categories" value="" options={options} onChange={() => {}} />
+      </FramedShop>,
+    );
+    await act(async () => {});
+    const doc = (screen.getByTitle("canvas") as HTMLIFrameElement).contentDocument!;
+    const [all, skincare] = within(doc.body).getAllByRole("radio");
+    all!.focus();
+    await act(async () => all!.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })));
+    expect(doc.activeElement).toBe(skincare);
+  });
+});
+
+describe("direction", () => {
+  it("follows the store's locale unless dir is given", () => {
+    expect(directionOf("ar-IQ")).toBe("rtl");
+    expect(directionOf("ckb")).toBe("rtl");
+    expect(directionOf("en-GB")).toBe("ltr");
+    const { container, rerender } = render(<Storefront store={createDemoStore({ language: "ar" })}>x</Storefront>);
+    expect(container.querySelector(".msu-root")).toHaveAttribute("dir", "rtl");
+    rerender(<Storefront store={createDemoStore({ language: "ar" })} dir="ltr">x</Storefront>);
+    expect(container.querySelector(".msu-root")).toHaveAttribute("dir", "ltr");
   });
 });

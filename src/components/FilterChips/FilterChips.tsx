@@ -1,4 +1,4 @@
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import type { KeyboardEvent } from "react";
 import styles from "./FilterChips.module.css";
 
 export interface FilterChipOption {
@@ -13,32 +13,51 @@ export interface FilterChipsProps {
   label: string;
 }
 
-/**
- * Single-choice chips. The first option is usually "All". Built on Radix
- * Toggle Group: one tab stop, arrow keys move along the chips (mirrored in
- * Arabic), and pressing the chosen chip again keeps it chosen.
- */
-/** Radix treats an empty value as "nothing chosen", so the usual "All" value ("") travels under this name. */
-const EMPTY = "msu-empty";
-const inner = (value: string) => value || EMPTY;
+const KEYS = ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"];
 
+/**
+ * Single-choice chips. The first option is usually "All". A radio group with
+ * one tab stop: arrow keys move along the chips (mirrored in Arabic), Space or
+ * Enter picks one. Written by hand rather than on Radix Toggle Group, whose
+ * arrow keys stop working when a store is portaled into an editor's iframe.
+ */
 export function FilterChips({ options, value, onChange, label }: FilterChipsProps) {
+  const chosen = options.some((option) => option.value === value) ? value : options[0]?.value;
+
+  const move = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!KEYS.includes(event.key)) return;
+    const chips = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+    const current = chips.indexOf(event.currentTarget.ownerDocument.activeElement as HTMLButtonElement);
+    const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+    const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1, ArrowDown: 1, ArrowUp: -1 }[event.key];
+    const next =
+      event.key === "Home" ? 0 : event.key === "End" ? chips.length - 1 : (Math.max(current, 0) + (step ?? 0) + chips.length) % chips.length;
+    event.preventDefault();
+    chips[next]?.focus();
+  };
+
   return (
-    <ToggleGroup.Root
-      type="single"
-      className={styles.chips}
-      aria-label={label}
-      value={inner(value)}
-      onValueChange={(next) => {
-        // An empty `next` means the chosen chip was pressed again: keep it.
-        if (next) onChange(next === EMPTY ? "" : next);
-      }}
-    >
-      {options.map((option) => (
-        <ToggleGroup.Item key={option.value} value={inner(option.value)} className={styles.chip}>
-          {option.label}
-        </ToggleGroup.Item>
-      ))}
-    </ToggleGroup.Root>
+    // The radios take focus (roving tab stop), not the group, as in the WAI-ARIA radio group pattern.
+    // eslint-disable-next-line jsx-a11y/interactive-supports-focus
+    <div className={styles.chips} role="radiogroup" aria-label={label} onKeyDown={move}>
+      {options.map((option) => {
+        const checked = option.value === value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={checked}
+            tabIndex={option.value === chosen ? 0 : -1}
+            className={styles.chip}
+            onClick={() => {
+              if (!checked) onChange(option.value);
+            }}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }

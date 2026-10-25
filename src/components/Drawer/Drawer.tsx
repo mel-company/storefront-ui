@@ -1,7 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import type { ReactElement, ReactNode } from "react";
+import { useCallback, useState, type ReactElement, type ReactNode } from "react";
 import { useMessages } from "../../i18n";
 import { Icon } from "../../icons";
+import { trapFramedTab } from "../../theme/framed";
 import { usePortalContainer } from "../../theme/ThemeProvider";
 import { cx } from "../../utils";
 import styles from "./Drawer.module.css";
@@ -45,13 +46,24 @@ export function Drawer({
 }: DrawerProps) {
   const m = useMessages();
   const container = usePortalContainer();
+  const [own, setOwn] = useState(defaultOpen ?? false);
+  const shown = open ?? own;
+  const change = useCallback(
+    (next: boolean) => {
+      if (open === undefined) setOwn(next);
+      onOpenChange?.(next);
+    },
+    [open, onOpenChange],
+  );
   return (
-    <Dialog.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+    <Dialog.Root open={shown} onOpenChange={change}>
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Dialog.Portal container={container}>
-        <Dialog.Overlay className={styles.overlay} />
+        {/* Radix closes on this press itself, except in a store portaled into an editor's iframe (see theme/framed). */}
+        <Dialog.Overlay className={styles.overlay} onClick={() => shown && change(false)} />
         <Dialog.Content className={cx(styles.panel, styles[side], className)}
           {...(description ? {} : { "aria-describedby": undefined })}
+          onKeyDown={(event) => trapFramedTab(event, event.currentTarget)}
         >
           <div className={styles.head}>
             <Dialog.Title className={cx(styles.title, hideTitle && "msu-visually-hidden")}>{title}</Dialog.Title>

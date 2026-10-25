@@ -120,12 +120,25 @@ library's own CSS (no Tailwind needed):
 | `Drawer` (`ui.drawer`), header mobile menu | Dialog | Focus stays inside, Escape and the backdrop close it, page scroll locks, focus returns to the button |
 | `SelectField` (`form.select`), `SelectMenu`, catalogue sort | Select | Themed list with arrow keys and type-to-find; `native` keeps the browser's own select |
 | `Accordion` (`ui.accordion`) | Accordion | Arrow keys between questions, smooth open and close; closed answers stay in the HTML |
-| `FilterChips` (`catalogue.categoryChips`) | Toggle Group | One tab stop, arrow keys along the chips |
+| `FilterChips` (`catalogue.categoryChips`) | none (own code) | Radio group with one tab stop, arrow keys along the chips |
 
 `ThemeProvider` passes its direction to Radix, so arrow keys and slide-in sides
 mirror in Arabic stores. Popups render inside the provider's wrapper
 (`usePortalContainer()`), so they keep the theme, colour mode and direction.
 Radix is a regular dependency; React stays a peer.
+
+### Hosts: React versions, frames and direction
+
+- Works with React 18 and 19. React, react-dom (also `react-dom/server`,
+  used by the checkers) and every dependency stay external in the build, so
+  the host's React is the only copy.
+- `Storefront` picks the direction from the store's locale (`ar-IQ` gives
+  `rtl`); pass `dir` to override.
+- Hosts that render the store from their own page into an iframe through a
+  React portal (an editor canvas, a preview) are supported: there Radix reads
+  the parent page's `window`, `document` and `Node`, so the library adds back
+  what that breaks (dropdowns closing on the first click, outside presses,
+  Tab staying inside a drawer). See `src/theme/framed.ts`.
 
 ## Theme and dark mode
 

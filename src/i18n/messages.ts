@@ -485,6 +485,15 @@ const ar: Messages = {
 export const messages: Record<Language, Messages> = { en, ar };
 
 /** `ar`, `ar-IQ` and friends give Arabic; everything else English. */
+/** Languages written right to left, by locale prefix (Arabic, Kurdish Sorani, Persian, Hebrew, Urdu, Pashto). */
+const RTL = ["ar", "ckb", "fa", "he", "ur", "ps"];
+
+/** `rtl` for a right-to-left locale such as `ar-IQ`, otherwise `ltr`. */
+export function directionOf(locale: string | undefined): "ltr" | "rtl" {
+  const language = locale?.toLowerCase().split(/[-_]/)[0] ?? "";
+  return RTL.includes(language) ? "rtl" : "ltr";
+}
+
 export function languageOf(locale: string | undefined): Language {
   return locale?.toLowerCase().startsWith("ar") ? "ar" : "en";
 }
