@@ -78,9 +78,9 @@ export function CardBone({ variant = "standard", imageRatio = "portrait" }: Card
 }
 
 /** A grid of card placeholders: two columns on phones, `columns` on desktop, like the real grid. */
-export function CardGridBones({ columns = 4, count = columns, card }: { columns?: number; count?: number; card?: CardOptions }) {
+export function CardGridBones({ columns = 4, count = columns, card, featured = false }: { columns?: number; count?: number; card?: CardOptions; featured?: boolean }) {
   return (
-    <div className={grid.grid} style={{ "--msu-columns": columns } as CSSProperties}>
+    <div className={cx(grid.grid, featured && styles.featured)} style={{ "--msu-columns": columns } as CSSProperties}>
       {Array.from({ length: count }, (_, index) => (
         <CardBone key={index} {...card} />
       ))}
@@ -89,12 +89,19 @@ export function CardGridBones({ columns = 4, count = columns, card }: { columns?
 }
 
 /** A row of cards that runs off the edge, like a rail. */
-export function RailBones({ visible = 4, card }: { visible?: number; card?: CardOptions }) {
+export function RailBones({ visible = 4, card, numbered = false }: { visible?: number; card?: CardOptions; numbered?: boolean }) {
   return (
     <div className={styles.rail} style={{ "--msu-visible": visible } as CSSProperties}>
-      {Array.from({ length: visible + 1 }, (_, index) => (
-        <CardBone key={index} {...card} />
-      ))}
+      {Array.from({ length: visible + 1 }, (_, index) =>
+        numbered ? (
+          <div key={index} className={styles.ranked}>
+            <Skeleton shape="heading" width="56px" />
+            <CardBone {...card} />
+          </div>
+        ) : (
+          <CardBone key={index} {...card} />
+        ),
+      )}
     </div>
   );
 }

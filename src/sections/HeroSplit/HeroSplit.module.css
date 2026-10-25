@@ -56,6 +56,23 @@
   gap: var(--msu-space-2);
 }
 
+.framed {
+  padding: var(--msu-space-4);
+  border-radius: var(--msu-radius-lg);
+  background: color-mix(in srgb, var(--msu-accent) 30%, var(--msu-surface-muted));
+}
+
+.collage {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--msu-space-3);
+  align-content: center;
+}
+
+.collageMain {
+  grid-row: span 2;
+}
+
 @media (min-width: 900px) {
   .hero {
     grid-template-columns: 1.05fr 1fr;

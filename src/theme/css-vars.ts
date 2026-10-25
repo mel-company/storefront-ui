@@ -69,6 +69,9 @@ export function themeToCssVars(theme: Theme, mode: ColorMode): CSSProperties {
 
   // Behind drawers and dialogs. Text and background colours can't dim in both modes, so this one is fixed.
   vars["--msu-scrim"] = mode === "dark" ? "rgb(0 0 0 / 0.6)" : "rgb(16 24 40 / 0.4)";
+  // Copy set straight on a photo: always a dark shade with light text, whatever the mode.
+  vars["--msu-shade"] = "rgb(10 12 18)";
+  vars["--msu-on-shade"] = "rgb(255 255 255)";
 
   return vars as CSSProperties;
 }

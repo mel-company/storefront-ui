@@ -3,7 +3,7 @@ import { Button } from "../../components/Button/Button";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import { SectionHeading } from "../../components/SectionHeading/SectionHeading";
 import { useTheme } from "../../theme/ThemeProvider";
-import { useProducts } from "../../store";
+import { useProducts, useStore } from "../../store";
 import type { ProductQuery } from "../../store/types";
 import { Section, type SectionTone } from "../_shared/Section";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";
@@ -18,16 +18,19 @@ export interface ProductsRailProps {
   visible?: number;
   card?: CardOptions;
   tone?: SectionTone;
+  /** Big rank numbers above the cards, for a top-10 list. */
+  numbered?: boolean;
   /** A product id to leave out, e.g. the one the page is about. */
   exclude?: string;
 }
 
 /** A swipeable row of real products with previous / next buttons on desktop. */
-export function ProductsRail({ eyebrow, title, subtitle, source, visible = 4, card, tone, exclude }: ProductsRailProps) {
+export function ProductsRail({ eyebrow, title, subtitle, source, visible = 4, card, numbered = false, tone, exclude }: ProductsRailProps) {
   const headingId = useId();
   const railRef = useRef<HTMLDivElement>(null);
   const { dir } = useTheme();
   const m = useMessages();
+  const locale = useStore().info.locale;
   const products = useProducts(source).filter((product) => product.id !== exclude);
   if (products.length === 0) return null;
 
@@ -55,9 +58,18 @@ export function ProductsRail({ eyebrow, title, subtitle, source, visible = 4, ca
       {/* Focusable so keyboard users can scroll it. */}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
       <div ref={railRef} className={styles.rail} style={{ "--msu-visible": visible } as CSSProperties} tabIndex={0} role="region" aria-labelledby={headingId}>
-        {products.map((product) => (
-          <ProductCard key={product.id} productId={product.id} {...card} />
-        ))}
+        {products.map((product, index) =>
+          numbered ? (
+            <div key={product.id} className={styles.ranked}>
+              <span className={styles.rank} aria-hidden="true">
+                {(index + 1).toLocaleString(locale, { minimumIntegerDigits: 2 })}
+              </span>
+              <ProductCard productId={product.id} {...card} />
+            </div>
+          ) : (
+            <ProductCard key={product.id} productId={product.id} {...card} />
+          ),
+        )}
       </div>
     </Section>
   );

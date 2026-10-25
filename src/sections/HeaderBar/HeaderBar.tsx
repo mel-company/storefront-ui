@@ -14,7 +14,10 @@ export interface HeaderLink {
 }
 
 export interface HeaderBarProps {
-  layout?: "classic" | "centered";
+  /** classic: name, links, icons in one row. centered: links, name, icons. stacked: name over a row of links. minimal: name in the middle, links always in the menu. */
+  layout?: "classic" | "centered" | "stacked" | "minimal";
+  /** plain uses the page background, accent the brand colour, inverted the text colour. */
+  barStyle?: "plain" | "accent" | "inverted";
   /** Leave empty to list the store's categories. */
   links?: HeaderLink[];
   announcement?: string;
@@ -22,8 +25,8 @@ export interface HeaderBarProps {
   showFavourites?: boolean;
 }
 
-/** Store name, navigation, search, favourites and the live cart count. Below 900px the links move into a side drawer. */
-export function HeaderBar({ layout = "classic", links, announcement, showSearch = true, showFavourites = true }: HeaderBarProps) {
+/** Store name, navigation, search, favourites and the live cart count. Below 900px (always, in the minimal layout) the links move into a side drawer. */
+export function HeaderBar({ layout = "classic", barStyle = "plain", links, announcement, showSearch = true, showFavourites = true }: HeaderBarProps) {
   const store = useStore();
   const Link = useLink();
   const m = useMessages();
@@ -41,7 +44,7 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
         ];
 
   return (
-    <header className={cx(styles.header, styles[layout])}>
+    <header className={cx(styles.header, styles[layout], barStyle !== "plain" && styles[barStyle])}>
       {announcement && <p className={styles.announcement}>{announcement}</p>}
       <div className={containerClassName}>
         <div className={styles.bar}>

@@ -40,6 +40,51 @@
   align-items: center;
 }
 
+.banner .name {
+  position: absolute;
+  inset-inline-start: var(--msu-space-4);
+  inset-block-end: var(--msu-space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-2);
+  padding-block: var(--msu-space-2);
+  padding-inline: var(--msu-space-4);
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface);
+  color: var(--msu-text);
+  font-family: var(--msu-font-heading);
+  font-size: var(--msu-text-lg);
+  font-weight: 800;
+}
+
+@media (min-width: 900px) {
+  .banner .name {
+    font-size: var(--msu-text-xl);
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-2);
+  padding-block: var(--msu-space-1);
+  padding-inline: var(--msu-space-1) var(--msu-space-4);
+  border: var(--msu-card-border);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface);
+  white-space: nowrap;
+}
+
+.pill .media {
+  inline-size: 36px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.pill:hover {
+  border-color: var(--msu-text);
+}
+
 .tile:hover .media img {
   transform: scale(1.04);
 }
