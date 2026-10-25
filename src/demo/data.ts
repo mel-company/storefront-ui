@@ -33,7 +33,7 @@ export const demoProducts: Product[] = [
     id: "p1", slug: "cloud-cream", name: "Cloud Cream", categoryId: "skin",
     description: "A light daily moisturiser with oat and squalane. Absorbs in seconds.",
     price: 32, compareAtPrice: 40, rating: 4.8, reviewCount: 214, stock: 24, tags: ["bestseller", "new"],
-    images: [productArt("#f6d5c4", "#e9a98f", "jar"), productArt("#fbe7dc", "#f0bfa8", "jar")],
+    images: [productArt("#f6d5c4", "#e9a98f", "jar"), productArt("#fbe7dc", "#f0bfa8", "jar"), productArt("#f3dcd0", "#d99a80", "tube"), productArt("#fae9e0", "#e7b49c", "bottle")],
     options: [{ id: "size", name: "Size", values: ["30 ml", "50 ml"] }],
   }),
   p({

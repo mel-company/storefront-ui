@@ -54,6 +54,7 @@ const AR: Record<string, string> = {
   Size: "الحجم",
   "Free delivery on orders over $80": "توصيل مجاني للطلبات فوق 80,000 د.ع",
   "New season, new arrivals": "موسم جديد، وصول جديد",
+  "Yes, within 30 days, unused and in its box.": "نعم، خلال 30 يوماً، غير مستخدم وفي علبته.",
   "Made slowly, by hand": "مصنوعة على مهل، باليد",
   "Small-batch candles and oils, poured every Thursday.": "شموع وزيوت بكميات صغيرة، تُصبّ كل خميس.",
   "New in: the travel edit": "جديدنا: مختارات السفر",

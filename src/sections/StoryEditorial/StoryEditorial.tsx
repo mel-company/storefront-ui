@@ -7,7 +7,8 @@ import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./StoryEditorial.module.css";
 
 export interface StoryEditorialProps {
-  layout?: "imageStart" | "imageEnd" | "quote";
+  /** imageStart / imageEnd: side by side. overlap: the text card sits over the edge of a wide image. centered: text in the middle, wide image under it. quote: one large quote. */
+  layout?: "imageStart" | "imageEnd" | "overlap" | "centered" | "quote";
   eyebrow?: string;
   title: string;
   /** Paragraphs. */
@@ -33,12 +34,13 @@ export function StoryEditorial({ layout = "imageStart", eyebrow, title, body, im
       </Section>
     );
   }
+  const wide = layout === "overlap" || layout === "centered";
   return (
     <Section labelledBy={headingId} tone={tone}>
-      <div className={cx(styles.story, layout === "imageEnd" && styles.mediaEnd)}>
+      <div className={cx(styles.story, layout !== "imageStart" && styles[layout], !image && styles.noImage)}>
         {image && (
           <div className={styles.media}>
-            <Media src={image} alt={imageAlt} ratio="landscape" />
+            <Media src={image} alt={imageAlt} ratio={wide ? "wide" : "landscape"} />
           </div>
         )}
         <div className={styles.copy}>

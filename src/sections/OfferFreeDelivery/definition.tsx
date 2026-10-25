@@ -16,11 +16,14 @@ export const offerFreeDeliveryDefinition = defineSection({
     title: field.text("Title", 60),
     text: field.optionalText("Text", 160),
     action: actionSchema.optional(),
+    look: field.choice("Look", ["panel", "inverted", "minimal"], "panel"),
     tone: toneField,
   }),
   examples: [
     { name: "Empty cart", props: { title: "Free delivery is close", text: "Every order over the threshold ships free.", action: { label: "Keep shopping", route: { to: "catalogue" } } } },
     { name: "Half way", props: { title: "Almost there" }, cart: [{ productId: "p4", quantity: 1 }] },
+    { name: "Inverted band", props: { title: "Free delivery is close", text: "Every order over the threshold ships free.", look: "inverted", action: { label: "Keep shopping", route: { to: "catalogue" } } }, cart: [{ productId: "p4", quantity: 1 }] },
+    { name: "Minimal", props: { title: "Free delivery is close", look: "minimal", tone: "muted" }, cart: [{ productId: "p4", quantity: 1 }] },
   ],
   skeleton: OfferFreeDeliverySkeleton,
   render: function OfferFreeDeliveryPreset(props) {

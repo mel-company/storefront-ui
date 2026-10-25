@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { accordionItemsSchema } from "../../components/Accordion/definition";
 import { defineSection } from "../../core/define";
+import { field } from "../../core/fields";
 import { headingFields, toneField } from "../_shared/shared-props";
 import { FaqList } from "./FaqList";
 import { FaqListSkeleton } from "../_shared/skeleton/sections";
@@ -12,7 +13,12 @@ export const faqListDefinition = defineSection({
   tags: ["faq", "text", "support"],
   uses: ["ui.sectionHeading", "ui.accordion"],
   pages: ["home", "product", "cart", "tracking"],
-  props: z.object({ ...headingFields, items: accordionItemsSchema, tone: toneField }),
+  props: z.object({
+    ...headingFields,
+    items: accordionItemsSchema,
+    layout: field.choice("Layout", ["split", "stacked", "columns"], "split"),
+    tone: toneField,
+  }),
   examples: [
     {
       name: "Delivery and returns",
@@ -23,6 +29,33 @@ export const faqListDefinition = defineSection({
           { question: "How long does delivery take?", answer: "Two to four working days in the city, up to a week elsewhere." },
           { question: "Do you deliver everywhere?", answer: "Yes, to every city in the country." },
           { question: "Can I pay on delivery?", answer: "Yes, cash or card when your order arrives." },
+        ],
+      },
+    },
+    {
+      name: "Stacked",
+      props: {
+        title: "Questions, answered",
+        layout: "stacked",
+        tone: "muted",
+        items: [
+          { question: "How long does delivery take?", answer: "Two to four working days in the city, up to a week elsewhere." },
+          { question: "Do you deliver everywhere?", answer: "Yes, to every city in the country." },
+          { question: "Can I pay on delivery?", answer: "Yes, cash or card when your order arrives." },
+        ],
+      },
+    },
+    {
+      name: "Two columns",
+      props: {
+        eyebrow: "Help",
+        title: "Questions, answered",
+        layout: "columns",
+        items: [
+          { question: "How long does delivery take?", answer: "Two to four working days in the city, up to a week elsewhere." },
+          { question: "Do you deliver everywhere?", answer: "Yes, to every city in the country." },
+          { question: "Can I pay on delivery?", answer: "Yes, cash or card when your order arrives." },
+          { question: "Can I return an item?", answer: "Yes, within 30 days, unused and in its box." },
         ],
       },
     },

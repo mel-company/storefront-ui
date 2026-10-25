@@ -16,6 +16,7 @@ export const trustStripDefinition = defineSection({
   props: z.object({
     items: z.array(featureSchema).min(2).max(4),
     layout: field.choice("Layout", ["inline", "stacked"], "inline"),
+    look: field.choice("Look", ["plain", "cards", "divided", "ticker"], "plain"),
     tone: toneField.default("muted"),
   }),
   examples: [
@@ -39,6 +40,41 @@ export const trustStripDefinition = defineSection({
           { icon: "sparkle", title: "Clean formulas" },
           { icon: "gift", title: "Gift wrapping" },
           { icon: "chat", title: "Real support" },
+        ],
+      },
+    },
+    {
+      name: "Cards",
+      props: {
+        look: "cards",
+        tone: "default",
+        items: [
+          { icon: "truck", title: "Free delivery", text: "On orders over $80" },
+          { icon: "refresh", title: "30-day returns", text: "No questions asked" },
+          { icon: "shield", title: "Secure payment", text: "Cards and cash on delivery" },
+        ],
+      },
+    },
+    {
+      name: "Divided",
+      props: {
+        look: "divided",
+        items: [
+          { icon: "truck", title: "Free delivery", text: "On orders over $80" },
+          { icon: "refresh", title: "30-day returns", text: "No questions asked" },
+          { icon: "shield", title: "Secure payment", text: "Cards and cash on delivery" },
+        ],
+      },
+    },
+    {
+      name: "Ticker",
+      props: {
+        look: "ticker",
+        items: [
+          { icon: "truck", title: "Free delivery over $80" },
+          { icon: "refresh", title: "30-day returns" },
+          { icon: "leaf", title: "Vegan formulas" },
+          { icon: "gift", title: "Gift wrapping" },
         ],
       },
     },
