@@ -39,6 +39,48 @@ const GROUPS: { kind: DocsKind; title: string; items: { id: string; name: string
   { kind: "pages", title: "Pages", items: PAGES },
 ];
 
+/** How the side nav lists each kind. Ids left out of every list land in "Other", so nothing goes missing. */
+const SUBGROUPS: Record<DocsKind, { title: string; ids: string[] }[]> = {
+  components: [
+    { title: "Basics", ids: ["ui.button", "ui.badge", "ui.sectionHeading", "ui.media", "ui.feature", "ui.emptyState", "ui.skeleton"] },
+    { title: "Overlays and motion", ids: ["ui.accordion", "ui.drawer", "ui.countdown", "ui.breadcrumbs"] },
+    { title: "Product", ids: ["product.card", "commerce.price", "commerce.rating", "product.optionPicker", "commerce.favourite", "category.tile"] },
+    { title: "Cart and orders", ids: ["commerce.addToCart", "commerce.quantityStepper", "cart.line", "cart.freeDeliveryProgress", "order.steps"] },
+    { title: "Search and filters", ids: ["catalogue.search", "catalogue.categoryChips"] },
+    { title: "Forms", ids: ["form.textField", "form.select", "form.radioCards"] },
+  ],
+  sections: [
+    { title: "Header and footer", ids: ["header.bar", "footer.columns"] },
+    { title: "Openers", ids: ["hero.split", "hero.banner", "hero.statement"] },
+    { title: "Products and categories", ids: ["categories.tiles", "products.grid", "products.rail", "products.related", "bundle.builder"] },
+    { title: "Brand and trust", ids: ["trust.strip", "offer.freeDelivery", "story.editorial", "faq.list"] },
+    { title: "Shopping", ids: ["catalogue.browse", "product.detail", "favourites.grid"] },
+    { title: "Cart and checkout", ids: ["cart.summary", "checkout.form", "order.confirmation"] },
+    { title: "After the order", ids: ["order.tracking", "order.invoice"] },
+    { title: "Errors", ids: ["error.notFound"] },
+  ],
+  pages: [
+    { title: "Browsing", ids: ["home.classic", "home.campaign", "catalogue.default", "product.default", "favourites.default"] },
+    { title: "Buying", ids: ["cart.default", "checkout.default", "confirmation.default"] },
+    { title: "After the order", ids: ["tracking.default", "invoice.default"] },
+    { title: "Errors", ids: ["notfound.default"] },
+  ],
+};
+
+type NavItem = { id: string; name: string; description: string };
+
+function subgroupsOf(kind: DocsKind, items: NavItem[]) {
+  const byId = new Map(items.map((item) => [item.id, item]));
+  const listed = new Set(SUBGROUPS[kind].flatMap((group) => group.ids));
+  const groups = SUBGROUPS[kind].map((group) => ({
+    title: group.title,
+    items: group.ids.map((id) => byId.get(id)).filter((item): item is NavItem => Boolean(item)),
+  }));
+  const rest = items.filter((item) => !listed.has(item.id));
+  if (rest.length) groups.push({ title: "Other", items: rest });
+  return groups.filter((group) => group.items.length > 0);
+}
+
 const INTRO: Record<DocsKind, string> = {
   components:
     "Small parts: price, rating, add to cart, product card. They read products, stock and the cart from the store you pass in, so they always show real data.",
@@ -78,15 +120,25 @@ export function Docs({ kind, id }: { kind: DocsKind; id?: string }) {
               <Link href={`/${group.kind}`} className="docs-group" aria-current={group.kind === kind && !id ? "page" : undefined}>
                 {group.title} <span className="count">{group.items.length}</span>
               </Link>
-              <ul>
-                {items.map((item) => (
-                  <li key={item.id}>
-                    <Link href={hrefOf(group.kind, item.id)} aria-current={item.id === id ? "page" : undefined}>
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              {subgroupsOf(group.kind, items).map((sub) => {
+                const labelId = `nav-${group.kind}-${sub.title.toLowerCase().replace(/\W+/g, "-")}`;
+                return (
+                  <div key={sub.title} className="docs-subgroup">
+                    <p className="docs-subgroup-title" id={labelId}>
+                      {sub.title}
+                    </p>
+                    <ul aria-labelledby={labelId}>
+                      {sub.items.map((item) => (
+                        <li key={item.id}>
+                          <Link href={hrefOf(group.kind, item.id)} aria-current={item.id === id ? "page" : undefined}>
+                            {item.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </nav>
           );
         })}
