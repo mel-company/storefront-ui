@@ -1,3 +1,4 @@
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import styles from "./FilterChips.module.css";
 
 export interface FilterChipOption {
@@ -12,21 +13,32 @@ export interface FilterChipsProps {
   label: string;
 }
 
-/** Single-choice chips. The first option is usually "All". */
+/**
+ * Single-choice chips. The first option is usually "All". Built on Radix
+ * Toggle Group: one tab stop, arrow keys move along the chips (mirrored in
+ * Arabic), and pressing the chosen chip again keeps it chosen.
+ */
+/** Radix treats an empty value as "nothing chosen", so the usual "All" value ("") travels under this name. */
+const EMPTY = "msu-empty";
+const inner = (value: string) => value || EMPTY;
+
 export function FilterChips({ options, value, onChange, label }: FilterChipsProps) {
   return (
-    <div className={styles.chips} role="group" aria-label={label}>
+    <ToggleGroup.Root
+      type="single"
+      className={styles.chips}
+      aria-label={label}
+      value={inner(value)}
+      onValueChange={(next) => {
+        // An empty `next` means the chosen chip was pressed again: keep it.
+        if (next) onChange(next === EMPTY ? "" : next);
+      }}
+    >
       {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          className={styles.chip}
-          aria-pressed={value === option.value}
-          onClick={() => onChange(option.value)}
-        >
+        <ToggleGroup.Item key={option.value} value={inner(option.value)} className={styles.chip}>
           {option.label}
-        </button>
+        </ToggleGroup.Item>
       ))}
-    </div>
+    </ToggleGroup.Root>
   );
 }

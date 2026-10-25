@@ -59,7 +59,8 @@ export function checkDom(root: Element, where: string): { issues: CheckIssue[]; 
     if (!img.hasAttribute("alt")) error("a11y.img-alt", `An image has no alt (use alt="" if decorative): ${img.getAttribute("src")?.slice(0, 60)}`);
   }
 
-  for (const field of root.querySelectorAll("input:not([type=hidden]), select, textarea")) {
+  // aria-hidden fields are a widget's hidden form copy (e.g. Radix Select's native select): not exposed, not focusable.
+  for (const field of root.querySelectorAll("input:not([type=hidden]):not([aria-hidden=true]), select:not([aria-hidden=true]), textarea")) {
     checks += 1;
     const id = field.getAttribute("id");
     const labelled =

@@ -114,19 +114,6 @@
   justify-self: start;
 }
 
-.drawer {
-  border-block-start: 1px solid var(--msu-border);
-  padding-block: var(--msu-space-4);
-  animation: drop var(--msu-duration) ease-out;
-}
-
-@keyframes drop {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-}
-
 .bump {
   animation: bump calc(var(--msu-duration) * 1.5) ease-out;
 }
@@ -148,6 +135,8 @@
 .drawerLink {
   display: block;
   padding-block: var(--msu-space-3);
+  border-block-end: 1px solid var(--msu-border);
+  font-size: var(--msu-text-lg);
   font-weight: 600;
   text-decoration: none;
 }
@@ -174,8 +163,7 @@
     grid-row: 1;
   }
 
-  .menuButton,
-  .drawer {
+  .menuButton {
     display: none;
   }
 }

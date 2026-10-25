@@ -1,7 +1,9 @@
+import { DirectionProvider } from "@radix-ui/react-direction";
 import {
   createContext,
   useContext,
   useMemo,
+  useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -18,6 +20,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
+const PortalContext = createContext<HTMLElement | null>(null);
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 
@@ -58,6 +61,7 @@ export function ThemeProvider({
   children,
 }: ThemeProviderProps) {
   const systemMode = useSystemColorMode();
+  const [root, setRoot] = useState<HTMLDivElement | null>(null);
   const mode = preference === "system" ? systemMode : preference;
   const style = useMemo(() => themeToCssVars(theme, mode), [theme, mode]);
   const value = useMemo(
@@ -67,14 +71,17 @@ export function ThemeProvider({
 
   return (
     <ThemeContext.Provider value={value}>
-      <div
-        className={className ? `msu-root ${className}` : "msu-root"}
-        data-msu-mode={mode}
-        dir={dir}
-        style={style}
-      >
-        {children}
-      </div>
+      <DirectionProvider dir={dir}>
+        <div
+          ref={setRoot}
+          className={className ? `msu-root ${className}` : "msu-root"}
+          data-msu-mode={mode}
+          dir={dir}
+          style={style}
+        >
+          <PortalContext.Provider value={root}>{children}</PortalContext.Provider>
+        </div>
+      </DirectionProvider>
     </ThemeContext.Provider>
   );
 }
@@ -83,4 +90,12 @@ export function useTheme(): ThemeContextValue {
   const value = useContext(ThemeContext);
   if (!value) throw new Error("useTheme must be used inside <ThemeProvider>");
   return value;
+}
+
+/**
+ * Where drawers, dropdowns and other popups render. It is the provider's own
+ * wrapper, so popups keep the theme variables, colour mode and direction.
+ */
+export function usePortalContainer(): HTMLElement | null {
+  return useContext(PortalContext);
 }

@@ -1,4 +1,4 @@
-import { useId } from "react";
+import * as Radix from "@radix-ui/react-accordion";
 import { Icon } from "../../icons";
 import styles from "./Accordion.module.css";
 
@@ -14,25 +14,32 @@ export interface AccordionProps {
   openFirst?: boolean;
 }
 
-/** Native `<details>`: keyboard and screen reader support with no script. */
+/**
+ * Built on Radix Accordion: arrow keys move between questions, and answers
+ * open and close smoothly. Closed answers stay in the HTML for search engines.
+ */
 export function Accordion({ items, single = true, openFirst = false }: AccordionProps) {
-  const group = useId();
-  return (
-    <div className={styles.accordion}>
-      {items.map((item, index) => (
-        <details
-          key={item.question}
-          className={styles.item}
-          name={single ? group : undefined}
-          open={openFirst && index === 0 ? true : undefined}
-        >
-          <summary className={styles.summary}>
-            {item.question}
-            <Icon name="chevronEnd" className={styles.chevron} />
-          </summary>
-          <p className={styles.answer}>{item.answer}</p>
-        </details>
-      ))}
-    </div>
+  const first = openFirst ? "0" : undefined;
+  const content = items.map((item, index) => (
+    <Radix.Item key={item.question} value={String(index)} className={styles.item}>
+      <Radix.Header className={styles.header}>
+        <Radix.Trigger className={styles.summary}>
+          {item.question}
+          <Icon name="chevronDown" className={styles.chevron} />
+        </Radix.Trigger>
+      </Radix.Header>
+      <Radix.Content forceMount className={styles.content}>
+        <p className={styles.answer}>{item.answer}</p>
+      </Radix.Content>
+    </Radix.Item>
+  ));
+  return single ? (
+    <Radix.Root type="single" collapsible defaultValue={first} className={styles.accordion}>
+      {content}
+    </Radix.Root>
+  ) : (
+    <Radix.Root type="multiple" defaultValue={first ? [first] : []} className={styles.accordion}>
+      {content}
+    </Radix.Root>
   );
 }

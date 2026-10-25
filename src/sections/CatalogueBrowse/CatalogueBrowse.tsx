@@ -3,6 +3,7 @@ import { Button } from "../../components/Button/Button";
 import { FilterChips } from "../../components/FilterChips/FilterChips";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import { SearchField } from "../../components/SearchField/SearchField";
+import { SelectMenu } from "../../components/SelectField/SelectField";
 import { useCategories, useProducts } from "../../store";
 import type { ProductQuery } from "../../store/types";
 import { usePageContext } from "../_shared/PageContext";
@@ -85,16 +86,16 @@ export function CatalogueBrowse({
           {m.productCount(products.length)}
         </p>
         {showSort && (
-          <label className={styles.sort} htmlFor={sortId}>
-            {m.sortBy}
-            <select id={sortId} className={styles.select} value={sort} onChange={(event) => setSort(event.target.value as Sort)}>
-              {SORTS.map((key) => (
-                <option key={key} value={key}>
-                  {m.sort[key]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className={styles.sort}>
+            <label htmlFor={sortId}>{m.sortBy}</label>
+            <SelectMenu
+              id={sortId}
+              className={styles.select}
+              value={sort}
+              onChange={(next) => setSort(next as Sort)}
+              items={SORTS.map((key) => ({ value: key, label: m.sort[key] }))}
+            />
+          </div>
         )}
       </div>
       {shown.length === 0 ? (

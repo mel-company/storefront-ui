@@ -2,6 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { buildPdf, pageCuts } from "../src/sections/_shared/invoice/pdf";
 import {
+  Accordion,
   AddToCart,
   BundleBuilder,
   CatalogueBrowse,
@@ -13,6 +14,7 @@ import {
   PageContextProvider,
   demoOrderKey,
   createDemoStore,
+  FilterChips,
   FreeDeliveryProgress,
   HeaderBar,
   PageRenderer,
@@ -95,7 +97,7 @@ describe("catalogue", () => {
     await user.type(screen.getByRole("searchbox"), "candle");
     expect(screen.getByText("1 product")).toBeInTheDocument();
     await user.clear(screen.getByRole("searchbox"));
-    await user.click(within(screen.getByRole("group", { name: "Categories" })).getByRole("button", { name: "Skincare" }));
+    await user.click(within(screen.getByRole("radiogroup", { name: "Categories" })).getByRole("radio", { name: "Skincare" }));
     expect(screen.getByRole("heading", { level: 1, name: "Skincare" })).toBeInTheDocument();
     expect(screen.getByText("3 products")).toBeInTheDocument();
   });
@@ -219,7 +221,7 @@ describe("checkout", () => {
     const store = createDemoStore({ language: "ar" });
     store.addToCart("p2", 1);
     setup(<CheckoutForm />, store);
-    expect(screen.getByRole("combobox", { name: "المحافظة" })).toHaveDisplayValue("اختر المحافظة");
+    expect(screen.getByRole("combobox", { name: "المحافظة" })).toHaveTextContent("اختر المحافظة");
     expect(screen.getByRole("button", { name: "تأكيد الطلب" })).toBeInTheDocument();
   });
 
@@ -450,5 +452,56 @@ describe("orders opened from a link", () => {
     expect(await store.trackOrder!({ number: "1001", key: result.accessKey })).toMatchObject({ number: "1001" });
     expect(await store.trackOrder!({ number: "1001" })).toBeNull();
     expect(store.href({ to: "tracking", number: "1001", key: result.accessKey })).toBe(`#/track?order=1001&key=${result.accessKey}`);
+  });
+});
+
+describe("radix widgets", () => {
+  it("opens the header menu as a drawer that closes on Escape and gives focus back", async () => {
+    const { user } = setup(<HeaderBar />);
+    const open = screen.getByRole("button", { name: "Open menu" });
+    await user.click(open);
+    const drawer = screen.getByRole("dialog", { name: "Atelier" });
+    expect(within(drawer).getByRole("navigation", { name: "Mobile" })).toBeInTheDocument();
+    expect(drawer.closest(".msu-root")).not.toBeNull();
+    await user.keyboard("{Escape}");
+    await act(async () => {});
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(open).toHaveFocus();
+  });
+
+  it("closes the drawer when a menu link is followed", async () => {
+    const { user } = setup(<HeaderBar />);
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    await user.click(within(screen.getByRole("dialog")).getAllByRole("link")[0]!);
+    await act(async () => {});
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("keeps closed accordion answers in the page and opens one at a time", async () => {
+    const items = [
+      { question: "Delivery?", answer: "Two days." },
+      { question: "Returns?", answer: "Thirty days." },
+    ];
+    const { user } = setup(<Accordion items={items} openFirst />);
+    expect(screen.getByText("Thirty days.").parentElement).toHaveAttribute("data-state", "closed");
+    await user.click(screen.getByRole("button", { name: "Returns?" }));
+    expect(screen.getByRole("button", { name: "Returns?" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Delivery?" })).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("moves filter chips with the arrow keys and keeps a chip chosen when pressed again", async () => {
+    const onChange = vi.fn();
+    const options = [
+      { value: "", label: "All" },
+      { value: "a", label: "Skincare" },
+    ];
+    const { user } = setup(<FilterChips label="Categories" value="" options={options} onChange={onChange} />);
+    expect(screen.getByRole("radio", { name: "All" })).toHaveAttribute("aria-checked", "true");
+    await user.click(screen.getByRole("radio", { name: "All" }));
+    expect(onChange).not.toHaveBeenCalled();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("radio", { name: "Skincare" })).toHaveFocus();
+    await user.keyboard(" ");
+    expect(onChange).toHaveBeenCalledWith("a");
   });
 });

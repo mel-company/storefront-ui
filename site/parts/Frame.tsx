@@ -81,8 +81,34 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
       syncStyles();
       const styles = new MutationObserver(syncStyles);
       styles.observe(document.head, { childList: true, subtree: true, characterData: true });
-      const size = new ResizeObserver(() => setContentHeight(doc.body.scrollHeight));
+      // Drawers and dropdowns are fixed-position layers, so the body's height leaves them out: make room while one is open.
+      const measure = () => {
+        let height = doc.body.scrollHeight;
+        if (doc.querySelector('[role="dialog"]')) height = Math.max(height, 560);
+        // Room for the list under the button that opened it, so it opens downwards instead of flipping up.
+        const opener = doc.querySelector('[aria-haspopup][aria-expanded="true"]');
+        doc.querySelectorAll("[data-radix-popper-content-wrapper]").forEach((layer) => {
+          const below = (opener ?? layer).getBoundingClientRect()[opener ? "bottom" : "top"] + (doc.defaultView?.scrollY ?? 0);
+          // The list may already be squeezed to the frame, so measure its scrolling content, capped like the list itself.
+          const content = Math.max(0, ...Array.from(layer.querySelectorAll("*"), (node) => node.scrollHeight));
+          height = Math.max(height, below + Math.min(content, 340) + 24);
+        });
+        setContentHeight(height);
+        // The frame grows past the preview while a layer is open: paint that space in the theme's background.
+        const root = doc.querySelector(".msu-root");
+        const paint = root ? getComputedStyle(root).backgroundColor : "";
+        if (doc.body.style.backgroundColor !== paint) doc.body.style.backgroundColor = paint;
+      };
+      const size = new ResizeObserver(measure);
       size.observe(doc.body);
+      // Radix closes a dropdown when `window` blurs, and focus moving into this frame blurs the site's window,
+      // so the first click on a preview's dropdown would close it at once. Real stores have no frame.
+      const keepOpen = (event: FocusEvent) => {
+        if (event.target === window && document.activeElement === iframe) event.stopImmediatePropagation();
+      };
+      window.addEventListener("blur", keepOpen, true);
+      const layers = new MutationObserver(measure);
+      layers.observe(doc.body, { childList: true, subtree: true, attributeFilter: ["data-msu-mode", "style"] });
       let cancelled = false;
       // Show content only once its styles are in, never as bare HTML. Capped, so a slow font never hides the preview.
       void Promise.race([Promise.all(pending), new Promise((resolve) => window.setTimeout(resolve, 1500))]).then(() => {
@@ -92,6 +118,8 @@ export function Frame({ width, title, maxHeight, fill = false, scrollKey, childr
         cancelled = true;
         styles.disconnect();
         size.disconnect();
+        layers.disconnect();
+        window.removeEventListener("blur", keepOpen, true);
       };
     };
 
