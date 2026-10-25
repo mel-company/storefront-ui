@@ -1,0 +1,101 @@
+/* Pills flow in rows instead of columns. */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msu-space-2);
+}
+
+.center {
+  justify-content: center;
+}
+
+/* Scroll: one row that swipes sideways, a common phone pattern for circles and pills. */
+.scroll {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - var(--msu-space-4) * 2) / 3.3);
+  gap: var(--msu-space-4);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+  padding-block-end: var(--msu-space-1);
+}
+
+.scroll > * {
+  scroll-snap-align: start;
+}
+
+.scroll.pills {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--msu-space-2);
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mosaic: the first category takes a big square, the rest fill around it. */
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 150px;
+  gap: var(--msu-space-4);
+}
+
+.mosaic > * {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.mosaic > :first-child {
+  grid-column: span 2;
+}
+
+/* No hole at the end: on phones an even count leaves the last tile alone in its row. */
+.mosaic > :last-child:nth-child(even) {
+  grid-column: span 2;
+}
+
+/* Doubled class: beats the tile's own image ratio. */
+.mosaic.mosaic > * > :first-child {
+  aspect-ratio: auto;
+  block-size: 100%;
+}
+
+/* Wide banners read best one per row on phones. */
+.banners.banners {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .scroll {
+    grid-auto-columns: calc((100% - var(--msu-space-4) * (var(--msu-columns, 4) - 1)) / var(--msu-columns, 4));
+  }
+
+  .mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--msu-space-6);
+  }
+
+  .mosaic > :first-child {
+    grid-row: span 2;
+  }
+
+  .mosaic > :last-child:nth-child(even) {
+    grid-column: auto;
+  }
+
+  /* Four tiles: big, two small, one wide. */
+  .mosaic > :last-child:nth-child(4) {
+    grid-column: span 2;
+  }
+
+  .mosaic {
+    grid-auto-rows: 210px;
+  }
+
+  .banners.banners {
+    grid-template-columns: repeat(var(--msu-columns, 2), minmax(0, 1fr));
+  }
+}

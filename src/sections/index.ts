@@ -10,6 +10,7 @@ import { footerColumnsDefinition } from "./FooterColumns";
 import { headerBarDefinition } from "./HeaderBar";
 import { heroBannerDefinition } from "./HeroBanner";
 import { heroSplitDefinition } from "./HeroSplit";
+import { heroStatementDefinition } from "./HeroStatement";
 import { notFoundDefinition } from "./NotFound";
 import { offerFreeDeliveryDefinition } from "./OfferFreeDelivery";
 import { orderConfirmationDefinition } from "./OrderConfirmation";
@@ -33,6 +34,7 @@ export * from "./FooterColumns";
 export * from "./HeaderBar";
 export * from "./HeroBanner";
 export * from "./HeroSplit";
+export * from "./HeroStatement";
 export * from "./NotFound";
 export * from "./OfferFreeDelivery";
 export * from "./OrderConfirmation";
@@ -53,6 +55,7 @@ export const sectionDefinitions: SectionDefinition[] = [
   headerBarDefinition,
   heroSplitDefinition,
   heroBannerDefinition,
+  heroStatementDefinition,
   categoriesTilesDefinition,
   productsGridDefinition,
   productsRailDefinition,

@@ -22,6 +22,10 @@ export interface HeroSplitProps {
   imageAlt: string;
   imageSide?: "start" | "end";
   imageRatio?: MediaRatio;
+  /** plain shows the image as is, framed sets it on an accent-tinted block, collage adds moreImages beside it. */
+  imageStyle?: "plain" | "framed" | "collage";
+  /** Up to two smaller images for the collage. Decorative. */
+  moreImages?: string[];
   points?: { icon: IconName; text: string }[];
   tone?: SectionTone;
 }
@@ -36,6 +40,8 @@ export function HeroSplit({
   imageAlt,
   imageSide = "end",
   imageRatio = "portrait",
+  imageStyle = "plain",
+  moreImages = [],
   points = [],
   tone,
 }: HeroSplitProps) {
@@ -74,9 +80,18 @@ export function HeroSplit({
             </ul>
           )}
         </div>
-        <div className={styles.media}>
-          <Media src={image} alt={imageAlt} ratio={imageRatio} priority />
-        </div>
+        {imageStyle === "collage" && moreImages.length > 0 ? (
+          <div className={cx(styles.media, styles.collage)}>
+            <Media src={image} alt={imageAlt} ratio={imageRatio} priority className={styles.collageMain} />
+            {moreImages.slice(0, 2).map((src, index) => (
+              <Media key={index} src={src} alt="" ratio="square" priority />
+            ))}
+          </div>
+        ) : (
+          <div className={cx(styles.media, imageStyle === "framed" && styles.framed)}>
+            <Media src={image} alt={imageAlt} ratio={imageRatio} priority />
+          </div>
+        )}
       </div>
     </Section>
   );

@@ -27,29 +27,34 @@ interface Heading {
 
 const count = (value: number | undefined, fallback: number, max: number) => Math.min(max, Math.max(1, value ?? fallback));
 
-export function HeaderBarSkeleton({ layout = "classic", announcement, showSearch = true, showFavourites = true }: { layout?: "classic" | "centered"; announcement?: string; showSearch?: boolean; showFavourites?: boolean }) {
+export function HeaderBarSkeleton({ layout = "classic", announcement, showSearch = true, showFavourites = true }: { layout?: "classic" | "centered" | "stacked" | "minimal"; announcement?: string; showSearch?: boolean; showFavourites?: boolean }) {
   const icons = 1 + (showSearch ? 1 : 0) + (showFavourites ? 1 : 0);
+  const links = (
+    <div className={cx(s.inline, s.hideSmall)}>
+      {Array.from({ length: 5 }, (_, index) => (
+        <Skeleton key={index} width="64px" />
+      ))}
+    </div>
+  );
   return (
     <SectionSkeleton as="header">
       {announcement && <Skeleton width="min(320px, 80%)" className={s.announcement} />}
-      <div className={cx(s.bar, layout === "centered" && s.barCentered)}>
-        <Skeleton width="110px" shape="heading" />
-        <div className={cx(s.inline, s.hideSmall)}>
-          {Array.from({ length: 5 }, (_, index) => (
-            <Skeleton key={index} width="64px" />
-          ))}
-        </div>
-        <div className={s.inline}>
+      <div className={cx(s.bar, layout === "centered" && s.barCentered, (layout === "stacked" || layout === "minimal") && s.barThirds)}>
+        {layout === "stacked" || layout === "minimal" ? <Skeleton shape="circle" height="28px" /> : null}
+        <Skeleton width={layout === "stacked" ? "150px" : "110px"} shape="heading" />
+        {layout === "classic" || layout === "centered" ? links : null}
+        <div className={cx(s.inline, s.alignEnd)}>
           {Array.from({ length: icons }, (_, index) => (
             <Skeleton key={index} shape="circle" height="28px" />
           ))}
         </div>
       </div>
+      {layout === "stacked" && <div className={s.barNav}>{links}</div>}
     </SectionSkeleton>
   );
 }
 
-export function HeroSplitSkeleton({ eyebrow, subtitle, primaryAction, secondaryAction, imageSide = "end", imageRatio = "portrait", points = [], tone }: Heading & { primaryAction?: unknown; secondaryAction?: unknown; imageSide?: "start" | "end"; imageRatio?: "square" | "portrait" | "landscape"; points?: unknown[]; tone?: SectionTone }) {
+export function HeroSplitSkeleton({ eyebrow, subtitle, primaryAction, secondaryAction, imageSide = "end", imageRatio = "portrait", imageStyle = "plain", moreImages = [], points = [], tone }: Heading & { primaryAction?: unknown; secondaryAction?: unknown; imageSide?: "start" | "end"; imageRatio?: "square" | "portrait" | "landscape"; imageStyle?: "plain" | "framed" | "collage"; moreImages?: unknown[]; points?: unknown[]; tone?: SectionTone }) {
   const text = (
     <div className={s.stackLg}>
       {eyebrow && <Skeleton width="100px" />}
@@ -70,7 +75,19 @@ export function HeroSplitSkeleton({ eyebrow, subtitle, primaryAction, secondaryA
       )}
     </div>
   );
-  const image = <Skeleton shape="block" ratio={imageRatio} />;
+  const image =
+    imageStyle === "collage" && moreImages.length > 0 ? (
+      <div className={s.collage}>
+        <Skeleton shape="block" ratio={imageRatio} className={s.collageMain} />
+        {moreImages.slice(0, 2).map((_, index) => (
+          <Skeleton key={index} shape="block" ratio="square" />
+        ))}
+      </div>
+    ) : (
+      <div className={cx(imageStyle === "framed" && s.framed)}>
+        <Skeleton shape="block" ratio={imageRatio} />
+      </div>
+    );
   return (
     <SectionSkeleton tone={tone}>
       <div className={s.split}>
@@ -81,12 +98,12 @@ export function HeroSplitSkeleton({ eyebrow, subtitle, primaryAction, secondaryA
   );
 }
 
-export function HeroBannerSkeleton({ subtitle, action, align = "start" }: { subtitle?: string; action?: unknown; align?: "start" | "center" }) {
+export function HeroBannerSkeleton({ subtitle, action, align = "start", height = "tall", phoneLayout = "over" }: { subtitle?: string; action?: unknown; align?: "start" | "center" | "end"; height?: "compact" | "tall" | "full"; phoneLayout?: "over" | "below" }) {
   return (
     <SectionSkeleton spacing="tight">
-      <div className={s.overlay}>
-        <Skeleton shape="block" className={s.banner} />
-        <div className={cx(s.overlayPanel, align === "center" && s.overlayCenter)}>
+      <div className={cx(s.overlay, phoneLayout === "below" && s.overlayBelow)}>
+        <Skeleton shape="block" className={cx(s.banner, height === "compact" && s.bannerCompact, height === "full" && s.bannerFull)} />
+        <div className={cx(s.overlayPanel, align === "center" && s.overlayCenter, align === "end" && s.overlayEnd)}>
           <Skeleton shape="heading" lines={2} />
           {subtitle && <Skeleton lines={2} />}
           {action ? <Skeleton shape="pill" /> : null}
@@ -96,22 +113,46 @@ export function HeroBannerSkeleton({ subtitle, action, align = "start" }: { subt
   );
 }
 
-export function CategoriesTilesSkeleton({ eyebrow, subtitle, categoryIds = [], variant = "image", columns = 4, tone }: Heading & { categoryIds?: string[]; variant?: "image" | "circle" | "label"; columns?: number; tone?: SectionTone }) {
-  const tiles = count(categoryIds.length || undefined, columns, 12);
+export function HeroStatementSkeleton({ eyebrow, subtitle, primaryAction, secondaryAction, align = "start", tone }: Heading & { primaryAction?: unknown; secondaryAction?: unknown; align?: "start" | "center"; tone?: SectionTone }) {
+  return (
+    <SectionSkeleton tone={tone}>
+      <div className={cx(s.stackLg, s.statement, align === "center" && s.center)}>
+        {eyebrow && <Skeleton width="100px" />}
+        <Skeleton shape="heading" lines={2} width="min(640px, 90%)" />
+        {subtitle && <Skeleton lines={2} width="min(480px, 80%)" />}
+        {Boolean(primaryAction || secondaryAction) && (
+          <div className={s.actions}>
+            {primaryAction ? <Skeleton shape="pill" /> : null}
+            {secondaryAction ? <Skeleton shape="pill" /> : null}
+          </div>
+        )}
+      </div>
+    </SectionSkeleton>
+  );
+}
+
+export function CategoriesTilesSkeleton({ eyebrow, subtitle, categoryIds = [], variant = "image", layout = "grid", columns = 4, tone }: Heading & { categoryIds?: string[]; variant?: "image" | "circle" | "label" | "banner" | "pill"; layout?: "grid" | "mosaic" | "scroll"; columns?: number; tone?: SectionTone }) {
+  const tiles = count(categoryIds.length || undefined, layout === "mosaic" ? 5 : columns, 12);
+  const tile = (index: number) => {
+    if (variant === "label") return <Skeleton key={index} shape="block" height="56px" />;
+    if (variant === "pill") return <Skeleton key={index} shape="pill" width="120px" />;
+    if (variant === "banner") return <Skeleton key={index} shape="block" ratio="wide" />;
+    return (
+      <div key={index} className={cx(s.stack, variant === "circle" && s.centerItems)}>
+        {variant === "circle" ? <Skeleton shape="circle" height="96px" /> : <Skeleton shape="block" ratio="square" />}
+        <Skeleton width="60%" />
+      </div>
+    );
+  };
+  const className =
+    variant === "pill" ? cx(s.inline, layout === "scroll" && s.noWrap) : layout === "scroll" ? s.rail : layout === "mosaic" && variant === "image" ? s.mosaic : s.tiles;
   return (
     <SectionSkeleton tone={tone}>
       <HeadingBones eyebrow={Boolean(eyebrow)} subtitle={Boolean(subtitle)} />
-      <div className={s.tiles} style={{ "--msu-columns": columns } as CSSProperties}>
-        {Array.from({ length: tiles }, (_, index) =>
-          variant === "label" ? (
-            <Skeleton key={index} shape="block" height="56px" />
-          ) : (
-            <div key={index} className={cx(s.stack, variant === "circle" && s.centerItems)}>
-              {variant === "circle" ? <Skeleton shape="circle" height="96px" /> : <Skeleton shape="block" ratio="square" />}
-              <Skeleton width="60%" />
-            </div>
-          ),
-        )}
+      <div className={className} style={{ "--msu-columns": columns, "--msu-visible": columns } as CSSProperties}>
+        {layout === "mosaic" && variant === "image"
+          ? Array.from({ length: tiles }, (_, index) => <Skeleton key={index} shape="block" className={s.mosaicTile} />)
+          : Array.from({ length: tiles }, (_, index) => tile(index))}
       </div>
     </SectionSkeleton>
   );
@@ -124,20 +165,24 @@ interface ProductsProps extends Heading {
   tone?: SectionTone;
 }
 
-export function ProductsGridSkeleton({ eyebrow, subtitle, source, card, columns = 4, tone }: ProductsProps & { columns?: number }) {
+export function ProductsGridSkeleton({ eyebrow, subtitle, source, card, columns = 4, layout = "grid", tone }: ProductsProps & { columns?: number; layout?: "grid" | "featured" }) {
   return (
     <SectionSkeleton tone={tone}>
       <HeadingBones eyebrow={Boolean(eyebrow)} subtitle={Boolean(subtitle)} />
-      <CardGridBones columns={columns} count={count(source?.ids?.length || source?.limit, columns, columns * 2)} card={card} />
+      {layout === "featured" ? (
+        <CardGridBones columns={4} count={5} card={card} featured />
+      ) : (
+        <CardGridBones columns={columns} count={count(source?.ids?.length || source?.limit, columns, columns * 2)} card={card} />
+      )}
     </SectionSkeleton>
   );
 }
 
-export function ProductsRailSkeleton({ eyebrow, subtitle, card, visible = 4, tone }: ProductsProps & { visible?: number }) {
+export function ProductsRailSkeleton({ eyebrow, subtitle, card, visible = 4, numbered = false, tone }: ProductsProps & { visible?: number; numbered?: boolean }) {
   return (
     <SectionSkeleton tone={tone}>
       <HeadingBones eyebrow={Boolean(eyebrow)} subtitle={Boolean(subtitle)} />
-      <RailBones visible={visible} card={card} />
+      <RailBones visible={visible} card={card} numbered={numbered} />
     </SectionSkeleton>
   );
 }
@@ -440,17 +485,29 @@ export function FavouritesGridSkeleton({ columns = 4, card, tone }: { columns?: 
   );
 }
 
-export function FooterColumnsSkeleton() {
+export function FooterColumnsSkeleton({ layout = "columns", bigName = false }: { layout?: "columns" | "centered" | "minimal"; bigName?: boolean }) {
   return (
     <SectionSkeleton as="footer">
-      <div className={s.cols}>
-        {Array.from({ length: 4 }, (_, index) => (
-          <div key={index} className={s.stack}>
-            <Skeleton shape="heading" width="50%" />
-            <Skeleton lines={4} width="80%" />
+      {layout === "columns" ? (
+        <div className={s.cols}>
+          {Array.from({ length: 4 }, (_, index) => (
+            <div key={index} className={s.stack}>
+              <Skeleton shape="heading" width="50%" />
+              <Skeleton lines={4} width="80%" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={cx(s.stackLg, layout === "centered" && s.center)}>
+          <Skeleton shape="heading" width="140px" />
+          <div className={cx(s.inline, layout === "centered" && s.justifyCenter)}>
+            {Array.from({ length: layout === "minimal" ? 4 : 6 }, (_, index) => (
+              <Skeleton key={index} width="72px" />
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      {bigName && <Skeleton shape="block" height="96px" className={s.gapBefore} />}
       <Skeleton width="220px" className={s.gapBefore} />
     </SectionSkeleton>
   );

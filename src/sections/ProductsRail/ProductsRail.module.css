@@ -14,6 +14,24 @@
   scroll-snap-align: start;
 }
 
+/* Numbered: a big rank sits above each card, 01 to 10. */
+.ranked {
+  display: grid;
+  gap: var(--msu-space-2);
+  align-content: start;
+}
+
+.rank {
+  padding-block-end: var(--msu-space-2);
+  border-block-end: 2px solid var(--msu-text);
+  font-family: var(--msu-font-heading);
+  font-size: var(--msu-text-3xl);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
 .controls {
   display: none;
   gap: var(--msu-space-2);
