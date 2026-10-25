@@ -64,6 +64,7 @@ export interface Messages {
   shopAll: string;
   openMenu: string;
   closeMenu: string;
+  close: string;
   mainMenu: string;
   mobileMenu: string;
   search: string;
@@ -217,6 +218,7 @@ const en: Messages = {
   shopAll: "Shop all",
   openMenu: "Open menu",
   closeMenu: "Close menu",
+  close: "Close",
   mainMenu: "Main",
   mobileMenu: "Mobile",
   search: "Search",
@@ -379,6 +381,7 @@ const ar: Messages = {
   shopAll: "تسوق الكل",
   openMenu: "فتح القائمة",
   closeMenu: "إغلاق القائمة",
+  close: "إغلاق",
   mainMenu: "القائمة الرئيسية",
   mobileMenu: "قائمة الجوال",
   search: "بحث",

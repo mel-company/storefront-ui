@@ -25,11 +25,13 @@
 }
 
 .select {
+  min-inline-size: 170px;
   min-block-size: 40px;
   padding-inline: var(--msu-space-3);
   border: 1px solid var(--msu-border);
   border-radius: var(--msu-radius-md);
   background: var(--msu-surface);
+  font-size: var(--msu-text-sm);
 }
 
 .title {

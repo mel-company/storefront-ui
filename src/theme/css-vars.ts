@@ -67,5 +67,8 @@ export function themeToCssVars(theme: Theme, mode: ColorMode): CSSProperties {
         : "0 1px 2px rgb(16 24 40 / 0.06), 0 8px 24px rgb(16 24 40 / 0.08)"
       : "none";
 
+  // Behind drawers and dialogs. Text and background colours can't dim in both modes, so this one is fixed.
+  vars["--msu-scrim"] = mode === "dark" ? "rgb(0 0 0 / 0.6)" : "rgb(16 24 40 / 0.4)";
+
   return vars as CSSProperties;
 }

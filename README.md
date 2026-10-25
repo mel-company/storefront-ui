@@ -109,6 +109,24 @@ theme's motion, so `motion: "none"` and reduced motion keep it still. Custom
 sections add `skeleton` to `defineSection`, built from `Skeleton` (the
 `ui.skeleton` component); the checker requires one and renders it.
 
+### Drawers, dropdowns and other interactive pieces
+
+The pieces with tricky keyboard and screen reader behaviour are built on
+[Radix](https://www.radix-ui.com/primitives) primitives, styled with the
+library's own CSS (no Tailwind needed):
+
+| Piece | Radix primitive | What it adds |
+| --- | --- | --- |
+| `Drawer` (`ui.drawer`), header mobile menu | Dialog | Focus stays inside, Escape and the backdrop close it, page scroll locks, focus returns to the button |
+| `SelectField` (`form.select`), `SelectMenu`, catalogue sort | Select | Themed list with arrow keys and type-to-find; `native` keeps the browser's own select |
+| `Accordion` (`ui.accordion`) | Accordion | Arrow keys between questions, smooth open and close; closed answers stay in the HTML |
+| `FilterChips` (`catalogue.categoryChips`) | Toggle Group | One tab stop, arrow keys along the chips |
+
+`ThemeProvider` passes its direction to Radix, so arrow keys and slide-in sides
+mirror in Arabic stores. Popups render inside the provider's wrapper
+(`usePortalContainer()`), so they keep the theme, colour mode and direction.
+Radix is a regular dependency; React stays a peer.
+
 ## Theme and dark mode
 
 A theme is a palette for light and one for dark, plus radius, density, type

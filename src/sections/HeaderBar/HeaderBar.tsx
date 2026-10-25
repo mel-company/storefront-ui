@@ -1,4 +1,5 @@
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { Drawer } from "../../components/Drawer";
 import { Icon } from "../../icons";
 import { useCart, useCategories, useFavourites, useLink, useStore } from "../../store";
 import type { Route } from "../../store/types";
@@ -21,7 +22,7 @@ export interface HeaderBarProps {
   showFavourites?: boolean;
 }
 
-/** Store name, navigation, search, favourites and the live cart count. Mobile menu below 900px. */
+/** Store name, navigation, search, favourites and the live cart count. Below 900px the links move into a side drawer. */
 export function HeaderBar({ layout = "classic", links, announcement, showSearch = true, showFavourites = true }: HeaderBarProps) {
   const store = useStore();
   const Link = useLink();
@@ -30,7 +31,6 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
   const { count } = useCart();
   const favourites = useFavourites();
   const [open, setOpen] = useState(false);
-  const drawerId = useId();
 
   const items: HeaderLink[] =
     links && links.length > 0
@@ -45,16 +45,30 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
       {announcement && <p className={styles.announcement}>{announcement}</p>}
       <div className={containerClassName}>
         <div className={styles.bar}>
-          <button
-            type="button"
-            className={styles.menuButton}
-            aria-expanded={open}
-            aria-controls={drawerId}
-            aria-label={open ? m.closeMenu : m.openMenu}
-            onClick={() => setOpen((value) => !value)}
+          <Drawer
+            title={store.info.name}
+            side="start"
+            open={open}
+            onOpenChange={setOpen}
+            trigger={
+              <button type="button" className={styles.menuButton} aria-label={m.openMenu}>
+                <Icon name="menu" />
+              </button>
+            }
           >
-            <Icon name={open ? "close" : "menu"} />
-          </button>
+            {/* Close once a link is followed: the host's router may keep the header mounted. */}
+            <nav aria-label={m.mobileMenu} onClickCapture={(event) => (event.target as Element).closest("a") && setOpen(false)}>
+              <ul className={styles.drawerList}>
+                {items.map((item) => (
+                  <li key={item.label}>
+                    <Link href={store.href(item.route)} className={styles.drawerLink}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </Drawer>
           <Link href={store.href({ to: "home" })} className={styles.brand}>
             {store.info.name}
           </Link>
@@ -91,19 +105,6 @@ export function HeaderBar({ layout = "classic", links, announcement, showSearch 
             </Link>
           </div>
         </div>
-        {open && (
-          <nav id={drawerId} className={styles.drawer} aria-label={m.mobileMenu}>
-            <ul className={styles.drawerList}>
-              {items.map((item) => (
-                <li key={item.label}>
-                  <Link href={store.href(item.route)} className={styles.drawerLink}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
       </div>
     </header>
   );

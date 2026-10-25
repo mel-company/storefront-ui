@@ -16,3 +16,106 @@
   color: var(--msu-text-muted);
   pointer-events: none;
 }
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msu-space-2);
+  text-align: start;
+  cursor: pointer;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trigger[data-placeholder] .value {
+  color: var(--msu-text-muted);
+}
+
+.icon {
+  display: grid;
+  flex: none;
+  color: var(--msu-text-muted);
+  transition: transform var(--msu-duration) ease;
+}
+
+.trigger[data-state="open"] .icon {
+  transform: rotate(180deg);
+}
+
+.content {
+  z-index: 60;
+  inline-size: var(--radix-select-trigger-width);
+  max-block-size: min(320px, var(--radix-select-content-available-height));
+  overflow: hidden;
+  border: 1px solid var(--msu-border);
+  border-radius: var(--msu-radius-md);
+  background: var(--msu-surface);
+  color: var(--msu-text);
+  box-shadow: var(--msu-card-shadow);
+  transform-origin: var(--radix-select-content-transform-origin);
+}
+
+.content[data-state="open"] {
+  animation: pop var(--msu-duration) ease-out;
+}
+
+.viewport {
+  padding: var(--msu-space-1);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msu-space-2);
+  min-block-size: 40px;
+  padding-inline: var(--msu-space-3);
+  border-radius: var(--msu-radius-sm);
+  font-size: var(--msu-text-sm);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+.item[data-highlighted] {
+  background: var(--msu-surface-muted);
+}
+
+.item[data-state="checked"] {
+  font-weight: 600;
+}
+
+.check {
+  display: grid;
+  color: var(--msu-accent);
+}
+
+.scroll {
+  display: grid;
+  place-items: center;
+  block-size: 24px;
+  color: var(--msu-text-muted);
+  cursor: default;
+}
+
+.up {
+  transform: rotate(180deg);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+/* The highlight shows the keyboard position; the global focus ring would double it. */
+.viewport .item:focus-visible {
+  outline: none;
+}

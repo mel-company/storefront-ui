@@ -7,29 +7,52 @@
   border-block-end: 1px solid var(--msu-border);
 }
 
+.header {
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+}
+
 .summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--msu-space-4);
+  inline-size: 100%;
   padding-block: var(--msu-space-4);
+  padding-inline: 0;
+  border: 0;
+  background: transparent;
   font-weight: 600;
+  text-align: start;
   cursor: pointer;
-  list-style: none;
-}
-
-.summary::-webkit-details-marker {
-  display: none;
 }
 
 .chevron {
   transition: transform var(--msu-duration) ease;
-  transform: rotate(90deg);
   flex: none;
+  color: var(--msu-text-muted);
 }
 
-.item[open] .chevron {
-  transform: rotate(-90deg);
+.summary[data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
+
+.content {
+  overflow: hidden;
+}
+
+.content[data-state="open"] {
+  animation: open var(--msu-duration) ease-out;
+}
+
+/* Closed answers stay in the page (forceMount) but are hidden from everyone. */
+.content[data-state="closed"] {
+  block-size: 0;
+  visibility: hidden;
+  animation: close var(--msu-duration) ease-in;
 }
 
 .answer {
@@ -37,13 +60,23 @@
   color: var(--msu-text-muted);
 }
 
-.item[open] .answer {
-  animation: reveal var(--msu-duration) ease-out;
+@keyframes open {
+  from {
+    block-size: 0;
+    opacity: 0;
+  }
+  to {
+    block-size: var(--radix-accordion-content-height);
+  }
 }
 
-@keyframes reveal {
+@keyframes close {
   from {
+    block-size: var(--radix-accordion-content-height);
+    visibility: visible;
+  }
+  to {
+    block-size: 0;
     opacity: 0;
-    transform: translateY(-4px);
   }
 }

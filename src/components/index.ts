@@ -7,6 +7,7 @@ import { buttonDefinition } from "./Button";
 import { cartLineDefinition } from "./CartLine";
 import { categoryTileDefinition } from "./CategoryTile";
 import { countdownDefinition } from "./Countdown";
+import { drawerDefinition } from "./Drawer";
 import { emptyStateDefinition } from "./EmptyState";
 import { favouriteDefinition } from "./Favourite";
 import { featureDefinition } from "./Feature";
@@ -34,6 +35,7 @@ export * from "./Button";
 export * from "./CartLine";
 export * from "./CategoryTile";
 export * from "./Countdown";
+export * from "./Drawer";
 export * from "./EmptyState";
 export * from "./Favourite";
 export * from "./Feature";
@@ -60,6 +62,7 @@ export const componentDefinitions: ComponentDefinition[] = [
   mediaDefinition,
   featureDefinition,
   accordionDefinition,
+  drawerDefinition,
   countdownDefinition,
   priceDefinition,
   ratingDefinition,

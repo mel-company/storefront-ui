@@ -1,0 +1,121 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--msu-scrim);
+  backdrop-filter: blur(2px);
+}
+
+.overlay[data-state="open"] {
+  animation: fadeIn var(--msu-duration) ease-out;
+}
+
+.overlay[data-state="closed"] {
+  animation: fadeOut var(--msu-duration) ease-in;
+}
+
+.panel {
+  position: fixed;
+  inset-block: 0;
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  inline-size: min(380px, 88vw);
+  background: var(--msu-surface);
+  color: var(--msu-text);
+  border-inline: 1px solid var(--msu-border);
+  box-shadow: var(--msu-card-shadow);
+  outline: none;
+}
+
+/* The distance the panel travels, flipped by --msu-flip in Arabic stores. */
+.start {
+  inset-inline-start: 0;
+  --msu-drawer-from: calc(-100% * var(--msu-flip, 1));
+}
+
+.end {
+  inset-inline-end: 0;
+  --msu-drawer-from: calc(100% * var(--msu-flip, 1));
+}
+
+.panel[data-state="open"] {
+  animation: slideIn calc(var(--msu-duration) * 1.4) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panel[data-state="closed"] {
+  animation: slideOut var(--msu-duration) ease-in;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msu-space-3);
+  min-block-size: 64px;
+  padding-inline: var(--msu-space-4) var(--msu-space-3);
+  border-block-end: 1px solid var(--msu-border);
+}
+
+.title {
+  font-size: var(--msu-text-lg);
+  font-weight: 700;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 44px;
+  block-size: 44px;
+  margin-inline-start: auto;
+  border: 0;
+  border-radius: var(--msu-radius-full);
+  background: transparent;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--msu-surface-muted);
+}
+
+.description {
+  padding: var(--msu-space-4) var(--msu-space-4) 0;
+  color: var(--msu-text-muted);
+  font-size: var(--msu-text-sm);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--msu-space-4) var(--msu-space-4);
+}
+
+.footer {
+  padding: var(--msu-space-4) var(--msu-space-4);
+  border-block-start: 1px solid var(--msu-border);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(var(--msu-drawer-from));
+  }
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(var(--msu-drawer-from));
+  }
+}
