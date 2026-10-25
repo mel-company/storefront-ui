@@ -10,6 +10,8 @@ export interface Example<Props> {
   cart?: { productId: string; quantity: number; options?: Record<string, string> }[];
   /** Product ids saved as favourites before this example renders. */
   favourites?: string[];
+  /** What the page is about, e.g. an order opened from a link: `{ orderNumber, orderKey }`. */
+  context?: { productSlug?: string; categorySlug?: string; search?: string; orderNumber?: string; orderKey?: string };
 }
 
 interface BaseDefinition<Schema extends z.ZodTypeAny> {

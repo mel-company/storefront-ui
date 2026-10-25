@@ -113,7 +113,7 @@ export function CheckoutForm({
   if (result) {
     return (
       <Section labelledBy={headingId} tone={tone}>
-        <OrderPlaced orderNumber={result.number ?? result.id} title={successTitle} text={successText} headingId={headingId} />
+        <OrderPlaced orderNumber={result.number ?? result.id} orderKey={result.accessKey} title={successTitle} text={successText} headingId={headingId} />
       </Section>
     );
   }

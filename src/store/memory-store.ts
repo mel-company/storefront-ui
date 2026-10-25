@@ -1,6 +1,6 @@
 import { cartLineKey } from "./query";
 import { languageOf, messages } from "../i18n/messages";
-import type { Category, Invoice, Product, Route, StoreClient, StoreInfo, StoreSnapshot, TrackedOrder } from "./types";
+import type { Category, Invoice, OrderQuery, Product, Route, StoreClient, StoreInfo, StoreSnapshot, TrackedOrder } from "./types";
 
 export interface MemoryStoreData {
   info: StoreInfo;
@@ -8,8 +8,8 @@ export interface MemoryStoreData {
   categories: Category[];
   cart?: StoreSnapshot["cart"];
   favourites?: string[];
-  /** Orders `trackOrder` and `getInvoice` can find, with the phone each was placed with. */
-  orders?: { phone: string; order: TrackedOrder; invoice?: Invoice }[];
+  /** Orders `trackOrder` and `getInvoice` can find, with the phone each was placed with and its access key. */
+  orders?: { phone: string; key?: string; order: TrackedOrder; invoice?: Invoice }[];
 }
 
 /** Digits only, compared from the end, so `+964 770 123 4567` matches `0770 123 4567` and `+1 555 0177` matches `555 0177`. */
@@ -18,6 +18,14 @@ const samePhone = (a: string, b: string) => {
   const y = b.replace(/\D/g, "");
   const length = Math.min(9, x.length, y.length);
   return length >= 7 && x.slice(-length) === y.slice(-length);
+};
+
+const orderParams = ({ number, key }: { number?: string; key?: string }) => {
+  const params = new URLSearchParams();
+  if (number) params.set("order", number);
+  if (number && key) params.set("key", key);
+  const query = params.toString();
+  return query ? `?${query}` : "";
 };
 
 /** Hash routes, so previews work inside any page without a router. */
@@ -42,9 +50,9 @@ export function defaultHref(route: Route): string {
     case "favourites":
       return "#/favourites";
     case "tracking":
-      return route.number ? `#/track?order=${encodeURIComponent(route.number)}` : "#/track";
+      return `#/track${orderParams(route)}`;
     case "invoice":
-      return route.number ? `#/invoice?order=${encodeURIComponent(route.number)}` : "#/invoice";
+      return `#/invoice${orderParams(route)}`;
     case "url":
       return route.href;
   }
@@ -70,9 +78,12 @@ export function createMemoryStore(data: MemoryStoreData): StoreClient {
     listeners.forEach((listener) => listener());
   };
 
-  const findOrder = (number: string, phone: string) => {
+  // The number plus the phone or the access key. The memory store has no sessions, so a number alone finds nothing.
+  const findOrder = ({ number, phone, key }: OrderQuery) => {
     const wanted = number.replace(/^#/, "").replace(/^INV-/i, "").trim();
-    return orders.find((entry) => entry.order.number === wanted && samePhone(entry.phone, phone));
+    return orders.find(
+      (entry) => entry.order.number === wanted && ((key && entry.key === key) || (phone && samePhone(entry.phone, phone))),
+    );
   };
 
   const stockOf = (productId: string) =>
@@ -123,8 +134,10 @@ export function createMemoryStore(data: MemoryStoreData): StoreClient {
       const payment =
         data.info.checkout?.payments?.find((method) => method.id === order.payment)?.label ??
         (order.payment === "cash" ? messages[languageOf(data.info.locale)].cashOnDelivery : order.payment);
+      const key = `${id}-${Math.random().toString(36).slice(2, 10)}`;
       orders.push({
         phone: customer.phone,
+        key,
         order: {
           number: id,
           status: "placed",
@@ -150,13 +163,13 @@ export function createMemoryStore(data: MemoryStoreData): StoreClient {
         },
       });
       update({ cart: [] });
-      return { id };
+      return { id, accessKey: key };
     },
-    async trackOrder({ number, phone }) {
-      return findOrder(number, phone)?.order ?? null;
+    async trackOrder(query) {
+      return findOrder(query)?.order ?? null;
     },
-    async getInvoice({ number, phone }) {
-      return findOrder(number, phone)?.invoice ?? null;
+    async getInvoice(query) {
+      return findOrder(query)?.invoice ?? null;
     },
     toggleFavourite(productId) {
       const favourites = snapshot.favourites.includes(productId)

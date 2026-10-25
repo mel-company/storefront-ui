@@ -10,6 +10,7 @@ import {
   PageRenderer,
   type CheckReport,
   type ComponentDefinition,
+  PageContextProvider,
   type PageContextValue,
   type PageDefinition,
   type SectionDefinition,
@@ -284,9 +285,11 @@ function DefinitionDoc({ definition }: { definition: Definition }) {
         <Frame width={width} title={`${definition.name} preview`}>
           {example && (
             <LivePreview key={`${exampleIndex}-${themeId}-${mode}-${dir}-${skeleton}`} seed={(store) => seedExample(store, example)}>
-              <div style={{ padding: definition.kind === "component" ? 24 : 0 }}>
-                <Render {...definition.props.parse(props)} />
-              </div>
+              <PageContextProvider value={example.context ?? {}}>
+                <div style={{ padding: definition.kind === "component" ? 24 : 0 }}>
+                  <Render {...definition.props.parse(props)} />
+                </div>
+              </PageContextProvider>
             </LivePreview>
           )}
         </Frame>

@@ -145,6 +145,8 @@ export const demoProductsAr: Product[] = demoProducts.map((product) => ({
 /** A sample order to track: number `1042` with the phone below. */
 export const demoOrderPhone = "555 0123";
 export const demoOrderPhoneAr = "0770 123 4567";
+/** Order 1042's access key, as a tracking or invoice link would carry it. */
+export const demoOrderKey = "1042-demo";
 
 function demoOrder(products: Product[], city: string, courier: { name: string; phone: string }): TrackedOrder {
   const pick = (id: string) => products.find((product) => product.id === id)!;

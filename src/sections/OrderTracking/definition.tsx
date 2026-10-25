@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { demoOrderKey } from "../../demo/data";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
@@ -21,8 +22,9 @@ export const orderTrackingDefinition = defineSection({
     tone: toneField,
   }),
   examples: [
-    { name: "Default", props: {} },
-    { name: "Muted, vertical steps", props: { title: "Where is my order?", intro: "Try order 1042 with phone 555 0123.", statusLayout: "vertical", tone: "muted" } },
+    { name: "From a link", props: {}, context: { orderNumber: "1042", orderKey: demoOrderKey } },
+    { name: "Asks for number and phone", props: {} },
+    { name: "Muted, vertical steps", props: { title: "Where is my order?", intro: "Try order 1042 with phone 555 0123.", statusLayout: "vertical", tone: "muted" }, context: { orderNumber: "1042", orderKey: demoOrderKey } },
   ],
   skeleton: OrderLookupSkeleton,
   render: function OrderTrackingPreset(props) {

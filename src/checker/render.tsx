@@ -7,7 +7,7 @@ import type { Language } from "../i18n/messages";
 import { PageRenderer } from "../pages/PageRenderer";
 import type { PageCompositionInput } from "../pages/composition";
 import { builtInRegistry } from "../registry";
-import type { PageContextValue } from "../sections/_shared/PageContext";
+import { PageContextProvider, type PageContextValue } from "../sections/_shared/PageContext";
 import { Storefront } from "../Storefront";
 import type { StoreClient } from "../store/types";
 import { defaultTheme } from "../theme/presets";
@@ -79,7 +79,9 @@ export function exampleElement(
   const props = definition.props.parse(example.props);
   return (
     <PreviewFrame store={previewStore(example, languageFor(options))} options={options}>
-      <Render {...props} />
+      <PageContextProvider value={example.context ?? {}}>
+        <Render {...props} />
+      </PageContextProvider>
     </PreviewFrame>
   );
 }
