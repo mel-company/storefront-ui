@@ -28,7 +28,8 @@ for (const [file, text] of Object.entries(DEFINITIONS)) {
   const path = file.match(/src\/((?:components|sections)\/[^/]+)\//)?.[1];
   if (!id || !path) continue;
   const render = text.match(/\n {2}render: function \w+\([^)]*\) \{\n[\s\S]*?\n {2}\},?\n/)?.[0];
-  const passThrough = render?.match(/^\s*render: function \w+\(props\) \{\n(?:[\s\S]*?)<(\w+) \{\.\.\.props\}/);
+  // A preset that only spreads its props is shown as the bare component; one with state (value + onChange) shows its code.
+  const passThrough = render && !/\buse[A-Z]\w*\(/.test(render) ? render.match(/^\s*render: function \w+\(props\) \{\n(?:[\s\S]*?)<(\w+) \{\.\.\.props\}/) : null;
   FOLDERS.set(id, {
     path,
     definition: text,
@@ -57,8 +58,14 @@ const REACT_HOOKS = new Set(["useState", "useMemo", "useEffect", "useRef", "useC
 
 const BANNERS = new Map<string, string>(Object.entries(demoBanners).map(([name, value]) => [value, `demoBanners.${name}`]));
 
+/** A prop written as code, not as a value, e.g. `value={value}`. */
+class Code {
+  constructor(readonly source: string) {}
+}
+
 /** A prop value as JSX source. Demo images stay readable as `demoBanners.warm`. */
 function value(input: unknown, indent: string): string {
+  if (input instanceof Code) return input.source;
   if (typeof input === "string") {
     const banner = BANNERS.get(input);
     if (banner) return banner;
@@ -101,12 +108,35 @@ const imports = (names: string[]) => `import { ${[...new Set(names)].sort().join
 
 const usesBanner = (props: unknown) => JSON.stringify(props ?? {}).includes("data:image/svg+xml");
 
+/** `<Name …>children</Name>`, built on `jsx`. */
+function wrap(name: string, props: Record<string, unknown>, children: string): string {
+  const open = jsx(name, props).replace(/\s*\/>$/, (end) => (end.includes("\n") ? "\n>" : ">"));
+  return `${open}\n  ${children}\n</${name}>`;
+}
+
+/** Examples whose preset props are docs knobs, not the component's own props: written by hand as real usage. */
+const USAGE: Record<string, (props: Record<string, unknown>) => string> = {
+  "ui.drawer": ({ triggerLabel, title, description, body, side }) =>
+    `${imports(["Button", "Drawer"])}\n\n${wrap(
+      "Drawer",
+      {
+        title,
+        description,
+        side,
+        trigger: new Code(`<Button variant="secondary"${side === "start" ? ' icon="menu"' : ""}>${String(triggerLabel)}</Button>`),
+      },
+      `<p>${String(body)}</p>`,
+    )}`,
+};
+
 /**
  * React code for one example: the component with the example's props, or,
  * when the preset wires more than props (state, a store lookup), the preset's
  * own render function, which is the real usage.
  */
 export function exampleCode(definition: Definition, props: Record<string, unknown>): string {
+  const usage = USAGE[definition.id];
+  if (usage) return usage(props);
   const folder = FOLDERS.get(definition.id);
   if (folder?.component) {
     const names = usesBanner(props) ? [folder.component, "demoBanners"] : [folder.component];
@@ -115,7 +145,19 @@ export function exampleCode(definition: Definition, props: Record<string, unknow
   if (folder?.render) {
     // The preset is real usage code: give it its imports and show it called with the example's props.
     const name = folder.render.match(/^function (\w+)Preset/)?.[1] ?? "Example";
-    const body = folder.render.replace(/^function \w+Preset/, `export function ${name}Example`);
+    let body = folder.render.replace(/^function \w+Preset/, `export function ${name}Example`);
+    let call = jsx(`${name}Example`, props);
+    const spread = body.match(/^( *)return <(\w+) \{\.\.\.props\}((?: \w+=\{\w+\})*) \/>;$/m);
+    if (spread && body.startsWith(`export function ${name}Example(props)`)) {
+      // `<SelectField {...props} value={value} … />`: write the example's props in, so the code reads like real usage.
+      const [line, indent, component, rest] = spread;
+      const own = Object.fromEntries([...(rest ?? "").matchAll(/(\w+)=\{(\w+)\}/g)].map(([, key, item]) => [key, new Code(item!)]));
+      const element = jsx(component!, { ...props, ...own }, `${indent}  `);
+      body = body
+        .replace(`export function ${name}Example(props)`, `export function ${name}Example()`)
+        .replace(line!, element.includes("\n") ? `${indent}return (\n${element}\n${indent});` : `${indent}return ${element.trim()};`);
+      call = `<${name}Example />`;
+    }
     const used = [...new Set(body.match(/<([A-Z]\w*)|\b(use[A-Z]\w*)\(/g)?.map((token) => token.replace(/[<(]/g, "")) ?? [])];
     const fromReact = used.filter((token) => REACT_HOOKS.has(token));
     const fromLibrary = used.filter((token) => !REACT_HOOKS.has(token));
@@ -123,7 +165,7 @@ export function exampleCode(definition: Definition, props: Record<string, unknow
       fromReact.length ? `import { ${fromReact.sort().join(", ")} } from "react";` : "",
       fromLibrary.length ? imports(fromLibrary) : "",
     ].filter(Boolean);
-    return `${header.join("\n")}\n\n${body}\n\n${jsx(`${name}Example`, props)}`;
+    return `${header.join("\n")}\n\n${body}\n\n${call}`;
   }
   return jsx(definition.name.replace(/\W/g, ""), props);
 }
