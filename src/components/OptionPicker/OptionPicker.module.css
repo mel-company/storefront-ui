@@ -33,12 +33,14 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  min-block-size: 40px;
+  justify-content: center;
+  min-block-size: 44px;
+  min-inline-size: 64px;
   padding-inline: var(--msu-space-4);
   border: 1px solid var(--msu-border);
   border-radius: var(--msu-radius-full);
   background: var(--msu-surface);
-  font-size: var(--msu-text-sm);
+  font-size: var(--msu-text-md);
   transition:
     border-color var(--msu-duration) ease,
     box-shadow var(--msu-duration) ease;

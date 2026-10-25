@@ -46,14 +46,23 @@
   margin-block-start: var(--msu-space-4);
   padding: 0;
   list-style: none;
-  color: var(--msu-text-muted);
+  color: var(--msu-text);
   font-size: var(--msu-text-sm);
+  font-weight: 500;
 }
 
 .points li {
   display: inline-flex;
   align-items: center;
   gap: var(--msu-space-2);
+  padding-block: var(--msu-space-2);
+  padding-inline: var(--msu-space-3);
+  border-radius: var(--msu-radius-full);
+  background: var(--msu-surface-muted);
+}
+
+.points svg {
+  color: var(--msu-accent);
 }
 
 .framed {
@@ -79,8 +88,10 @@
     gap: var(--msu-space-12);
   }
 
+  /* Grows with the screen past the type scale's top step, so the headline holds the empty half. */
   .title {
-    font-size: var(--msu-text-4xl);
+    font-size: clamp(var(--msu-text-4xl), 4.4vw, calc(var(--msu-text-4xl) * 1.4));
+    line-height: 1.05;
   }
 
   .mediaStart .media {

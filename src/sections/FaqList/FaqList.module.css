@@ -1,6 +1,7 @@
 .layout {
   display: grid;
   gap: var(--msu-space-8);
+  align-items: start;
 }
 
 .stacked {

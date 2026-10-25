@@ -77,12 +77,38 @@
 }
 
 .grow {
-  flex: 1 1 200px;
+  flex: 1 1 140px;
+}
+
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--msu-space-3);
+}
+
+/* Options and the buy row, set apart from the description by a rule. */
+.purchase {
+  display: grid;
+  gap: var(--msu-space-6);
+  padding-block-start: var(--msu-space-6);
+  border-block-start: 1px solid var(--msu-border);
 }
 
 .stock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msu-space-2);
   font-size: var(--msu-text-sm);
   font-weight: 600;
+}
+
+.stock::before {
+  content: "";
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--msu-radius-full);
+  background: currentColor;
 }
 
 .inStock {

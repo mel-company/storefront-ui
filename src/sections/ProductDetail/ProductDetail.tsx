@@ -44,9 +44,12 @@ export function ProductDetail({
   const product = useProduct(productId ?? page.productSlug);
   const [imageIndex, setImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [options, setOptions] = useState<Record<string, string>>({});
+  const [chosen, setOptions] = useState<Record<string, string>>({});
 
   if (!product) return null;
+
+  // Each option starts on its first value, so Add to cart works straight away.
+  const options = { ...Object.fromEntries((product.options ?? []).map((option) => [option.id, option.values[0] ?? ""])), ...chosen };
 
   const image = product.images[imageIndex] ?? product.images[0] ?? "";
   const soldOut = product.stock <= 0;
@@ -90,11 +93,14 @@ export function ProductDetail({
             {product.name}
           </h1>
           {product.rating !== undefined && <Rating value={product.rating} count={product.reviewCount} />}
-          <Price amount={product.price} compareAt={product.compareAtPrice} size="lg" />
-          <p className={cx(styles.stock, soldOut ? styles.out : low ? styles.low : styles.inStock)}>
-            {soldOut ? m.soldOut : low ? m.onlyLeft(product.stock) : m.inStock}
-          </p>
+          <div className={styles.priceRow}>
+            <Price amount={product.price} compareAt={product.compareAtPrice} size="lg" />
+            <p className={cx(styles.stock, soldOut ? styles.out : low ? styles.low : styles.inStock)}>
+              {soldOut ? m.soldOut : low ? m.onlyLeft(product.stock) : m.inStock}
+            </p>
+          </div>
           <p className={styles.description}>{product.description}</p>
+          <div className={styles.purchase}>
           {product.options?.map((option) => (
             <OptionPicker
               key={option.id}
@@ -109,6 +115,7 @@ export function ProductDetail({
               <AddToCart productId={product.id} quantity={quantity} options={options} size="lg" fullWidth />
             </span>
             <Favourite productId={product.id} />
+          </div>
           </div>
           {details.length > 0 && <Accordion items={details} single={false} />}
         </div>

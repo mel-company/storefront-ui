@@ -28,6 +28,8 @@ export interface Messages {
   searchProducts: string;
   freeDeliveryRemaining: string;
   freeDeliveryDone: string;
+  /** Shown while the cart is empty. `{amount}` is the threshold. */
+  freeDeliveryOver: string;
   freeDeliveryProgress: string;
   countdown: { days: string; hours: string; minutes: string; seconds: string };
   endsIn: (days: number, hours: number, minutes: number) => string;
@@ -182,6 +184,7 @@ const en: Messages = {
   searchProducts: "Search products",
   freeDeliveryRemaining: "Add {amount} more for free delivery",
   freeDeliveryDone: "You get free delivery",
+  freeDeliveryOver: "Free delivery on orders over {amount}",
   freeDeliveryProgress: "Progress to free delivery",
   countdown: { days: "Days", hours: "Hours", minutes: "Min", seconds: "Sec" },
   endsIn: (days, hours, minutes) => `Ends in ${days} days ${hours} hours ${minutes} minutes`,
@@ -345,6 +348,7 @@ const ar: Messages = {
   searchProducts: "ابحث عن منتج",
   freeDeliveryRemaining: "أضف {amount} للحصول على توصيل مجاني",
   freeDeliveryDone: "حصلت على توصيل مجاني",
+  freeDeliveryOver: "توصيل مجاني للطلبات فوق {amount}",
   freeDeliveryProgress: "التقدم نحو التوصيل المجاني",
   countdown: { days: "يوم", hours: "ساعة", minutes: "دقيقة", seconds: "ثانية" },
   endsIn: (days, hours, minutes) => `ينتهي خلال ${days} يوم و${hours} ساعة و${minutes} دقيقة`,
