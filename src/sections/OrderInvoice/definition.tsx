@@ -5,7 +5,7 @@ import { field } from "../../core/fields";
 import { INVOICE_TEMPLATES } from "../_shared/invoice/paper";
 import { toneField } from "../_shared/shared-props";
 import { OrderInvoice } from "./OrderInvoice";
-import { OrderLookupSkeleton } from "../_shared/skeleton/sections";
+import { OrderLookupSkeleton } from "../_shared/skeleton/OrderLookupSkeleton";
 
 /** Order 1042 opened from its confirmation link, which carries the access key. */
 const fromLink = { orderNumber: "1042", orderKey: demoOrderKey };

@@ -2,7 +2,7 @@ import { useRef, type PointerEvent } from "react";
 import { Link } from "../router";
 import { CopyButton } from "./CodeBlock";
 
-const INSTALL = "npm install @mel-company/storefront-ui";
+const INSTALL = "npx storefront-ui add hero.split";
 
 /** Code-drawn illustration: components, sections and a page stacked as glass layers, with the checker scanning the top one. */
 function LayerStack() {

@@ -1,5 +1,5 @@
 import { useMemo, useState, type MouseEvent, type ReactNode } from "react";
-import { Storefront, createDemoStore, type Language, type LinkProps, type StoreClient, type Theme } from "../../src";
+import { Storefront, builtInRegistry, createDemoStore, type Language, type LinkProps, type StoreClient, type Theme } from "../../src";
 import { useSettings } from "../settings";
 
 const ARABIC_FONT = '"IBM Plex Sans Arabic"';
@@ -57,7 +57,7 @@ export function LivePreview({ children, onNavigate, seed, theme: override }: Liv
     [base, lang],
   );
   return (
-    <Storefront store={store} theme={theme} mode={mode} dir={dir}>
+    <Storefront store={store} theme={theme} mode={mode} dir={dir} registry={builtInRegistry}>
       {children}
     </Storefront>
   );

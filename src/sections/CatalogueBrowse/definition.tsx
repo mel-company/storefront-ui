@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField } from "../_shared/shared-props";
 import { CatalogueBrowse } from "./CatalogueBrowse";
-import { CatalogueBrowseSkeleton } from "../_shared/skeleton/sections";
+import { CatalogueBrowseSkeleton } from "./skeleton";
 
 export const catalogueBrowseDefinition = defineSection({
   id: "catalogue.browse",

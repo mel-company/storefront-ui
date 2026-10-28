@@ -5,7 +5,7 @@ import { useMessages } from "../../i18n";
 import { Skeleton } from "../../components/Skeleton/Skeleton";
 import { Icon, type IconName } from "../../icons";
 import type { OrderQuery } from "../../store/types";
-import { usePageContext } from "./PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import styles from "./OrderLookup.module.css";
 
 export type { OrderQuery };

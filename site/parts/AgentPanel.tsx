@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { buildCatalogue, compositionOf, homeCampaign, validateComposition, type CheckReport } from "../../src";
+import { buildCatalogue, builtInRegistry, compositionOf, homeCampaign, validateComposition, type CheckReport } from "../../src";
 import { CheckBadge, CheckIssues } from "./CheckResult";
 import { CodeBlock } from "./CodeBlock";
 import { highlightJson } from "./Highlight";
@@ -28,7 +28,7 @@ const BROKEN = {
 };
 
 export function AgentPanel() {
-  const catalogue = useMemo(() => buildCatalogue(), []);
+  const catalogue = useMemo(() => buildCatalogue(builtInRegistry), []);
   const [text, setText] = useState(() => JSON.stringify(compositionOf(homeCampaign), null, 2));
   const [report, setReport] = useState<CheckReport | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -51,8 +51,9 @@ export function AgentPanel() {
         <h2 id="agents-title">MCP server for agents</h2>
         <p className="muted">
           Agents read the catalogue, write pages as JSON and validate them. They never write UI code, so an unknown section or a bad
-          prop is caught before a shopper sees it. The catalogue ships in the package as <code>catalogue.json</code> ({catalogue.components.length}{" "}
-          components, {catalogue.sections.length} sections, each with a JSON schema and examples).
+          prop is caught before a shopper sees it. The full catalogue is at <code>/r/catalogue.json</code> ({catalogue.components.length}{" "}
+          components, {catalogue.sections.length} sections, each with a JSON schema and examples). In a project,{" "}
+          <code>buildCatalogue(registry)</code> lists only the sections you copied, so an agent reads only those.
         </p>
       </header>
       <div className="agents">

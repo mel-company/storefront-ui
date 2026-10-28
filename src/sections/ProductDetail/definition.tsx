@@ -3,7 +3,7 @@ import { accordionItemsSchema } from "../../components/Accordion/definition";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { ProductDetail } from "./ProductDetail";
-import { ProductDetailSkeleton } from "../_shared/skeleton/sections";
+import { ProductDetailSkeleton } from "./skeleton";
 
 export const productDetailDefinition = defineSection({
   id: "product.detail",

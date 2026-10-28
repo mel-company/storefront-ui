@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { TrustStrip } from "./TrustStrip";
-import { TrustStripSkeleton } from "../_shared/skeleton/sections";
+import { TrustStripSkeleton } from "./skeleton";
 
 export const trustStripDefinition = defineSection({
   id: "trust.strip",

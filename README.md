@@ -7,7 +7,13 @@ light and dark, and works right to left. Agents never write UI code.
 
 ```
 npm install @mel-company/storefront-ui
+npx storefront-ui add header.bar hero.split products.grid footer.columns
 ```
+
+The package is only the core: theme, the store contract, text in English and
+Arabic, icons, the define/registry helpers and the renderers (about 25 KB). The
+components and sections are copied into your project as source, like shadcn/ui,
+so you ship and your agent reads only the ones you use, and you can change them.
 
 ## Three layers
 
@@ -20,17 +26,42 @@ npm install @mel-company/storefront-ui
 Every piece has a stable `id`, a one-line `description` (what an agent reads to
 choose), a zod `props` schema, and examples that the checker renders.
 
+## Add pieces
+
+```
+npx storefront-ui list                       # every component and section
+npx storefront-ui add hero.split products.grid
+```
+
+`add` writes each piece with the files it needs into `src/storefront-ui/`
+(`--dir` to change it; remembered in `storefront-ui.json`), keeping the
+library's layout so shared files are written once. Imports of the core point
+at the package. It then rewrites `registry.ts` (every copied definition) and
+`index.ts` (every copied component) in that folder, and prints any npm package
+a piece needs, e.g. `@radix-ui/react-select` for `form.select`.
+
+Code that Node's ESM resolver loads (a server importing the copies) needs
+explicit extensions: `--js-extensions` writes `./Button.js` and
+`./Button/index.js` in relative imports.
+
+Copies are yours to edit. Running `add` again updates files you have not
+changed and keeps the ones you have (`--overwrite` replaces them). Pieces come
+from https://storefront-ui-x.vercel.app/r by default; `--registry` takes
+another URL or a local folder made by `npm run registry`.
+
 ## Use it
 
 ```tsx
 import "@mel-company/storefront-ui/style.css";
-import { PageRenderer, Storefront, createDemoStore, themes } from "@mel-company/storefront-ui";
+import { PageRenderer, Storefront, themes } from "@mel-company/storefront-ui";
+import { createDemoStore } from "@mel-company/storefront-ui/demo";
+import { registry } from "./storefront-ui";
 
 const store = createDemoStore(); // or your own StoreClient
 
 export function App() {
   return (
-    <Storefront store={store} theme={themes.orchard} mode="system" dir="rtl">
+    <Storefront store={store} registry={registry} theme={themes.orchard} mode="system" dir="rtl">
       <PageRenderer
         composition={{
           page: "home.classic",
@@ -125,7 +156,8 @@ library's own CSS (no Tailwind needed):
 `ThemeProvider` passes its direction to Radix, so arrow keys and slide-in sides
 mirror in Arabic stores. Popups render inside the provider's wrapper
 (`usePortalContainer()`), so they keep the theme, colour mode and direction.
-Radix is a regular dependency; React stays a peer.
+A copied piece that uses Radix needs that Radix package installed (`add` names
+it); the core itself only uses `@radix-ui/react-direction`. React stays a peer.
 
 ### Hosts: React versions, frames and direction
 
@@ -179,9 +211,12 @@ React code, a props table, its JSON and its source files.
 The agent reads the catalogue, returns pages as JSON that match
 `storeCompositionSchema`, and validates them before saving.
 
-- `dist/catalogue.json` (`buildCatalogue()`): every props schema as JSON Schema,
-  examples, pages, theme schema and rules.
-- `catalogueSummary()`: a ~2k-token text version for a prompt.
+- `buildCatalogue(registry)`: every props schema in your copied registry as
+  JSON Schema, with examples, the theme schema and rules. Built from your
+  registry, so an agent sees only the sections the project has.
+- `catalogueSummary(registry)`: a short text version for a prompt.
+- The whole library's catalogue, for choosing what to add:
+  https://storefront-ui-x.vercel.app/r/catalogue.json (and `catalogue.md`).
 - MCP server over stdio: `npm run mcp`.
 
 | MCP tool | Does |
@@ -207,7 +242,13 @@ Add it to an MCP client:
    `field` helpers so every field has a label the editor can show.
 3. Add it to the folder's `index.ts` list.
 4. `npm run verify`. The checker renders every example, so a new piece is
-   covered the moment it is registered.
+   covered the moment it is registered, and `tests/registry-copy` copies every
+   section with `add` and checks the copy renders the same.
+
+A piece may import the core (`src/core`, `theme`, `store`, `i18n`, `icons`,
+`pages`, `utils.ts`) and other components and `sections/_shared`; anything
+the core uses must be exported from `src/package.ts`, or `npm run registry`
+fails. Demo data (`src/demo`) is the `/demo` entry.
 
 Rules: read colours only from `var(--msu-*)`, use logical CSS properties, give
 every button `type` and an accessible name, and never take products or prices
@@ -218,8 +259,14 @@ as text props.
 | Script | Does |
 | --- | --- |
 | `npm run dev` | Landing page, gallery and docs |
-| `npm run build` | Library to `dist/` (ESM, types, `style.css`, `catalogue.json`) |
-| `npm run build:site` | Landing page to `dist-site/` |
+| `npm run build` | The core package to `dist/` (ESM, CommonJS, types, `style.css`, and the `/demo` entry) |
+| `npm run registry` | The copy-in registry and full catalogue to `site/public/r/` |
+| `npm run build:site` | Registry, then landing page and docs to `dist-site/` |
 | `npm test` | Unit and behaviour tests |
 | `npm run check` | Every checker |
 | `npm run mcp` | MCP server for agents |
+
+## Releasing
+
+1. Bump `version` in `package.json` (semver: a new section or variant is a minor, a removed prop is a major).
+2. `npm publish`. `prepublishOnly` runs `npm run verify` and `npm run build` first, so a release with a failing check or test is refused.

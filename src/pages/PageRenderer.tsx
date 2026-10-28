@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import type { Registry } from "../core/registry";
-import { PageContextProvider, type PageContextValue } from "../sections/_shared/PageContext";
+import { PageContextProvider, type PageContextValue } from "./PageContext";
 import type { PageCompositionInput } from "./composition";
 
 const RegistryContext = createContext<Registry | null>(null);

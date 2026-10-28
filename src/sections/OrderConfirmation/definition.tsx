@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, iconSchema } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OrderConfirmation } from "./OrderConfirmation";
-import { OrderConfirmationSkeleton } from "../_shared/skeleton/sections";
+import { OrderConfirmationSkeleton } from "./skeleton";
 
 export const orderConfirmationDefinition = defineSection({
   id: "order.confirmation",

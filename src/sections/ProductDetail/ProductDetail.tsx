@@ -10,7 +10,7 @@ import { QuantityStepper } from "../../components/QuantityStepper/QuantitySteppe
 import { Rating } from "../../components/Rating/Rating";
 import { useProduct } from "../../store";
 import { cx } from "../../utils";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { Section } from "../_shared/Section";
 import styles from "./ProductDetail.module.css";
 import { useMessages } from "../../i18n";

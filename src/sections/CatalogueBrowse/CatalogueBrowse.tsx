@@ -6,7 +6,7 @@ import { SearchField } from "../../components/SearchField/SearchField";
 import { SelectMenu } from "../../components/SelectField/SelectField";
 import { useCategories, useProducts } from "../../store";
 import type { ProductQuery } from "../../store/types";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { Section } from "../_shared/Section";
 import grid from "../_shared/grid.module.css";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";

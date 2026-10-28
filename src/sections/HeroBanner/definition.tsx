@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field } from "../../core/fields";
 import { demoBanners } from "../../demo";
 import { HeroBanner } from "./HeroBanner";
-import { HeroBannerSkeleton } from "../_shared/skeleton/sections";
+import { HeroBannerSkeleton } from "./skeleton";
 
 export const heroBannerDefinition = defineSection({
   id: "hero.banner",

@@ -2,14 +2,16 @@ import { builtInRegistry } from "../../src";
 import { CodeBlock } from "./CodeBlock";
 import { highlightTsx } from "./Highlight";
 
-const USAGE = `import "@mel-company/storefront-ui/style.css";
+const USAGE = `// npx storefront-ui add header.bar hero.split products.grid footer.columns
+import "@mel-company/storefront-ui/style.css";
 import { PageRenderer, Storefront, themes } from "@mel-company/storefront-ui";
+import { registry } from "./storefront-ui";
 import { store } from "./store"; // your StoreClient
 import home from "./pages/home.json";
 
 export function App() {
   return (
-    <Storefront store={store} theme={themes.porcelain} mode="system" dir="rtl">
+    <Storefront store={store} registry={registry} theme={themes.porcelain} mode="system" dir="rtl">
       <PageRenderer composition={home} />
     </Storefront>
   );

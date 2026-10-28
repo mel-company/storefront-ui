@@ -1,7 +1,7 @@
 import type { ComponentDefinition, PageDefinition, SectionDefinition } from "../core/define";
 import type { Registry } from "../core/registry";
 import type { PageCompositionInput } from "../pages/composition";
-import type { PageContextValue } from "../sections/_shared/PageContext";
+import type { PageContextValue } from "../pages/PageContext";
 import { demoOrderKey } from "../demo/data";
 import { pageCompositionSchema } from "../pages/composition";
 import { builtInRegistry } from "../registry";

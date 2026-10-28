@@ -1,6 +1,5 @@
 import { zodToJsonSchema } from "zod-to-json-schema";
 import type { Registry } from "./core/registry";
-import { builtInRegistry } from "./registry";
 import { themes } from "./theme/presets";
 import { themeSchema } from "./theme/schema";
 import { storeCompositionSchema } from "./pages/composition";
@@ -42,7 +41,7 @@ export const COMPOSITION_RULES = [
 ];
 
 /** The machine-readable catalogue an AI agent reads to compose a store. */
-export function buildCatalogue(registry: Registry = builtInRegistry, version = "0.1.0"): Catalogue {
+export function buildCatalogue(registry: Registry, version = "0.1.0"): Catalogue {
   const entry = (definition: Registry["components"] extends Map<string, infer D> ? D : never): CatalogueEntry => ({
     id: definition.id,
     kind: "component",
@@ -70,7 +69,7 @@ export function buildCatalogue(registry: Registry = builtInRegistry, version = "
 }
 
 /** A short text summary (~2k tokens) to put in an agent's prompt. */
-export function catalogueSummary(registry: Registry = builtInRegistry): string {
+export function catalogueSummary(registry: Registry): string {
   const line = (d: { id: string; description: string }) => `- ${d.id}: ${d.description}`;
   return [
     "# Storefront UI catalogue",

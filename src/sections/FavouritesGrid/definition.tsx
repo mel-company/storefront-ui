@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField, toneField } from "../_shared/shared-props";
 import { FavouritesGrid } from "./FavouritesGrid";
-import { FavouritesGridSkeleton } from "../_shared/skeleton/sections";
+import { FavouritesGridSkeleton } from "./skeleton";
 
 export const favouritesGridDefinition = defineSection({
   id: "favourites.grid",

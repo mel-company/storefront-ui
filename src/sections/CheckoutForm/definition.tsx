@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { CheckoutForm } from "./CheckoutForm";
-import { CheckoutFormSkeleton } from "../_shared/skeleton/sections";
+import { CheckoutFormSkeleton } from "./skeleton";
 
 export const checkoutFormDefinition = defineSection({
   id: "checkout.form",

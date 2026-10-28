@@ -3,7 +3,7 @@ import { productCardOptions } from "../../components/ProductCard/definition";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { ProductsRelated } from "./ProductsRelated";
-import { ProductsRelatedSkeleton } from "../_shared/skeleton/sections";
+import { ProductsRelatedSkeleton } from "./skeleton";
 
 export const productsRelatedDefinition = defineSection({
   id: "products.related",

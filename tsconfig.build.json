@@ -6,8 +6,17 @@
     "declaration": true,
     "outDir": "dist/types",
     "rootDir": "src",
-    "types": ["vite/client"]
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+  "include": [
+    "src/package.ts",
+    "src/demo/index.ts",
+    "src/css-modules.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ]
 }

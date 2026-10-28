@@ -2,7 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { FooterColumns } from "./FooterColumns";
-import { FooterColumnsSkeleton } from "../_shared/skeleton/sections";
+import { FooterColumnsSkeleton } from "./skeleton";
 
 export const footerColumnsDefinition = defineSection({
   id: "footer.columns",

@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { columnsField, headingFields, toneField } from "../_shared/shared-props";
 import { CategoriesTiles } from "./CategoriesTiles";
-import { CategoriesTilesSkeleton } from "../_shared/skeleton/sections";
+import { CategoriesTilesSkeleton } from "./skeleton";
 
 export const categoriesTilesDefinition = defineSection({
   id: "categories.tiles",

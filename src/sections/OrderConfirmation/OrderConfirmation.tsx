@@ -3,7 +3,7 @@ import { ButtonLink } from "../../components/Button/Button";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { Icon, type IconName } from "../../icons";
 import { useStore } from "../../store";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderConfirmation.module.css";
 import { useMessages } from "../../i18n";
