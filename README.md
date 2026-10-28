@@ -218,8 +218,13 @@ as text props.
 | Script | Does |
 | --- | --- |
 | `npm run dev` | Landing page, gallery and docs |
-| `npm run build` | Library to `dist/` (ESM, types, `style.css`, `catalogue.json`) |
+| `npm run build` | Library to `dist/` (ESM, CommonJS, types, `style.css`, `catalogue.json`) |
 | `npm run build:site` | Landing page to `dist-site/` |
 | `npm test` | Unit and behaviour tests |
 | `npm run check` | Every checker |
 | `npm run mcp` | MCP server for agents |
+
+## Releasing
+
+1. Bump `version` in `package.json` (semver: a new section or variant is a minor, a removed prop is a major).
+2. `npm publish`. `prepublishOnly` runs `npm run verify` and `npm run build` first, so a release with a failing check or test is refused.

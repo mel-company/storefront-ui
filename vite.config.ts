@@ -11,8 +11,10 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      formats: ["es"],
-      fileName: () => "storefront-ui.js",
+      // ESM for bundlers, CommonJS for Node hosts that still `require` (a
+      // NestJS server rendering a store page, a Jest suite).
+      formats: ["es", "cjs"],
+      fileName: (format) => (format === "es" ? "storefront-ui.js" : "storefront-ui.cjs"),
     },
     cssCodeSplit: false,
     sourcemap: true,
