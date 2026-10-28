@@ -40,6 +40,10 @@ at the package. It then rewrites `registry.ts` (every copied definition) and
 `index.ts` (every copied component) in that folder, and prints any npm package
 a piece needs, e.g. `@radix-ui/react-select` for `form.select`.
 
+Code that Node's ESM resolver loads (a server importing the copies) needs
+explicit extensions: `--js-extensions` writes `./Button.js` and
+`./Button/index.js` in relative imports.
+
 Copies are yours to edit. Running `add` again updates files you have not
 changed and keeps the ones you have (`--overwrite` replaces them). Pieces come
 from https://storefront-ui-x.vercel.app/r by default; `--registry` takes

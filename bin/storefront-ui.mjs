@@ -11,11 +11,13 @@
  * every add, `<dir>/registry.ts` and `<dir>/index.ts` are rewritten to list
  * what is there.
  *
- * Options: --dir <path>, --registry <url or folder>, --overwrite, --dry-run.
- * `dir` and `registry` are remembered in storefront-ui.json.
+ * Options: --dir <path>, --registry <url or folder>, --overwrite, --dry-run,
+ * --js-extensions (write `./Button.js` rather than `./Button` in relative
+ * imports, for code Node's ESM resolver loads). `dir`, `registry` and
+ * `jsExtensions` are remembered in storefront-ui.json.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, posix, relative, resolve } from "node:path";
 
 const DEFAULT_REGISTRY = "https://storefront-ui-x.vercel.app/r";
 const CONFIG = "storefront-ui.json";
@@ -27,6 +29,7 @@ function parse(argv) {
     const arg = argv[i];
     if (arg === "--overwrite") args.overwrite = true;
     else if (arg === "--dry-run") args.dryRun = true;
+    else if (arg === "--js-extensions") args.jsExtensions = true;
     else if (arg === "--dir" || arg === "--registry") args[arg.slice(2)] = argv[++i];
     else if (arg === "-h" || arg === "--help") args.help = true;
     else args._.push(arg);
@@ -47,27 +50,42 @@ async function load(registry, name) {
   return readJson(path);
 }
 
+const ASSET = /\.(css|json|svg|png|jpe?g|webp)$/;
+const RELATIVE = /((?:from|import)\s*\(?\s*["'])(\.\.?\/[^"']*)(["'])/g;
+
+/** `./Button` → `./Button.js`, `../Button` (a folder) → `../Button/index.js`. */
+function withJsExtensions(content, path, exists) {
+  return content.replace(RELATIVE, (match, open, specifier, close) => {
+    if (ASSET.test(specifier) || specifier.endsWith(".js")) return match;
+    const base = posix.normalize(posix.join(posix.dirname(path), specifier));
+    if (exists(`${base}.ts`) || exists(`${base}.tsx`)) return `${open}${specifier}.js${close}`;
+    if (exists(`${base}/index.ts`) || exists(`${base}/index.tsx`)) return `${open}${specifier}/index.js${close}`;
+    return match;
+  });
+}
+
 /**
  * `registry.ts` from `export const fooDefinition = defineSection(` in every
  * copied definition file, and `index.ts` re-exporting each copied folder.
  */
-function writeRegistryFile(dir) {
+function writeRegistryFile(dir, jsExtensions) {
+  const ext = jsExtensions ? ".js" : "";
   const found = { components: [], sections: [] };
   const folders = [];
   for (const kind of ["components", "sections"]) {
     const root = join(dir, kind);
     if (!existsSync(root)) continue;
     for (const folder of readdirSync(root).sort()) {
-      if (existsSync(join(root, folder, "index.ts"))) folders.push(`./${kind}/${folder}`);
+      if (existsSync(join(root, folder, "index.ts"))) folders.push(`./${kind}/${folder}${jsExtensions ? "/index.js" : ""}`);
       const file = join(root, folder, "definition.tsx");
       if (!existsSync(file)) continue;
       const match = readFileSync(file, "utf8").match(/export const (\w+)\s*=\s*define(?:Component|Section)\(/);
-      if (match) found[kind].push({ name: match[1], from: `./${kind}/${folder}/definition` });
+      if (match) found[kind].push({ name: match[1], from: `./${kind}/${folder}/definition${ext}` });
     }
   }
   writeFileSync(
     join(dir, "index.ts"),
-    ["// Written by `storefront-ui add`.", 'export { registry } from "./registry";', ...folders.map((from) => `export * from "${from}";`), ""].join("\n"),
+    ["// Written by `storefront-ui add`.", `export { registry } from "./registry${ext}";`, ...folders.map((from) => `export * from "${from}";`), ""].join("\n"),
   );
   const all = [...found.components, ...found.sections];
   const lines = [
@@ -107,6 +125,10 @@ async function add(ids, options) {
   if (!ids.length) throw new Error("Name at least one id, e.g. `storefront-ui add hero.split`. `storefront-ui list` shows them all.");
   const dir = resolve(options.dir);
   const items = await Promise.all(ids.map((id) => load(options.registry, `${id}.json`)));
+  const incoming = new Set(items.flatMap((item) => item.files.map((file) => file.path)));
+  const exists = (path) => incoming.has(path) || existsSync(join(dir, path));
+  const contentOf = (file) =>
+    options.jsExtensions && /\.tsx?$/.test(file.path) ? withJsExtensions(file.content, file.path, exists) : file.content;
   const written = [];
   const skipped = [];
   const dependencies = new Set();
@@ -117,9 +139,10 @@ async function add(ids, options) {
       if (seen.has(file.path)) continue;
       seen.add(file.path);
       const target = join(dir, file.path);
+      const content = contentOf(file);
       if (existsSync(target)) {
         const current = readFileSync(target, "utf8");
-        if (current === file.content) continue;
+        if (current === content) continue;
         // Copies are meant to be edited: never overwrite a change silently.
         if (!options.overwrite) {
           skipped.push(file.path);
@@ -129,10 +152,10 @@ async function add(ids, options) {
       written.push(file.path);
       if (options.dryRun) continue;
       mkdirSync(dirname(target), { recursive: true });
-      writeFileSync(target, file.content);
+      writeFileSync(target, content);
     }
   }
-  const total = options.dryRun ? null : writeRegistryFile(dir);
+  const total = options.dryRun ? null : writeRegistryFile(dir, options.jsExtensions);
 
   const where = relative(process.cwd(), dir) || ".";
   console.log(`${options.dryRun ? "Would write" : "Wrote"} ${written.length} file(s) to ${where}${total === null ? "" : `; registry.ts lists ${total} definition(s)`}.`);
@@ -163,7 +186,7 @@ async function main() {
   const args = parse(process.argv.slice(2));
   const [command, ...ids] = args._;
   if (args.help || !command) {
-    console.log("Usage: storefront-ui <list | add <id...>> [--dir <path>] [--registry <url|folder>] [--overwrite] [--dry-run]");
+    console.log("Usage: storefront-ui <list | add <id...>> [--dir <path>] [--registry <url|folder>] [--overwrite] [--dry-run] [--js-extensions]");
     return;
   }
   const config = existsSync(CONFIG) ? readJson(CONFIG) : {};
@@ -172,12 +195,19 @@ async function main() {
     registry: args.registry ?? config.registry ?? DEFAULT_REGISTRY,
     overwrite: args.overwrite,
     dryRun: args.dryRun,
+    jsExtensions: Boolean(args.jsExtensions ?? config.jsExtensions),
   };
   if (command === "list") return list(options);
   if (command === "add") {
     await add(ids, options);
-    if (!args.dryRun && (options.dir !== config.dir || (args.registry && args.registry !== config.registry))) {
-      writeFileSync(CONFIG, `${JSON.stringify({ ...config, dir: options.dir, ...(args.registry ? { registry: args.registry } : {}) }, null, 2)}\n`);
+    const next = {
+      ...config,
+      dir: options.dir,
+      ...(args.registry ? { registry: args.registry } : {}),
+      ...(options.jsExtensions ? { jsExtensions: true } : {}),
+    };
+    if (!args.dryRun && JSON.stringify(next) !== JSON.stringify(config)) {
+      writeFileSync(CONFIG, `${JSON.stringify(next, null, 2)}\n`);
     }
     return;
   }

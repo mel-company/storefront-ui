@@ -24,8 +24,8 @@ const out = resolve(ROOT, process.argv[2] ?? "site/public/r");
 /** Folders and files that are the package, not copied. Imports into them are rewritten. */
 const CORE = ["core", "theme", "store", "i18n", "icons", "pages", "utils.ts", "catalogue.ts"];
 const DEMO = "demo";
-/** Bare imports every copy already has: React and the package's own dependencies. */
-const PROVIDED = new Set(["react", "react-dom", "zod", PACKAGE]);
+/** Bare imports every project already has. Copies import zod themselves, so it is listed like any other dependency. */
+const PROVIDED = new Set(["react", "react-dom", PACKAGE]);
 
 export interface RegistryFile {
   path: string;

@@ -5,7 +5,7 @@
  * the comparison: CSS module hashes follow the file path, which differs.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { Registry, SectionDefinition } from "../src/core";
 import { exampleElement, toHtml } from "../src/checker/render";
@@ -52,6 +52,27 @@ describe("storefront-ui add", () => {
         expect(actual).toBe(expected);
       }
     });
+  });
+
+  it("writes Node-resolvable specifiers with --js-extensions", async () => {
+    const dir = join(SCRATCH, "node-app");
+    mkdirSync(dir, { recursive: true });
+    execFileSync("node", [join(ROOT, "bin/storefront-ui.mjs"), "add", "hero.split", "products.grid", "--registry", REGISTRY, "--dir", "ui", "--js-extensions"], { cwd: dir, stdio: "pipe" });
+    const card = readFileSync(join(dir, "ui/components/ProductCard/ProductCard.tsx"), "utf8");
+    expect(card).toContain('from "../AddToCart/AddToCart.js"');
+    expect(card).toContain('.module.css"');
+    expect(readFileSync(join(dir, "ui/registry.ts"), "utf8")).toContain('from "./sections/HeroSplit/definition.js"');
+    expect(readFileSync(join(dir, "ui/index.ts"), "utf8")).toContain('from "./sections/HeroSplit/index.js"');
+    const files = (readdirSync(join(dir, "ui"), { recursive: true }) as string[]).filter((file) => /\.tsx?$/.test(file));
+    const offenders = files.flatMap((file) =>
+      [...readFileSync(join(dir, "ui", file), "utf8").matchAll(/from "(\.\.?\/[^"]*)"/g)]
+        .map((match) => match[1]!)
+        .filter((specifier) => !/\.(js|css)$/.test(specifier))
+        .map((specifier) => `${file}: ${specifier}`),
+    );
+    expect(offenders).toEqual([]);
+    const { registry } = await import(/* @vite-ignore */ join(dir, "ui/registry.ts"));
+    expect([...registry.sections.keys()].sort()).toEqual(["hero.split", "products.grid"]);
   });
 
   it("keeps a file the project changed unless --overwrite", () => {
