@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OfferFreeDelivery } from "./OfferFreeDelivery";
-import { OfferFreeDeliverySkeleton } from "../_shared/skeleton/sections";
+import { OfferFreeDeliverySkeleton } from "./skeleton";
 
 export const offerFreeDeliveryDefinition = defineSection({
   id: "offer.freeDelivery",

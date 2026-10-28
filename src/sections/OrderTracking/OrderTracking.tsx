@@ -6,7 +6,7 @@ import { useFormatDate, useFormatPrice, useStore } from "../../store";
 import type { Invoice, TrackedOrder } from "../../store/types";
 import { InvoiceView } from "../_shared/invoice/InvoiceView";
 import { OrderChecking, OrderLookup, useOrderFromPage, type OrderQuery } from "../_shared/OrderLookup";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderTracking.module.css";
 import { useMessages } from "../../i18n";

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { CartSummary } from "./CartSummary";
-import { CartSummarySkeleton } from "../_shared/skeleton/sections";
+import { CartSummarySkeleton } from "./skeleton";
 
 export const cartSummaryDefinition = defineSection({
   id: "cart.summary",

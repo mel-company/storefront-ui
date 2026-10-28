@@ -2,7 +2,7 @@ import { z } from "zod";
 import { defineSection } from "../../core/define";
 import { field, routeSchema } from "../../core/fields";
 import { HeaderBar } from "./HeaderBar";
-import { HeaderBarSkeleton } from "../_shared/skeleton/sections";
+import { HeaderBarSkeleton } from "./skeleton";
 
 export const headerBarDefinition = defineSection({
   id: "header.bar",

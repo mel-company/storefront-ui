@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { OrderTracking } from "./OrderTracking";
-import { OrderLookupSkeleton } from "../_shared/skeleton/sections";
+import { OrderLookupSkeleton } from "../_shared/skeleton/OrderLookupSkeleton";
 
 export const orderTrackingDefinition = defineSection({
   id: "order.tracking",

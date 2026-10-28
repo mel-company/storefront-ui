@@ -1,3 +1,4 @@
+import * as core from "../../src/package";
 import { demoBanners, type ComponentDefinition, type PageContextValue, type PageDefinition, type SectionDefinition } from "../../src";
 
 type Definition = ComponentDefinition | SectionDefinition;
@@ -104,7 +105,29 @@ export function jsx(name: string, props: Record<string, unknown> = {}, indent = 
   return `${indent}<${name}\n${attrs.map((attr) => `${indent}  ${attr}`).join("\n")}\n${indent}/>`;
 }
 
-const imports = (names: string[]) => `import { ${[...new Set(names)].sort().join(", ")} } from "@mel-company/storefront-ui";`;
+const CORE = new Set(Object.keys(core));
+const DEMO = new Set(["demoBanners", "productArt", "bannerArt"]);
+
+/**
+ * Import lines for a snippet: the core from the package, demo images from
+ * `/demo`, and components and sections from the project's copy (the folder
+ * `storefront-ui add` writes, with its generated index).
+ */
+const imports = (names: string[]) => {
+  const unique = [...new Set(names)].sort();
+  const groups: [string[], string][] = [
+    [unique.filter((name) => CORE.has(name)), "@mel-company/storefront-ui"],
+    [unique.filter((name) => DEMO.has(name)), "@mel-company/storefront-ui/demo"],
+    [unique.filter((name) => !CORE.has(name) && !DEMO.has(name)), "./storefront-ui"],
+  ];
+  return groups
+    .filter(([group]) => group.length)
+    .map(([group, from]) => `import { ${group.join(", ")} } from "${from}";`)
+    .join("\n");
+};
+
+/** The command that copies a component or section into a project. */
+const addCommand = (id: string) => `// npx storefront-ui add ${id}`;
 
 const usesBanner = (props: unknown) => JSON.stringify(props ?? {}).includes("data:image/svg+xml");
 
@@ -135,6 +158,10 @@ const USAGE: Record<string, (props: Record<string, unknown>) => string> = {
  * own render function, which is the real usage.
  */
 export function exampleCode(definition: Definition, props: Record<string, unknown>): string {
+  return `${addCommand(definition.id)}\n${exampleBody(definition, props)}`;
+}
+
+function exampleBody(definition: Definition, props: Record<string, unknown>): string {
   const usage = USAGE[definition.id];
   if (usage) return usage(props);
   const folder = FOLDERS.get(definition.id);
@@ -182,12 +209,13 @@ export function pageJsx(page: { sections: { section: string; props?: Record<stri
   const body = page.sections
     .map((entry, index) => jsx(names[index]!, entry.props ?? {}, "      "))
     .join("\n");
-  return `${imports([...names, ...banner, "Storefront"])}
+  return `// npx storefront-ui add ${[...new Set(page.sections.map((entry) => entry.section))].join(" ")}
+${imports([...names, ...banner, "Storefront", "registry"])}
 import { store } from "./store"; // your StoreClient
 
 export function Page() {
   return (
-    <Storefront store={store}>
+    <Storefront store={store} registry={registry}>
 ${body}
     </Storefront>
   );
@@ -197,13 +225,15 @@ ${body}
 /** A page from its JSON, the way the editor and agents save it. */
 export function pageRendererCode(page: PageDefinition, context: PageContextValue): string {
   const ctx = Object.entries(context).filter(([, item]) => item);
-  return `import { PageRenderer, Storefront } from "@mel-company/storefront-ui";
+  return `// npx storefront-ui add ${[...new Set(page.sections.map((entry) => entry.section))].join(" ")}
+import { PageRenderer, Storefront } from "@mel-company/storefront-ui";
+import { registry } from "./storefront-ui";
 import { store } from "./store"; // your StoreClient
 import page from "./pages/${page.id}.json";
 
 export function Page() {
   return (
-    <Storefront store={store}>
+    <Storefront store={store} registry={registry}>
       <PageRenderer composition={page}${ctx.length ? ` context={${value(Object.fromEntries(ctx), "      ")}}` : ""} />
     </Storefront>
   );

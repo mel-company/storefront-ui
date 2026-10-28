@@ -13,4 +13,5 @@ export {
   favouritesDefault,
   notFoundDefault,
 } from "./definitions";
+export { PageContextProvider, usePageContext, type PageContextValue } from "./PageContext";
 export { PageRenderer, SectionRenderer, RegistryProvider, useRegistry, compositionOf, type PageRendererProps, type SectionRendererProps } from "./PageRenderer";

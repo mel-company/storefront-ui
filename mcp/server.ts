@@ -55,7 +55,7 @@ server.registerTool(
     inputSchema: { id: z.string().describe("A component or section id, like products.grid") },
   },
   async ({ id }) => {
-    const catalogue = buildCatalogue();
+    const catalogue = buildCatalogue(builtInRegistry);
     const entry = [...catalogue.sections, ...catalogue.components].find((item) => item.id === id);
     if (!entry) {
       return { ...json({ error: `No component or section "${id}". Call list_sections.` }), isError: true };
@@ -109,7 +109,7 @@ server.registerTool(
     inputSchema: { format: z.enum(["summary", "json"]).optional() },
   },
   async ({ format }) =>
-    format === "json" ? json(buildCatalogue()) : { content: [{ type: "text" as const, text: catalogueSummary() }] },
+    format === "json" ? json(buildCatalogue(builtInRegistry)) : { content: [{ type: "text" as const, text: catalogueSummary(builtInRegistry) }] },
 );
 
 await server.connect(new StdioServerTransport());

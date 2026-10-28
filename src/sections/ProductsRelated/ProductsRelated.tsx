@@ -1,5 +1,5 @@
 import { useProduct, useProducts } from "../../store";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { ProductsRail } from "../ProductsRail/ProductsRail";
 import type { CardOptions } from "../ProductsGrid/ProductsGrid";
 import { useMessages } from "../../i18n";

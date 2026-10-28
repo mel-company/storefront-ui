@@ -5,7 +5,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "dist-site", "node_modules"] },
+  { ignores: ["dist", "dist-site", "node_modules", "site/public/r"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -19,4 +19,6 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     },
   },
+  // The `storefront-ui` command.
+  { files: ["bin/**/*.mjs"], languageOptions: { globals: globals.node } },
 );

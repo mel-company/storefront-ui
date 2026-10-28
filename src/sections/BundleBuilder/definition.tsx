@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, productSourceSchema } from "../../core/fields";
 import { headingFields, toneField } from "../_shared/shared-props";
 import { BundleBuilder } from "./BundleBuilder";
-import { BundleBuilderSkeleton } from "../_shared/skeleton/sections";
+import { BundleBuilderSkeleton } from "./skeleton";
 
 export const bundleBuilderDefinition = defineSection({
   id: "bundle.builder",

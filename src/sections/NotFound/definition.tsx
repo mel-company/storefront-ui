@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field, iconSchema } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { NotFound } from "./NotFound";
-import { NotFoundSkeleton } from "../_shared/skeleton/sections";
+import { NotFoundSkeleton } from "./skeleton";
 
 export const notFoundDefinition = defineSection({
   id: "error.notFound",

@@ -5,7 +5,7 @@ import { useStore } from "../../store";
 import type { Invoice, InvoiceTemplate } from "../../store/types";
 import { InvoiceView } from "../_shared/invoice/InvoiceView";
 import { OrderChecking, OrderLookup, useOrderFromPage } from "../_shared/OrderLookup";
-import { usePageContext } from "../_shared/PageContext";
+import { usePageContext } from "../../pages/PageContext";
 import { Section, type SectionTone } from "../_shared/Section";
 import styles from "./OrderInvoice.module.css";
 

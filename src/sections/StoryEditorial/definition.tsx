@@ -4,7 +4,7 @@ import { actionSchema, field } from "../../core/fields";
 import { demoBanners } from "../../demo";
 import { toneField } from "../_shared/shared-props";
 import { StoryEditorial } from "./StoryEditorial";
-import { StoryEditorialSkeleton } from "../_shared/skeleton/sections";
+import { StoryEditorialSkeleton } from "./skeleton";
 
 export const storyEditorialDefinition = defineSection({
   id: "story.editorial",

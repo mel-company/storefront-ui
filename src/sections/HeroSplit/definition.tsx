@@ -4,7 +4,7 @@ import { actionSchema, field, iconSchema } from "../../core/fields";
 import { demoBanners } from "../../demo";
 import { toneField } from "../_shared/shared-props";
 import { HeroSplit } from "./HeroSplit";
-import { HeroSplitSkeleton } from "../_shared/skeleton/sections";
+import { HeroSplitSkeleton } from "./skeleton";
 
 export const heroSplitDefinition = defineSection({
   id: "hero.split",

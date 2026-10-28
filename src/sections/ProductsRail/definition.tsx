@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { field } from "../../core/fields";
 import { productsSectionProps } from "../ProductsGrid/definition";
 import { ProductsRail } from "./ProductsRail";
-import { ProductsRailSkeleton } from "../_shared/skeleton/sections";
+import { ProductsRailSkeleton } from "./skeleton";
 
 export const productsRailDefinition = defineSection({
   id: "products.rail",

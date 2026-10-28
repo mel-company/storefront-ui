@@ -4,6 +4,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { buildPdf, pageCuts } from "../src/sections/_shared/invoice/pdf";
 import {
+  builtInRegistry,
   Accordion,
   AddToCart,
   BundleBuilder,
@@ -33,7 +34,7 @@ import {
 function setup(ui: React.ReactElement, store: StoreClient = createDemoStore()) {
   const user = userEvent.setup();
   render(
-    <Storefront store={store} mode="light">
+    <Storefront store={store} mode="light" registry={builtInRegistry}>
       {ui}
     </Storefront>,
   );
@@ -518,7 +519,7 @@ describe("store portaled into an iframe (editor canvas)", () => {
     const [body, setBody] = useState<HTMLElement | null>(null);
     return (
       <iframe title="canvas" ref={(frame) => frame && !body && setBody(frame.contentDocument!.body)}>
-        {body && createPortal(<Storefront store={createDemoStore()} mode="light">{children}</Storefront>, body)}
+        {body && createPortal(<Storefront store={createDemoStore()} mode="light" registry={builtInRegistry}>{children}</Storefront>, body)}
       </iframe>
     );
   }
@@ -563,9 +564,9 @@ describe("direction", () => {
     expect(directionOf("ar-IQ")).toBe("rtl");
     expect(directionOf("ckb")).toBe("rtl");
     expect(directionOf("en-GB")).toBe("ltr");
-    const { container, rerender } = render(<Storefront store={createDemoStore({ language: "ar" })}>x</Storefront>);
+    const { container, rerender } = render(<Storefront store={createDemoStore({ language: "ar" })} registry={builtInRegistry}>x</Storefront>);
     expect(container.querySelector(".msu-root")).toHaveAttribute("dir", "rtl");
-    rerender(<Storefront store={createDemoStore({ language: "ar" })} dir="ltr">x</Storefront>);
+    rerender(<Storefront store={createDemoStore({ language: "ar" })} dir="ltr" registry={builtInRegistry}>x</Storefront>);
     expect(container.querySelector(".msu-root")).toHaveAttribute("dir", "ltr");
   });
 });

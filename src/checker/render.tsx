@@ -7,7 +7,7 @@ import type { Language } from "../i18n/messages";
 import { PageRenderer } from "../pages/PageRenderer";
 import type { PageCompositionInput } from "../pages/composition";
 import { builtInRegistry } from "../registry";
-import { PageContextProvider, type PageContextValue } from "../sections/_shared/PageContext";
+import { PageContextProvider, type PageContextValue } from "../pages/PageContext";
 import { Storefront } from "../Storefront";
 import type { StoreClient } from "../store/types";
 import { defaultTheme } from "../theme/presets";

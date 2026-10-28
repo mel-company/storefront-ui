@@ -3,7 +3,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field } from "../../core/fields";
 import { toneField } from "../_shared/shared-props";
 import { HeroStatement } from "./HeroStatement";
-import { HeroStatementSkeleton } from "../_shared/skeleton/sections";
+import { HeroStatementSkeleton } from "./skeleton";
 
 export const heroStatementDefinition = defineSection({
   id: "hero.statement",

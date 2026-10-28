@@ -4,7 +4,7 @@ import { defineSection } from "../../core/define";
 import { actionSchema, field, productSourceSchema } from "../../core/fields";
 import { columnsField, headingFields, toneField } from "../_shared/shared-props";
 import { ProductsGrid } from "./ProductsGrid";
-import { ProductsGridSkeleton } from "../_shared/skeleton/sections";
+import { ProductsGridSkeleton } from "./skeleton";
 
 export const productsSectionProps = z.object({
   ...headingFields,
